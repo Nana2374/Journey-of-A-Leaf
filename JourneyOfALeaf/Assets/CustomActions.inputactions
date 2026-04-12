@@ -16,7 +16,7 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Look",
+                    "name": "Jump",
                     "type": "Value",
                     "id": "034bb698-4a56-4b62-a452-0e0a117dffe5",
                     "expectedControlType": "Vector2",
@@ -41,10 +41,38 @@
                     "name": "",
                     "id": "4ddc8816-e48d-4f58-bcc8-3140e9a7ee48",
                     "path": "<Gamepad>/rightStick",
+                    "interactions": "Tap,Tap",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "LookAround",
+            "id": "2fdded2c-1122-4bf4-9c54-c1b54a8129b9",
+            "actions": [
+                {
+                    "name": "New action",
+                    "type": "Value",
+                    "id": "9ea0f7e9-b2a2-43b1-a72e-7b9c12f5591e",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "761246e5-1e22-4d44-9439-ac1190fd4a33",
+                    "path": "<Pointer>/delta",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Look",
+                    "action": "New action",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
