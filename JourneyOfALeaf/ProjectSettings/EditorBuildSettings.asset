@@ -7,8 +7,17 @@ EditorBuildSettings:
   m_Scenes:
   - enabled: 1
     path: Assets/Scenes/GoldenGrove.unity
-    guid: f9c6b21a7412d084bb9b19fb465bd316
+    guid: c843bc51443927d499328ce75025609d
   - enabled: 1
     path: Assets/Scenes/StreamOfGentleWaters.unity
-    guid: b93bb8c2580ea5e4d9ee043cd0f8018d
+    guid: 83a26b234676be3479bc5d76b8b0a554
+  - enabled: 1
+    path: Assets/Scenes/RedwoodHinderlands.unity
+    guid: d2e16a4d8acb8914cbba308553fbd448
+  - enabled: 1
+    path: Assets/Scenes/TheAbandonedWoods.unity
+    guid: 185c385f0e0af6f4a9534e1f8be1a1ee
+  - enabled: 1
+    path: Assets/Scenes/EvergreenMeadow.unity
+    guid: f9c6b21a7412d084bb9b19fb465bd316
   m_configObjects: {}
