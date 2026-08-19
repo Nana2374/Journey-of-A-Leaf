@@ -1,62 +1,120 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+
 public class Player_Movement : MonoBehaviour
 {
-    private float playerSpeed = 5.0f;
-    private float jumpHeight = 1.5f;
-    private float gravityValue = -9.81f;
+    [Header("Movement")]
+    [SerializeField] private float playerSpeed = 5f;
+    [SerializeField] private float jumpHeight = 1.5f;
+    [SerializeField] private float gravity = -9.81f;
+    [SerializeField] private float rotationSpeed = 360f;
 
-    public CharacterController controller;
-    private Vector3 playerVelocity;
-    private bool groundedPlayer;
+    [Header("References")]
+    [SerializeField] private CharacterController controller;
+    [SerializeField] private Transform cameraTransform;
 
-    [Header("Input Actions")]
-    public InputActionReference moveAction;
-    public InputActionReference jumpAction;
+    [Header("Input")]
+    [SerializeField] private InputActionReference moveAction;
+    [SerializeField] private InputActionReference jumpAction;
+
+    private Vector3 velocity;
+
+    private Vector3 lockedForward;
+    private Vector3 lockedRight;
+
+    private bool movementLocked;
 
     private void OnEnable()
     {
         moveAction.action.Enable();
         jumpAction.action.Enable();
+
+        moveAction.action.started += OnMovementStarted;
+        moveAction.action.canceled += OnMovementCanceled;
     }
 
     private void OnDisable()
     {
+        moveAction.action.started -= OnMovementStarted;
+        moveAction.action.canceled -= OnMovementCanceled;
+
         moveAction.action.Disable();
         jumpAction.action.Disable();
     }
 
-    void Update()
+    private void OnMovementStarted(InputAction.CallbackContext context)
     {
-        groundedPlayer = controller.isGrounded;
+        // Capture camera direction when joystick starts
+        lockedForward = cameraTransform.forward;
+        lockedRight = cameraTransform.right;
 
-        if (groundedPlayer)
+        // Keep movement horizontal
+        lockedForward.y = 0f;
+        lockedRight.y = 0f;
+
+        lockedForward.Normalize();
+        lockedRight.Normalize();
+
+        movementLocked = true;
+    }
+
+    private void OnMovementCanceled(InputAction.CallbackContext context)
+    {
+        movementLocked = false;
+    }
+
+    private void Update()
+    {
+        bool grounded = controller.isGrounded;
+
+        if (grounded && velocity.y < 0)
         {
-            // Slight downward velocity to keep grounded stable
-            if (playerVelocity.y < -2f)
-                playerVelocity.y = -2f;
+            velocity.y = -2f;
         }
 
-        // Read input
         Vector2 input = moveAction.action.ReadValue<Vector2>();
-        Vector3 move = new Vector3(input.x, 0, input.y);
-        move = Vector3.ClampMagnitude(move, 1f);
 
-        if (move != Vector3.zero)
-            transform.forward = move;
+        Vector3 move = Vector3.zero;
 
-        // Jump using WasPressedThisFrame()
-        if (groundedPlayer && jumpAction.action.WasPressedThisFrame())
+        if (movementLocked)
         {
-            playerVelocity.y = Mathf.Sqrt(jumpHeight * -2f * gravityValue);
+            move =
+                lockedForward * input.y +
+                lockedRight * input.x;
+
+            move = Vector3.ClampMagnitude(move, 1f);
+
+            // Rotate Ant toward movement
+            if (move.sqrMagnitude > 0.01f)
+            {
+                Quaternion targetRotation =
+                    Quaternion.LookRotation(move);
+
+                transform.rotation =
+                    Quaternion.RotateTowards(
+                        transform.rotation,
+                        targetRotation,
+                        rotationSpeed * Time.deltaTime
+                    );
+            }
         }
 
-        // Apply gravity
-        playerVelocity.y += gravityValue * Time.deltaTime;
+        // Jump
+        if (grounded && jumpAction.action.WasPressedThisFrame())
+        {
+            velocity.y =
+                Mathf.Sqrt(jumpHeight * -2f * gravity);
+        }
 
-        // Move
-        Vector3 finalMove = move * playerSpeed + Vector3.up * playerVelocity.y;
-        controller.Move(finalMove * Time.deltaTime);
+        // Gravity
+        velocity.y += gravity * Time.deltaTime;
+
+        Vector3 finalMovement = move * playerSpeed;
+
+        finalMovement.y = velocity.y;
+
+        controller.Move(
+            finalMovement * Time.deltaTime
+        );
     }
 }
-

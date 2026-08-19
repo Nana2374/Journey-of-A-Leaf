@@ -2,11 +2,11 @@ using UnityEngine;
 
 public class AntPickupController : MonoBehaviour
 {
-    [Header("Pickup Settings")]
-    [SerializeField] private Transform carryPoint;
-    [SerializeField] private float pickupRange = 2f;
+    [Header("References")]
+    [SerializeField] private LeafController leaf;
 
-    private PickupItem currentItem;
+    [Header("Pickup Settings")]
+    [SerializeField] private float pickupRange = 2f;
 
     private Camera mainCamera;
 
@@ -17,13 +17,14 @@ public class AntPickupController : MonoBehaviour
 
     private void Update()
     {
-        // For testing in the Unity Editor
+        // Testing in Unity Editor
         if (Input.GetMouseButtonDown(0))
         {
             TryInteract(Input.mousePosition);
         }
     }
 
+    // Called by mobile touch system
     public void OnScreenTap(Vector2 screenPosition)
     {
         TryInteract(screenPosition);
@@ -33,68 +34,58 @@ public class AntPickupController : MonoBehaviour
     {
         Ray ray = mainCamera.ScreenPointToRay(screenPosition);
 
-        if (Physics.Raycast(ray, out RaycastHit hit))
-        {
-            PickupItem item = hit.collider.GetComponentInParent<PickupItem>();
-
-            if (item == null)
-                return;
-
-            // If already carrying something, drop it
-            if (currentItem != null)
-            {
-                DropItem();
-                return;
-            }
-
-            // Check if the ant is close enough
-            float distance = Vector3.Distance(transform.position, item.transform.position);
-
-            if (distance <= pickupRange)
-            {
-                PickUpItem(item);
-            }
-        }
-    }
-
-    private void PickUpItem(PickupItem item)
-    {
-        currentItem = item;
-
-        Rigidbody rb = item.GetComponent<Rigidbody>();
-
-        if (rb != null)
-        {
-            rb.isKinematic = true;
-            rb.useGravity = false;
-        }
-
-        item.transform.SetParent(carryPoint);
-
-        item.transform.localPosition = Vector3.zero;
-        item.transform.localRotation = Quaternion.identity;
-    }
-
-    public void DropItem()
-    {
-        if (currentItem == null)
+        if (!Physics.Raycast(ray, out RaycastHit hit))
             return;
 
-        currentItem.transform.SetParent(null);
+        // Look for an item
+        LeafItem item =
+            hit.collider.GetComponentInParent<LeafItem>();
 
-        Rigidbody rb = currentItem.GetComponent<Rigidbody>();
+        if (item == null)
+            return;
 
-        if (rb != null)
+        float distance = Vector3.Distance(
+            transform.position,
+            item.transform.position
+        );
+
+        if (distance > pickupRange)
         {
-            rb.isKinematic = false;
-            rb.useGravity = true;
+            Debug.Log("Item is too far away.");
+            return;
         }
 
-        currentItem = null;
-    }
+        // ==========================================
+        // ITEM IS ALREADY ON THE LEAF
+        // ==========================================
 
-    public bool IsCarrying()
-    {
-        return currentItem != null;
+        if (item.IsOnLeaf)
+        {
+            item.RemoveFromLeaf();
+
+            Debug.Log("Removed item from leaf.");
+
+            return;
+        }
+
+        // ==========================================
+        // ITEM IS ON THE GROUND
+        // ==========================================
+
+        Transform placementPoint =
+            leaf.GetAvailablePlacementPoint();
+
+        if (placementPoint == null)
+        {
+            Debug.Log("No available space on leaf.");
+            return;
+        }
+
+        item.PlaceOnLeaf(placementPoint);
+
+        Debug.Log(
+            "Placed " + item.name +
+            " on " + placementPoint.name
+        );
     }
 }
