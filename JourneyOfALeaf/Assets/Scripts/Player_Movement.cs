@@ -4,117 +4,129 @@ using UnityEngine.InputSystem;
 public class Player_Movement : MonoBehaviour
 {
     [Header("Movement")]
-    [SerializeField] private float playerSpeed = 5f;
+    [SerializeField] private float playerSpeed = 5.0f;
     [SerializeField] private float jumpHeight = 1.5f;
-    [SerializeField] private float gravity = -9.81f;
-    [SerializeField] private float rotationSpeed = 360f;
+    [SerializeField] private float gravityValue = -9.81f;
 
     [Header("References")]
-    [SerializeField] private CharacterController controller;
-    [SerializeField] private Transform cameraTransform;
+    public CharacterController controller;
 
-    [Header("Input")]
-    [SerializeField] private InputActionReference moveAction;
-    [SerializeField] private InputActionReference jumpAction;
+    [Header("Input Actions")]
+    public InputActionReference moveAction;
+    public InputActionReference jumpAction;
 
-    private Vector3 velocity;
+    private Vector3 playerVelocity;
+    private bool groundedPlayer;
 
-    private Vector3 lockedForward;
-    private Vector3 lockedRight;
-
-    private bool movementLocked;
+    // Controlled by Player_Glide
+    public bool IsGliding { get; private set; }
 
     private void OnEnable()
     {
         moveAction.action.Enable();
         jumpAction.action.Enable();
-
-        moveAction.action.started += OnMovementStarted;
-        moveAction.action.canceled += OnMovementCanceled;
     }
 
     private void OnDisable()
     {
-        moveAction.action.started -= OnMovementStarted;
-        moveAction.action.canceled -= OnMovementCanceled;
-
         moveAction.action.Disable();
         jumpAction.action.Disable();
     }
 
-    private void OnMovementStarted(InputAction.CallbackContext context)
-    {
-        // Capture camera direction when joystick starts
-        lockedForward = cameraTransform.forward;
-        lockedRight = cameraTransform.right;
-
-        // Keep movement horizontal
-        lockedForward.y = 0f;
-        lockedRight.y = 0f;
-
-        lockedForward.Normalize();
-        lockedRight.Normalize();
-
-        movementLocked = true;
-    }
-
-    private void OnMovementCanceled(InputAction.CallbackContext context)
-    {
-        movementLocked = false;
-    }
-
     private void Update()
     {
-        bool grounded = controller.isGrounded;
+        groundedPlayer = controller.isGrounded;
 
-        if (grounded && velocity.y < 0)
+        // -----------------------------------------
+        // GROUNDING
+        // -----------------------------------------
+
+        if (groundedPlayer && playerVelocity.y < 0f)
         {
-            velocity.y = -2f;
+            playerVelocity.y = -2f;
         }
+
+        // -----------------------------------------
+        // MOVEMENT INPUT
+        // -----------------------------------------
 
         Vector2 input = moveAction.action.ReadValue<Vector2>();
 
-        Vector3 move = Vector3.zero;
+        Vector3 move = new Vector3(
+            input.x,
+            0f,
+            input.y
+        );
 
-        if (movementLocked)
+        move = Vector3.ClampMagnitude(move, 1f);
+
+        // -----------------------------------------
+        // ROTATION
+        // -----------------------------------------
+
+        if (move != Vector3.zero && !IsGliding)
         {
-            move =
-                lockedForward * input.y +
-                lockedRight * input.x;
-
-            move = Vector3.ClampMagnitude(move, 1f);
-
-            // Rotate Ant toward movement
-            if (move.sqrMagnitude > 0.01f)
-            {
-                Quaternion targetRotation =
-                    Quaternion.LookRotation(move);
-
-                transform.rotation =
-                    Quaternion.RotateTowards(
-                        transform.rotation,
-                        targetRotation,
-                        rotationSpeed * Time.deltaTime
-                    );
-            }
+            transform.forward = move;
         }
 
-        // Jump
-        if (grounded && jumpAction.action.WasPressedThisFrame())
+        // -----------------------------------------
+        // JUMP
+        // -----------------------------------------
+
+        if (groundedPlayer &&
+            jumpAction.action.WasPressedThisFrame() &&
+            !IsGliding)
         {
-            velocity.y =
-                Mathf.Sqrt(jumpHeight * -2f * gravity);
+            playerVelocity.y =
+                Mathf.Sqrt(
+                    jumpHeight * -2f * gravityValue
+                );
         }
 
-        // Gravity
-        velocity.y += gravity * Time.deltaTime;
+        // -----------------------------------------
+        // GRAVITY
+        // -----------------------------------------
 
-        Vector3 finalMovement = move * playerSpeed;
+        if (!IsGliding)
+        {
+            playerVelocity.y +=
+                gravityValue * Time.deltaTime;
+        }
 
-        finalMovement.y = velocity.y;
+        // -----------------------------------------
+        // MOVEMENT
+        // -----------------------------------------
+
+        Vector3 finalMove =
+            move * playerSpeed;
+
+        finalMove.y = playerVelocity.y;
 
         controller.Move(
-            finalMovement * Time.deltaTime
+            finalMove * Time.deltaTime
         );
+    }
+
+    // Called by Player_Glide
+    public void SetGliding(bool gliding)
+    {
+        IsGliding = gliding;
+
+        if (gliding)
+        {
+            // Remove normal falling velocity
+            playerVelocity.y = 0f;
+        }
+    }
+
+    // Allows Player_Glide to control vertical movement
+    public void SetVerticalVelocity(float velocity)
+    {
+        playerVelocity.y = velocity;
+    }
+
+    public float GetVerticalVelocity()
+    {
+        return playerVelocity.y;
     }
 }
