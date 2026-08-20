@@ -3450,7 +3450,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1072100513}
-  - component: {fileID: 1072100515}
   - component: {fileID: 1072100514}
   m_Layer: 0
   m_Name: Ant
@@ -3491,22 +3490,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leaf: {fileID: 1938565111}
   pickupRange: 2
---- !u!114 &1072100515
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1072100512}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 24ca41ff12720d74dac4e5420a974748, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  WaterVolumeHelper: {fileID: 0}
-  buoyancyForce: 50
-  damping: 1
-  floatOffset: 0
 --- !u!1 &1161757363
 GameObject:
   m_ObjectHideFlags: 0

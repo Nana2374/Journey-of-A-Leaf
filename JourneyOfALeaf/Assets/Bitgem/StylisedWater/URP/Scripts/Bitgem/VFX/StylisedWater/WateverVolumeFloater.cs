@@ -26,7 +26,18 @@ namespace Bitgem.VFX.StylisedWater
                 return;
             }
 
-            transform.position = new Vector3(transform.position.x, instance.GetHeight(transform.position) ?? transform.position.y, transform.position.z);
+            float? height = null;
+            try
+            {
+                height = instance.GetHeight(transform.position);
+            }
+            catch (System.NullReferenceException)
+            {
+                // Volume is mid-rebuild this frame — skip and try again next frame
+                return;
+            }
+
+            transform.position = new Vector3(transform.position.x, height ?? transform.position.y, transform.position.z);
         }
 
         #endregion
