@@ -18,6 +18,9 @@ public class Player_Movement : MonoBehaviour
     private Vector3 playerVelocity;
     private bool groundedPlayer;
 
+    // Set true by the UI Jump Button's OnClick(), consumed next Update
+    private bool jumpButtonPressed = false;
+
     // Controlled by Player_Glide
     public bool IsGliding { get; private set; }
 
@@ -40,7 +43,6 @@ public class Player_Movement : MonoBehaviour
         // -----------------------------------------
         // GROUNDING
         // -----------------------------------------
-
         if (groundedPlayer && playerVelocity.y < 0f)
         {
             playerVelocity.y = -2f;
@@ -49,21 +51,17 @@ public class Player_Movement : MonoBehaviour
         // -----------------------------------------
         // MOVEMENT INPUT
         // -----------------------------------------
-
         Vector2 input = moveAction.action.ReadValue<Vector2>();
-
         Vector3 move = new Vector3(
             input.x,
             0f,
             input.y
         );
-
         move = Vector3.ClampMagnitude(move, 1f);
 
         // -----------------------------------------
         // ROTATION
         // -----------------------------------------
-
         if (move != Vector3.zero && !IsGliding)
         {
             transform.forward = move;
@@ -72,9 +70,12 @@ public class Player_Movement : MonoBehaviour
         // -----------------------------------------
         // JUMP
         // -----------------------------------------
+        bool jumpTriggered =
+            jumpAction.action.WasPressedThisFrame() ||
+            jumpButtonPressed;
 
         if (groundedPlayer &&
-            jumpAction.action.WasPressedThisFrame() &&
+            jumpTriggered &&
             !IsGliding)
         {
             playerVelocity.y =
@@ -83,10 +84,12 @@ public class Player_Movement : MonoBehaviour
                 );
         }
 
+        // Reset the UI button flag every frame after it's been checked
+        jumpButtonPressed = false;
+
         // -----------------------------------------
         // GRAVITY
         // -----------------------------------------
-
         if (!IsGliding)
         {
             playerVelocity.y +=
@@ -96,22 +99,24 @@ public class Player_Movement : MonoBehaviour
         // -----------------------------------------
         // MOVEMENT
         // -----------------------------------------
-
         Vector3 finalMove =
             move * playerSpeed;
-
         finalMove.y = playerVelocity.y;
-
         controller.Move(
             finalMove * Time.deltaTime
         );
+    }
+
+    // Call this from the UI Jump Button's OnClick() event
+    public void TriggerJump()
+    {
+        jumpButtonPressed = true;
     }
 
     // Called by Player_Glide
     public void SetGliding(bool gliding)
     {
         IsGliding = gliding;
-
         if (gliding)
         {
             // Remove normal falling velocity
