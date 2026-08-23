@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class AntPickupController : MonoBehaviour
 {
@@ -7,8 +8,10 @@ public class AntPickupController : MonoBehaviour
 
     [Header("Pickup Settings")]
     [SerializeField] private float pickupRange = 2f;
+    [SerializeField] private LayerMask interactionLayerMask;
 
     private Camera mainCamera;
+    private LeafItem selectedItem;
 
     private void Start()
     {
@@ -32,49 +35,68 @@ public class AntPickupController : MonoBehaviour
 
     private void TryInteract(Vector2 screenPosition)
     {
-        Ray ray = mainCamera.ScreenPointToRay(screenPosition);
-
-        if (!Physics.Raycast(ray, out RaycastHit hit))
+        // Don't let taps on UI buttons/HUD leak through to the world
+        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
             return;
 
-        // Look for an item
-        LeafItem item =
-            hit.collider.GetComponentInParent<LeafItem>();
+        Ray ray = mainCamera.ScreenPointToRay(screenPosition);
+        if (!Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, interactionLayerMask))
+            return;
 
+        // ==========================================
+        // TAPPED AN NPC
+        // ==========================================
+        NPCController npc = hit.collider.GetComponentInParent<NPCController>();
+        if (npc != null)
+        {
+            if (selectedItem == null)
+            {
+                Debug.Log("No item selected to give.");
+                return;
+            }
+
+            if (!npc.CanAccept(selectedItem))
+            {
+                Debug.Log(npc.name + " doesn't need this item right now.");
+                return;
+            }
+
+            npc.ReceiveItem(selectedItem);
+            selectedItem = null;
+            return;
+        }
+
+        // ==========================================
+        // TAPPED AN ITEM
+        // ==========================================
+        LeafItem item = hit.collider.GetComponentInParent<LeafItem>();
         if (item == null)
             return;
 
-        float distance = Vector3.Distance(
-            transform.position,
-            item.transform.position
-        );
-
+        float distance = Vector3.Distance(transform.position, item.transform.position);
         if (distance > pickupRange)
         {
             Debug.Log("Item is too far away.");
             return;
         }
 
-        // ==========================================
-        // ITEM IS ALREADY ON THE LEAF
-        // ==========================================
-
         if (item.IsOnLeaf)
         {
-            item.RemoveFromLeaf();
+            // Tapping the currently selected item again deselects it
+            if (selectedItem == item)
+            {
+                selectedItem = null;
+                Debug.Log("Deselected " + item.name);
+                return;
+            }
 
-            Debug.Log("Removed item from leaf.");
-
+            selectedItem = item;
+            Debug.Log("Selected " + item.name + " to give.");
             return;
         }
 
-        // ==========================================
-        // ITEM IS ON THE GROUND
-        // ==========================================
-
-        Transform placementPoint =
-            leaf.GetAvailablePlacementPoint();
-
+        // Item is on the ground -> pick it up onto the leaf
+        Transform placementPoint = leaf.GetAvailablePlacementPoint();
         if (placementPoint == null)
         {
             Debug.Log("No available space on leaf.");
@@ -82,10 +104,6 @@ public class AntPickupController : MonoBehaviour
         }
 
         item.PlaceOnLeaf(placementPoint);
-
-        Debug.Log(
-            "Placed " + item.name +
-            " on " + placementPoint.name
-        );
+        Debug.Log("Placed " + item.name + " on " + placementPoint.name);
     }
 }

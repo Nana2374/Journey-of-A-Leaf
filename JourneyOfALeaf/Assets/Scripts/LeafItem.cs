@@ -2,9 +2,12 @@ using UnityEngine;
 
 public class LeafItem : MonoBehaviour
 {
+    [Header("Data")]
+    [SerializeField] private ItemData itemData;
+    public ItemData Data => itemData;
+
     private Rigidbody rb;
     private Transform currentPlacementPoint;
-
     public bool IsOnLeaf => currentPlacementPoint != null;
 
     private void Awake()
@@ -15,9 +18,7 @@ public class LeafItem : MonoBehaviour
     public void PlaceOnLeaf(Transform placementPoint)
     {
         currentPlacementPoint = placementPoint;
-
         transform.SetParent(placementPoint);
-
         transform.localPosition = Vector3.zero;
         transform.localRotation = Quaternion.identity;
 
@@ -31,7 +32,6 @@ public class LeafItem : MonoBehaviour
     public void RemoveFromLeaf()
     {
         currentPlacementPoint = null;
-
         transform.SetParent(null);
 
         if (rb != null)
