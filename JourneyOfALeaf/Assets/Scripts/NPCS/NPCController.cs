@@ -11,16 +11,25 @@ public class NPCController : MonoBehaviour
     [SerializeField] private float dropRadius = 1.5f;
     [SerializeField] private float disappearDelay = 0.75f;
 
-    private int itemsDelivered = 0;
+    private int currentStepIndex = 0;
+    private int itemsDeliveredThisStep = 0;
+
+    public bool IsFullyComplete =>
+        request == null || currentStepIndex >= request.steps.Count;
+
+    private ItemRequestStep CurrentStep =>
+        (request != null && currentStepIndex < request.steps.Count)
+            ? request.steps[currentStepIndex]
+            : null;
 
     // ==========================================
     // Called by AntPickupController before giving
     // ==========================================
     public bool CanAccept(LeafItem item)
     {
-        if (request == null) return false;
-        if (itemsDelivered >= request.quantityNeeded) return false;
-        return item.Data == request.requiredItem;
+        ItemRequestStep step = CurrentStep;
+        if (step == null) return false; // no active step / all steps done
+        return item.Data == step.requiredItem;
     }
 
     // ==========================================
@@ -28,6 +37,9 @@ public class NPCController : MonoBehaviour
     // ==========================================
     public void ReceiveItem(LeafItem item)
     {
+        ItemRequestStep step = CurrentStep;
+        if (step == null) return;
+
         item.RemoveFromLeaf();
 
         Vector2 randomCircle = Random.insideUnitCircle * dropRadius;
@@ -36,17 +48,38 @@ public class NPCController : MonoBehaviour
 
         Destroy(item.gameObject, disappearDelay);
 
-        itemsDelivered++;
+        itemsDeliveredThisStep++;
 
-        if (itemsDelivered >= request.quantityNeeded)
+        if (itemsDeliveredThisStep >= step.quantityNeeded)
         {
-            Debug.Log(request.acceptDialogue);
-            // MapManager.Instance.Unlock(request.unlocksMapId);
-            // QuestManager.Instance.CompleteQuest(this);
+            Debug.Log(step.acceptDialogue);
+
+            if (!string.IsNullOrEmpty(step.unlocksMapId))
+            {
+                // MapManager.Instance.Unlock(step.unlocksMapId);
+            }
+
+            AdvanceToNextStep();
         }
         else
         {
-            Debug.Log($"{itemsDelivered}/{request.quantityNeeded} delivered to {name}.");
+            Debug.Log($"{itemsDeliveredThisStep}/{step.quantityNeeded} delivered to {name}.");
+        }
+    }
+
+    private void AdvanceToNextStep()
+    {
+        currentStepIndex++;
+        itemsDeliveredThisStep = 0;
+
+        if (IsFullyComplete)
+        {
+            Debug.Log(name + " has no more requests. Quest chain complete!");
+            // QuestManager.Instance.CompleteQuestChain(this);
+        }
+        else
+        {
+            Debug.Log(name + " now wants: " + CurrentStep.requiredItem.itemName);
         }
     }
 }
