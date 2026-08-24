@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: PipRequest
   m_EditorClassIdentifier: Assembly-CSharp::NPCRequestData
+  questTitle: Pip's Flight
   steps:
   - requiredItem: {fileID: 11400000, guid: f2de78f4031fca543a2aea1b2c550ab3, type: 2}
     quantityNeeded: 1

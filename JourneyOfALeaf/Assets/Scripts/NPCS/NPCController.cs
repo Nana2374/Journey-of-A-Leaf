@@ -6,6 +6,7 @@ public class NPCController : MonoBehaviour
 {
     [Header("Data")]
     [SerializeField] private NPCRequestData request;
+    [SerializeField] private string npcDisplayName; // leave blank to use the GameObject name
 
     [Header("Item Drop Settings")]
     [SerializeField] private float dropRadius = 1.5f;
@@ -14,6 +15,9 @@ public class NPCController : MonoBehaviour
     private int currentStepIndex = 0;
     private int itemsDeliveredThisStep = 0;
 
+    public string DisplayName => string.IsNullOrEmpty(npcDisplayName) ? name : npcDisplayName;
+    public string QuestTitle => request != null ? request.questTitle : "";
+
     public bool IsFullyComplete =>
         request == null || currentStepIndex >= request.steps.Count;
 
@@ -21,6 +25,24 @@ public class NPCController : MonoBehaviour
         (request != null && currentStepIndex < request.steps.Count)
             ? request.steps[currentStepIndex]
             : null;
+
+    private void Start()
+    {
+        if (request != null && request.steps.Count > 0 && QuestManager.Instance != null)
+        {
+            QuestManager.Instance.RegisterQuest(this);
+        }
+    }
+
+    // Human-readable line for the HUD tracker / quest board, e.g. "Bring 2/3 Berries to Meghill"
+    public string GetObjectiveText()
+    {
+        ItemRequestStep step = CurrentStep;
+        if (step == null) return "All requests fulfilled!";
+
+        string itemName = step.requiredItem != null ? step.requiredItem.itemName : "???";
+        return $"Bring {itemsDeliveredThisStep}/{step.quantityNeeded} {itemName} to {DisplayName}";
+    }
 
     // ==========================================
     // Called by AntPickupController before giving
@@ -64,6 +86,7 @@ public class NPCController : MonoBehaviour
         else
         {
             Debug.Log($"{itemsDeliveredThisStep}/{step.quantityNeeded} delivered to {name}.");
+            QuestManager.Instance?.NotifyProgressUpdated();
         }
     }
 
@@ -76,10 +99,12 @@ public class NPCController : MonoBehaviour
         {
             Debug.Log(name + " has no more requests. Quest chain complete!");
             // QuestManager.Instance.CompleteQuestChain(this);
+            QuestManager.Instance?.UnregisterQuest(this);
         }
         else
         {
             Debug.Log(name + " now wants: " + CurrentStep.requiredItem.itemName);
+            QuestManager.Instance?.NotifyProgressUpdated();
         }
     }
 }

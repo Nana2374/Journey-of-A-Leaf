@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 // A single ask within an NPC's request chain (e.g. "3 Berries")
 [System.Serializable]
 public class ItemRequestStep
@@ -23,6 +24,9 @@ public class ItemRequestStep
 [CreateAssetMenu(fileName = "NewNPCRequest", menuName = "Ant Game/NPC Request")]
 public class NPCRequestData : ScriptableObject
 {
+    [Header("Quest Info")]
+    public string questTitle; // e.g. "Meghill's Herbs" - shown on the quest board
+
     [Header("Requests, in order")]
     [Tooltip("Drag elements up/down in this list to change the order the NPC asks for them.")]
     public List<ItemRequestStep> steps = new List<ItemRequestStep>();
