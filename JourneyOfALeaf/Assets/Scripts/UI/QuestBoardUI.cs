@@ -8,8 +8,9 @@ public class QuestBoardUI : MonoBehaviour
     [SerializeField] private GameObject boardPanel;      // the whole board, hidden by default
     [SerializeField] private Transform entryContainer;   // parent with a Layout Group for the list
     [SerializeField] private QuestBoardEntryUI entryPrefab;
+    [SerializeField] private GameObject trackerPanel;    // optional: the small HUD tracker panel, hidden while board is open
 
-    private void OnEnable()
+    private void Start()
     {
         if (QuestManager.Instance != null)
             QuestManager.Instance.OnActiveQuestsChanged += RefreshList;
@@ -26,6 +27,11 @@ public class QuestBoardUI : MonoBehaviour
     {
         bool willShow = !boardPanel.activeSelf;
         boardPanel.SetActive(willShow);
+
+        // Hide the small HUD tracker while the full board is open, to avoid overlap
+        if (trackerPanel != null)
+            trackerPanel.SetActive(!willShow);
+
         if (willShow) RefreshList();
     }
 
@@ -48,5 +54,8 @@ public class QuestBoardUI : MonoBehaviour
     {
         QuestManager.Instance.SetTrackedQuest(quest);
         boardPanel.SetActive(false); // remove this line if the board should stay open after picking
+
+        if (trackerPanel != null)
+            trackerPanel.SetActive(true);
     }
 }

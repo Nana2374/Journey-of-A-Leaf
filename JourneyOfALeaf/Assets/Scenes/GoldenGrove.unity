@@ -2247,6 +2247,7 @@ MonoBehaviour:
   entryContainer: {fileID: 1983731874}
   entryPrefab: {fileID: 5387000837981661980, guid: fd188b9f6882a7e4b8754acb28ea476d,
     type: 3}
+  trackerPanel: {fileID: 1805752935}
 --- !u!114 &549426929
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3699,14 +3700,14 @@ RectTransform:
   m_GameObject: {fileID: 938834584}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 2.4751863, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1805752936}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.00012207031, y: 118.80905}
+  m_AnchoredPosition: {x: -0.00018310547, y: 48.00003}
   m_SizeDelta: {x: 1000, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &938834586
@@ -6479,7 +6480,7 @@ RectTransform:
   m_GameObject: {fileID: 1805752935}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.3, y: 0.121203005, z: 1}
+  m_LocalScale: {x: 0.3, y: 0.3, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 938834585}
