@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 public class Player_Movement : MonoBehaviour
 {
     [Header("Movement")]
@@ -8,9 +7,9 @@ public class Player_Movement : MonoBehaviour
     [SerializeField] private float gravityValue = -9.81f;
     [Header("References")]
     public CharacterController controller;
-    [Header("Input Actions")]
-    public InputActionReference moveAction;
-    public InputActionReference jumpAction;
+    // All raw input reading and camera-relative direction math now lives
+    // in Player_Input. This script just consumes the result.
+    private Player_Input playerInput;
     private Vector3 playerVelocity;
     private bool groundedPlayer;
     // Set true by the UI Jump Button's OnClick(), consumed next Update
@@ -21,13 +20,7 @@ public class Player_Movement : MonoBehaviour
     public bool IsInWater { get; private set; }
     private void OnEnable()
     {
-        moveAction.action.Enable();
-        jumpAction.action.Enable();
-    }
-    private void OnDisable()
-    {
-        moveAction.action.Disable();
-        jumpAction.action.Disable();
+        playerInput = GetComponent<Player_Input>();
     }
     private void Update()
     {
@@ -40,27 +33,26 @@ public class Player_Movement : MonoBehaviour
             playerVelocity.y = -2f;
         }
         // -----------------------------------------
-        // MOVEMENT INPUT
+        // MOVEMENT INPUT (camera-relative, computed in Player_Input)
         // -----------------------------------------
-        Vector2 input = moveAction.action.ReadValue<Vector2>();
-        Vector3 move = new Vector3(
-            input.x,
-            0f,
-            input.y
-        );
-        move = Vector3.ClampMagnitude(move, 1f);
+        Vector3 move = playerInput.MoveDirection;
         // -----------------------------------------
         // ROTATION
         // -----------------------------------------
         if (move != Vector3.zero && !IsGliding)
         {
-            transform.forward = move;
+            // Instant snap. This used to feed a rotation feedback loop when
+            // the FreeLook camera was parented under the player (camera's
+            // rotation inherited the player's rotation, which fed back into
+            // this calculation). Now that the camera is unparented, this is
+            // safe again.
+            transform.rotation = Quaternion.LookRotation(move, Vector3.up);
         }
         // -----------------------------------------
         // JUMP
         // -----------------------------------------
         bool jumpTriggered =
-            jumpAction.action.WasPressedThisFrame() ||
+            playerInput.JumpPressedThisFrame ||
             jumpButtonPressed;
         if (groundedPlayer &&
             jumpTriggered &&

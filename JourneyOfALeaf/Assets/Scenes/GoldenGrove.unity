@@ -1349,7 +1349,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 285488540}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.0293216, y: 0.9676327, z: -0.21189049, w: -0.1339019}
+  m_LocalRotation: {x: 0.21390896, y: 0, z: 0, w: 0.9768536}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1612,7 +1612,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9384ab8608cdc3d479fe89cd51eed48f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_BindingMode: 5
+  m_BindingMode: 4
   m_FollowOffset: {x: 0, y: 2, z: -4}
   m_XDamping: 1
   m_YDamping: 1
@@ -2495,7 +2495,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9384ab8608cdc3d479fe89cd51eed48f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_BindingMode: 5
+  m_BindingMode: 4
   m_FollowOffset: {x: 0, y: 2, z: -4}
   m_XDamping: 1
   m_YDamping: 1
@@ -3160,7 +3160,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1161757366}
   - {fileID: 1962079506}
   - {fileID: 1392237260}
   - {fileID: 2123934874}
@@ -3619,7 +3618,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 926769803}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.027146654, y: 0.97094107, z: -0.1961734, w: -0.13435973}
+  m_LocalRotation: {x: 0.19804205, y: 0, z: 0, w: 0.98019356}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -4086,6 +4085,7 @@ GameObject:
   - component: {fileID: 1068629971}
   - component: {fileID: 1068629972}
   - component: {fileID: 1068629973}
+  - component: {fileID: 1068629974}
   m_Layer: 0
   m_Name: FreeLook Camera
   m_TagString: MainCamera
@@ -4102,14 +4102,14 @@ Transform:
   m_GameObject: {fileID: 1068629969}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.0862427, y: 2, z: 3.8496704}
+  m_LocalPosition: {x: 503.33, y: 11.46, z: 481.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2132080531}
   - {fileID: 285488541}
   - {fileID: 926769804}
-  m_Father: {fileID: 1172178971}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1068629971
 MonoBehaviour:
@@ -4202,7 +4202,7 @@ MonoBehaviour:
     m_RecenteringTime: 2
     m_LegacyHeadingDefinition: -1
     m_LegacyVelocityFilterStrength: -1
-  m_BindingMode: 5
+  m_BindingMode: 4
   m_SplineCurvature: 0.2
   m_Orbits:
   - m_Height: 3
@@ -4262,6 +4262,20 @@ MonoBehaviour:
   m_Damping: 0
   m_DampingWhenOccluded: 0
   m_OptimalTargetDistance: 0
+--- !u!114 &1068629974
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1068629969}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18949398e04234443b33a455039ee7d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lookAroundAction: {fileID: 3524887350739101950, guid: 82b105b349800d64fb431f9ed79ea21c,
+    type: 3}
 --- !u!1 &1072100512
 GameObject:
   m_ObjectHideFlags: 0
@@ -4328,7 +4342,7 @@ GameObject:
   - component: {fileID: 1161757367}
   - component: {fileID: 1161757368}
   m_Layer: 8
-  m_Name: Camera_1
+  m_Name: Main_Cam
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4401,12 +4415,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1161757363}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.029321592, y: 0.9676327, z: -0.21189047, w: -0.13390185}
-  m_LocalPosition: {x: 209.41623, y: -141.54, z: -234.75034}
+  m_LocalRotation: {x: 0.21390899, y: -0, z: -0, w: 0.9768536}
+  m_LocalPosition: {x: 503.33, y: 11.460007, z: 481.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 871796342}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: -35.7, y: 81.6, z: 0}
 --- !u!114 &1161757367
 MonoBehaviour:
@@ -4646,6 +4660,7 @@ GameObject:
   - component: {fileID: 1172178971}
   - component: {fileID: 1172178972}
   - component: {fileID: 1172178975}
+  - component: {fileID: 1172178978}
   - component: {fileID: 1172178977}
   - component: {fileID: 1172178976}
   m_Layer: 0
@@ -4669,7 +4684,6 @@ Transform:
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1072100513}
-  - {fileID: 1068629970}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!143 &1172178972
@@ -4745,6 +4759,19 @@ MonoBehaviour:
   jumpHeight: 1.5
   gravityValue: -9.81
   controller: {fileID: 1172178972}
+--- !u!114 &1172178978
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1172178970}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77bf1cafddce0a4498b61645c50957cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraTransform: {fileID: 1161757366}
   moveAction: {fileID: 4408440834201372610, guid: 82b105b349800d64fb431f9ed79ea21c,
     type: 3}
   jumpAction: {fileID: -7553984360537786244, guid: 82b105b349800d64fb431f9ed79ea21c,
@@ -5931,7 +5958,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9384ab8608cdc3d479fe89cd51eed48f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_BindingMode: 5
+  m_BindingMode: 4
   m_FollowOffset: {x: 0, y: 2, z: -4}
   m_XDamping: 1
   m_YDamping: 1
@@ -7538,7 +7565,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2132080530}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.031493414, y: -0.9640621, z: 0.22758493, w: 0.13340782}
+  m_LocalRotation: {x: 0.22975294, y: 0, z: 0, w: 0.973249}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -7598,6 +7625,8 @@ SceneRoots:
   m_Roots:
   - {fileID: 871796342}
   - {fileID: 674062306}
+  - {fileID: 1161757366}
+  - {fileID: 1068629970}
   - {fileID: 1172178971}
   - {fileID: 208652086}
   - {fileID: 900709881}
