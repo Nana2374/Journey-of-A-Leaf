@@ -20,4 +20,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/EvergreenMeadow.unity
     guid: f9c6b21a7412d084bb9b19fb465bd316
+  - enabled: 1
+    path: Assets/Scenes/Ever_Home.unity
+    guid: 1fe5e6de9078efb44a7ad9e6c7626b7a
   m_configObjects: {}
