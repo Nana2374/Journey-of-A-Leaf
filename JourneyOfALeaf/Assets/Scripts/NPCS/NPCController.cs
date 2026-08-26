@@ -7,6 +7,7 @@ public class NPCController : MonoBehaviour
     [Header("Data")]
     [SerializeField] private NPCRequestData request;
     [SerializeField] private string npcDisplayName; // leave blank to use the GameObject name
+    [SerializeField] private DialogueData introDialogue; // played the first time the player interacts
 
     [Header("Item Drop Settings")]
     [SerializeField] private float dropRadius = 1.5f;
@@ -14,6 +15,7 @@ public class NPCController : MonoBehaviour
 
     private int currentStepIndex = 0;
     private int itemsDeliveredThisStep = 0;
+    private bool hasBeenTalkedTo = false;
 
     public string DisplayName => string.IsNullOrEmpty(npcDisplayName) ? name : npcDisplayName;
     public string QuestTitle => request != null ? request.questTitle : "";
@@ -26,12 +28,38 @@ public class NPCController : MonoBehaviour
             ? request.steps[currentStepIndex]
             : null;
 
-    private void Start()
+    // ==========================================
+    // Called by AntPickupController (tap on NPC) OR NPCInteraction (proximity button)
+    // ==========================================
+    public void Interact()
     {
-        if (request != null && request.steps.Count > 0 && QuestManager.Instance != null)
+        if (!hasBeenTalkedTo)
         {
-            QuestManager.Instance.RegisterQuest(this);
+            hasBeenTalkedTo = true;
+
+            if (introDialogue != null && DialogueManager.Instance != null)
+            {
+                DialogueManager.Instance.StartDialogue(introDialogue, OnIntroDialogueFinished);
+            }
+            else
+            {
+                OnIntroDialogueFinished();
+            }
         }
+        else
+        {
+            // Already met - repeat current objective as a reminder, if the quest is still active
+            if (!IsFullyComplete)
+                Debug.Log(DisplayName + ": " + GetObjectiveText());
+        }
+    }
+
+    private void OnIntroDialogueFinished()
+    {
+        if (request == null || request.steps.Count == 0)
+            return; // this NPC has nothing to offer
+
+        QuestManager.Instance?.RegisterQuest(this);
     }
 
     // Human-readable line for the HUD tracker / quest board, e.g. "Bring 2/3 Berries to Meghill"
