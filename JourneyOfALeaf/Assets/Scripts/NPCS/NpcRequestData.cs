@@ -7,6 +7,9 @@ using UnityEngine;
 [System.Serializable]
 public class ItemRequestStep
 {
+    [Header("Dialogue when THIS request is offered")]
+    public DialogueData requestDialogue; // played when the player talks to the NPC and this step becomes active
+
     [Header("What's needed")]
     public ItemData requiredItem;
     public int quantityNeeded = 1;

@@ -15,7 +15,8 @@ public class NPCController : MonoBehaviour
 
     private int currentStepIndex = 0;
     private int itemsDeliveredThisStep = 0;
-    private bool hasBeenTalkedTo = false;
+    private bool hasMetNPC = false;        // has the player EVER talked to this NPC
+    private bool currentStepOffered = false; // has the CURRENT step been formally offered/activated
 
     public string DisplayName => string.IsNullOrEmpty(npcDisplayName) ? name : npcDisplayName;
     public string QuestTitle => request != null ? request.questTitle : "";
@@ -33,32 +34,54 @@ public class NPCController : MonoBehaviour
     // ==========================================
     public void Interact()
     {
-        if (!hasBeenTalkedTo)
+        // First-ever meeting: play a one-time greeting, then offer the first request
+        if (!hasMetNPC)
         {
-            hasBeenTalkedTo = true;
+            hasMetNPC = true;
 
             if (introDialogue != null && DialogueManager.Instance != null)
             {
-                DialogueManager.Instance.StartDialogue(introDialogue, OnIntroDialogueFinished);
+                DialogueManager.Instance.StartDialogue(introDialogue, OfferCurrentStep);
             }
             else
             {
-                OnIntroDialogueFinished();
+                OfferCurrentStep();
             }
+            return;
+        }
+
+        // Already met, but the current step hasn't been offered yet
+        // (e.g. player just finished the previous request and came back)
+        if (!currentStepOffered)
+        {
+            OfferCurrentStep();
+            return;
+        }
+
+        // Current step already active - just remind the player what's needed
+        if (!IsFullyComplete)
+            Debug.Log(DisplayName + ": " + GetObjectiveText());
+    }
+
+    // Plays this step's request dialogue (if any), then activates it as a tracked quest
+    private void OfferCurrentStep()
+    {
+        ItemRequestStep step = CurrentStep;
+        if (step == null) return; // no more requests from this NPC
+
+        if (step.requestDialogue != null && DialogueManager.Instance != null)
+        {
+            DialogueManager.Instance.StartDialogue(step.requestDialogue, ActivateCurrentStep);
         }
         else
         {
-            // Already met - repeat current objective as a reminder, if the quest is still active
-            if (!IsFullyComplete)
-                Debug.Log(DisplayName + ": " + GetObjectiveText());
+            ActivateCurrentStep();
         }
     }
 
-    private void OnIntroDialogueFinished()
+    private void ActivateCurrentStep()
     {
-        if (request == null || request.steps.Count == 0)
-            return; // this NPC has nothing to offer
-
+        currentStepOffered = true;
         QuestManager.Instance?.RegisterQuest(this);
     }
 
@@ -78,7 +101,7 @@ public class NPCController : MonoBehaviour
     public bool CanAccept(LeafItem item)
     {
         ItemRequestStep step = CurrentStep;
-        if (step == null) return false; // no active step / all steps done
+        if (step == null || !currentStepOffered) return false; // not offered yet, or all steps done
         return item.Data == step.requiredItem;
     }
 
@@ -122,17 +145,19 @@ public class NPCController : MonoBehaviour
     {
         currentStepIndex++;
         itemsDeliveredThisStep = 0;
+        currentStepOffered = false; // next request needs a fresh Interact() to activate
+
+        // Remove from the tracker/board immediately - it'll reappear once re-offered
+        QuestManager.Instance?.UnregisterQuest(this);
 
         if (IsFullyComplete)
         {
             Debug.Log(name + " has no more requests. Quest chain complete!");
             // QuestManager.Instance.CompleteQuestChain(this);
-            QuestManager.Instance?.UnregisterQuest(this);
         }
         else
         {
-            Debug.Log(name + " now wants: " + CurrentStep.requiredItem.itemName);
-            QuestManager.Instance?.NotifyProgressUpdated();
+            Debug.Log(name + " has another request ready - talk to them again!");
         }
     }
 }
