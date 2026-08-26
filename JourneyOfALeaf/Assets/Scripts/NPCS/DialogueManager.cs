@@ -13,6 +13,10 @@ public class DialogueManager : MonoBehaviour
     [SerializeField] private TMP_Text speakerNameText;
     [SerializeField] private TMP_Text dialogueText;
 
+    [Header("Hide while dialogue is active")]
+    [Tooltip("e.g. movement buttons, interact prompt - anything that shouldn't be usable mid-conversation")]
+    [SerializeField] private GameObject[] hudToHideDuringDialogue;
+
     private DialogueData currentDialogue;
     private int currentLineIndex;
     private Action onComplete;
@@ -42,6 +46,7 @@ public class DialogueManager : MonoBehaviour
         this.onComplete = onComplete;
 
         dialoguePanel.SetActive(true);
+        SetHudVisible(false);
         ShowCurrentLine();
     }
 
@@ -72,11 +77,23 @@ public class DialogueManager : MonoBehaviour
     private void EndDialogue()
     {
         dialoguePanel.SetActive(false);
+        SetHudVisible(true);
 
         Action callback = onComplete;
         currentDialogue = null;
         onComplete = null;
 
         callback?.Invoke();
+    }
+
+    private void SetHudVisible(bool visible)
+    {
+        if (hudToHideDuringDialogue == null) return;
+
+        foreach (GameObject hud in hudToHideDuringDialogue)
+        {
+            if (hud != null)
+                hud.SetActive(visible);
+        }
     }
 }
