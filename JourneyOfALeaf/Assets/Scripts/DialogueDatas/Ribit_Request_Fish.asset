@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Ribit_Request_Fish
   m_EditorClassIdentifier: 
   lines:
-  - speakerName: Pip
-    text: Hi there!
+  - speakerName: Ribit
+    text: Im really HUNGRY!
   - speakerName: Meep
-    text: HALLOOO
-  - speakerName: Pip
-    text: Could you get me 1 berry?
+    text: oh what can i get for you?
+  - speakerName: Ribit
+    text: Could you get me 2 fish?

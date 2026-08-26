@@ -14,9 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NPCRequestData
   questTitle: Ribit's Ride
   steps:
-  - requestDialogue: {fileID: 0}
-    requiredItem: {fileID: 0}
-    quantityNeeded: 0
-    acceptDialogue: 
-    rejectDialogue: 
+  - requestDialogue: {fileID: 11400000, guid: 50560cf726a8c0442b48576408e7229e, type: 2}
+    requiredItem: {fileID: 11400000, guid: 0eab1d183d2fa8a48a83a1761ae59171, type: 2}
+    quantityNeeded: 2
+    acceptDialogue: Thanks! for the fishes!
+    rejectDialogue: I want Fishes!
+    unlocksMapId: 
+  - requestDialogue: {fileID: 11400000, guid: b2648a352991ac347869094e96d92261, type: 2}
+    requiredItem: {fileID: 11400000, guid: 21dcb693ccb54be4aad9ca9c59a2ae0f, type: 2}
+    quantityNeeded: 2
+    acceptDialogue: Thanks! for the flower!
+    rejectDialogue: I want my flower!
     unlocksMapId: 
