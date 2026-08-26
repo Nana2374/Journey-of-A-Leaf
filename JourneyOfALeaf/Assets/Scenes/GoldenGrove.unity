@@ -2516,7 +2516,7 @@ MonoBehaviour:
   entryContainer: {fileID: 1983731874}
   entryPrefab: {fileID: 5387000837981661980, guid: fd188b9f6882a7e4b8754acb28ea476d,
     type: 3}
-  trackerPanel: {fileID: 1805752935}
+  trackerUI: {fileID: 1008549937}
 --- !u!114 &549426929
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7262,7 +7262,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1805752936
 RectTransform:
   m_ObjectHideFlags: 0
