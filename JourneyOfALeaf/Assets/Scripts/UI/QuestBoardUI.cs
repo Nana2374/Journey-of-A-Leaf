@@ -13,13 +13,19 @@ public class QuestBoardUI : MonoBehaviour
     private void Start()
     {
         if (QuestManager.Instance != null)
+        {
             QuestManager.Instance.OnActiveQuestsChanged += RefreshList;
+            QuestManager.Instance.OnQuestProgressUpdated += RefreshList;
+        }
     }
 
     private void OnDisable()
     {
         if (QuestManager.Instance != null)
+        {
             QuestManager.Instance.OnActiveQuestsChanged -= RefreshList;
+            QuestManager.Instance.OnQuestProgressUpdated -= RefreshList;
+        }
     }
 
     // Hook this to your quest board button's OnClick
@@ -47,6 +53,8 @@ public class QuestBoardUI : MonoBehaviour
 
     private void RefreshList()
     {
+        if (!boardPanel.activeSelf) return; // no need to rebuild while nobody's looking
+
         // Clear old entries
         foreach (Transform child in entryContainer)
             Destroy(child.gameObject);

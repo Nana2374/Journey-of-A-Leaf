@@ -83,13 +83,18 @@ public class NPCController : MonoBehaviour
     {
         currentStepOffered = true;
         QuestManager.Instance?.RegisterQuest(this);
+        QuestManager.Instance?.NotifyProgressUpdated(); // force tracker/board to refresh their text now
     }
 
-    // Human-readable line for the HUD tracker / quest board, e.g. "Bring 2/3 Berries to Meghill"
+    // Human-readable line for the HUD tracker / quest board.
+    // Shows a "go talk to them" hint between steps, or the live objective once offered.
     public string GetObjectiveText()
     {
         ItemRequestStep step = CurrentStep;
         if (step == null) return "All requests fulfilled!";
+
+        if (!currentStepOffered)
+            return $"Talk to {DisplayName} for a new request!";
 
         string itemName = step.requiredItem != null ? step.requiredItem.itemName : "???";
         return $"Bring {itemsDeliveredThisStep}/{step.quantityNeeded} {itemName} to {DisplayName}";
@@ -147,17 +152,18 @@ public class NPCController : MonoBehaviour
         itemsDeliveredThisStep = 0;
         currentStepOffered = false; // next request needs a fresh Interact() to activate
 
-        // Remove from the tracker/board immediately - it'll reappear once re-offered
-        QuestManager.Instance?.UnregisterQuest(this);
-
         if (IsFullyComplete)
         {
             Debug.Log(name + " has no more requests. Quest chain complete!");
             // QuestManager.Instance.CompleteQuestChain(this);
+            QuestManager.Instance?.UnregisterQuest(this);
         }
         else
         {
             Debug.Log(name + " has another request ready - talk to them again!");
+            // Stay registered - GetObjectiveText() will show the "talk to them" hint
+            // on the board/tracker until the player interacts and offers the next step.
+            QuestManager.Instance?.NotifyProgressUpdated();
         }
     }
 }

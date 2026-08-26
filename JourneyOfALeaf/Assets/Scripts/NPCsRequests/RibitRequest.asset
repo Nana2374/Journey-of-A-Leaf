@@ -12,5 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: RibitRequest
   m_EditorClassIdentifier: Assembly-CSharp::NPCRequestData
-  questTitle: 
-  steps: []
+  questTitle: Ribit's Ride
+  steps:
+  - requestDialogue: {fileID: 0}
+    requiredItem: {fileID: 0}
+    quantityNeeded: 0
+    acceptDialogue: 
+    rejectDialogue: 
+    unlocksMapId: 
