@@ -9,20 +9,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: a96fa409fca7aa0489003aa36810f0d9, type: 3}
   m_Name: RibitRequest
   m_EditorClassIdentifier: Assembly-CSharp::NPCRequestData
-  questTitle: Ribit's Ride
+  questTitle: Ribit's Hunger
   steps:
   - requestDialogue: {fileID: 11400000, guid: 50560cf726a8c0442b48576408e7229e, type: 2}
     requiredItem: {fileID: 11400000, guid: 0eab1d183d2fa8a48a83a1761ae59171, type: 2}
     quantityNeeded: 2
-    acceptDialogue: Thanks! for the fishes!
-    rejectDialogue: I want Fishes!
+    acceptDialogue: Thanks
+    rejectDialogue: No
     unlocksMapId: 
   - requestDialogue: {fileID: 11400000, guid: b2648a352991ac347869094e96d92261, type: 2}
     requiredItem: {fileID: 11400000, guid: 21dcb693ccb54be4aad9ca9c59a2ae0f, type: 2}
-    quantityNeeded: 2
-    acceptDialogue: Thanks! for the flower!
-    rejectDialogue: I want my flower!
+    quantityNeeded: 1
+    acceptDialogue: Thanks
+    rejectDialogue: No
     unlocksMapId: 
