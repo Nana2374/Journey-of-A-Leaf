@@ -3705,6 +3705,7 @@ MonoBehaviour:
   grid: {fileID: 963673096}
   database: {fileID: 11400000, guid: eaf34e67400ef354bb9f16e0dcc20c26, type: 2}
   gridVisualization: {fileID: 1913200141}
+  source: {fileID: 0}
 --- !u!1 &1138159798
 GameObject:
   m_ObjectHideFlags: 0
@@ -5183,7 +5184,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -2
   m_TargetDisplay: 0
 --- !u!224 &1320935369
 RectTransform:
