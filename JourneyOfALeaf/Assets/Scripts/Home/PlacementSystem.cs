@@ -67,31 +67,26 @@ public class PlacementSystem : MonoBehaviour
                                            furnitureData,
                                            objectPlacer);
 
-        //cellIndicator.SetActive(true);
-
-        //    buildingState = new PlacementState(ID,
-        //                                       grid,
-        //                                       preview,
-        //                                       database,
-        //                                       floorData,
-        //                                       furnitureData,
-        //                                       objectPlacer,
-        //                                       soundFeedback);
-
         inputManager.EnterBuildMode();
 
         inputManager.OnClicked += PlaceStructure;
         inputManager.OnExit += StopPlacement;
         //Debug.Log("Subscribed to OnClicked");
         //}
-        //public void StartRemoving()
-        //{
-        //    StopPlacement();
-        //    gridVisualization.SetActive(true);
-        //    buildingState = new RemovingState(grid, preview, floorData, furnitureData, objectPlacer, soundFeedback);
-        //    inputManager.OnClicked += PlaceStructure;
-        //    inputManager.OnExit += StopPlacement;
     }
+    public void StartRemoving()
+    {
+        StopPlacement();
+        gridVisualization.SetActive(true);
+        buildingState = new RemovingState(grid,
+                                          preview,
+                                          floorData,
+                                          furnitureData,
+                                          objectPlacer);
+        inputManager.OnClicked += PlaceStructure;
+        inputManager.OnExit += StopPlacement;
+    }
+
 
     private void PlaceStructure()
     {

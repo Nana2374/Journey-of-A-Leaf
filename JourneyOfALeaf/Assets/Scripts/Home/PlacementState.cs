@@ -82,7 +82,7 @@ public class PlacementState : IBuildingState
         GridData selectedData = database.objectsData[selectedObjectIndex].ID == 0 ?
                 floorData :
                 furnitureData;
-        return selectedData.CanPlaceObejctAt(gridPosition, database.objectsData[selectedObjectIndex].Size);
+        return selectedData.CanPlaceObjectAt(gridPosition, database.objectsData[selectedObjectIndex].Size);
     }
 
     public void UpdateState(Vector3Int gridPosition)
