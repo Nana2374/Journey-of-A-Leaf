@@ -16,20 +16,20 @@ MonoBehaviour:
   - <Name>k__BackingField: Egg
     <ID>k__BackingField: 0
     <Size>k__BackingField: {x: 1, y: 1}
-    <Prefab>k__BackingField: {fileID: 919132149155446097, guid: 2c330938992098445b20f3c337330659,
+    <Prefab>k__BackingField: {fileID: 1527072956424492494, guid: 2a4fe95db95b05646bea98115c04600e,
       type: 3}
   - <Name>k__BackingField: Egg1
     <ID>k__BackingField: 1
     <Size>k__BackingField: {x: 1, y: 1}
-    <Prefab>k__BackingField: {fileID: 919132149155446097, guid: 2c330938992098445b20f3c337330659,
+    <Prefab>k__BackingField: {fileID: 1527072956424492494, guid: 2a4fe95db95b05646bea98115c04600e,
       type: 3}
   - <Name>k__BackingField: Egg2
     <ID>k__BackingField: 2
     <Size>k__BackingField: {x: 1, y: 1}
-    <Prefab>k__BackingField: {fileID: 919132149155446097, guid: 2c330938992098445b20f3c337330659,
+    <Prefab>k__BackingField: {fileID: 1527072956424492494, guid: 2a4fe95db95b05646bea98115c04600e,
       type: 3}
   - <Name>k__BackingField: Egg3
     <ID>k__BackingField: 3
     <Size>k__BackingField: {x: 1, y: 1}
-    <Prefab>k__BackingField: {fileID: 919132149155446097, guid: 2c330938992098445b20f3c337330659,
+    <Prefab>k__BackingField: {fileID: 1527072956424492494, guid: 2a4fe95db95b05646bea98115c04600e,
       type: 3}
