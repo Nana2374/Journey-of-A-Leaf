@@ -9,7 +9,7 @@ public class PlacementSystem : MonoBehaviour
     private InputManager inputManager;
 
     [SerializeField]
-    private GameObject mouseIndicator, cellIndicator;
+    private GameObject mouseIndicator;
 
     [SerializeField]
     private Grid grid;
@@ -31,13 +31,15 @@ public class PlacementSystem : MonoBehaviour
     private GridData furnitureData;
     private GridData floorData;
 
-    private Renderer previewRenderer;
+    //private Renderer previewRenderer;
 
     private List<GameObject> placedGameObject = new();
 
-    //[SerializeField]
-    //private PreviewSystem preview;
-    //private Vector3Int lastDetectedPosition = Vector3Int.zero;
+    [SerializeField]
+    private PreviewSystem preview;
+
+    private Vector3Int lastDetectedPosition = Vector3Int.zero;
+
     //[SerializeField]
     //private ObjectPlacer objectPlacer;
     //IBuildingState buildingState;
@@ -51,7 +53,7 @@ public class PlacementSystem : MonoBehaviour
         //   gridVisualization.SetActive(false);
         floorData = new();
         furnitureData = new();
-        previewRenderer = cellIndicator.GetComponentInChildren<Renderer>();
+        //previewRenderer = cellIndicator.GetComponentInChildren<Renderer>();
     }
 
     public void StartPlacement(int ID)
@@ -65,7 +67,11 @@ public class PlacementSystem : MonoBehaviour
         }
 
         gridVisualization.SetActive(true);
-        cellIndicator.SetActive(true);
+        preview.StartShowingPlacementPreview(
+            database.objectsData[selectedObjectIndex].Prefab,
+            database.objectsData[selectedObjectIndex].Size);
+
+        //cellIndicator.SetActive(true);
 
         //    buildingState = new PlacementState(ID,
         //                                       grid,
@@ -133,6 +139,7 @@ public class PlacementSystem : MonoBehaviour
             database.objectsData[selectedObjectIndex].Size,
             database.objectsData[selectedObjectIndex].ID,
             placedGameObject.Count - 1);
+        preview.UpdatePosition(grid.CellToWorld(gridPosition), false);
 
         Debug.Log("item placed");
 
@@ -164,12 +171,12 @@ public class PlacementSystem : MonoBehaviour
         //    if (buildingState == null)
         //        return;
         gridVisualization.SetActive(false);
-        cellIndicator.SetActive(false);
+        preview.StopShowingPreview();
         //    buildingState.EndState();
         inputManager.OnClicked -= PlaceStructure;
         inputManager.OnExit -= StopPlacement;
 
-        //    lastDetectedPosition = Vector3Int.zero;
+        lastDetectedPosition = Vector3Int.zero;
         //    buildingState = null;
 
         if (inputManager.IsBuildModeActive)
@@ -186,16 +193,19 @@ public class PlacementSystem : MonoBehaviour
         Vector3 mousePosition = inputManager.GetSelectedMapPosition();
         Vector3Int gridPosition = grid.WorldToCell(mousePosition);
 
-        bool placementValidity = CheckPlacementValidity(gridPosition, selectedObjectIndex);
-        previewRenderer.material.color = placementValidity ? Color.green : Color.red;
+        if (lastDetectedPosition != gridPosition)
+        {
+            bool placementValidity = CheckPlacementValidity(gridPosition, selectedObjectIndex);
+            //previewRenderer.material.color = placementValidity ? Color.green : Color.red;
 
-        mouseIndicator.transform.position = mousePosition;
-        cellIndicator.transform.position = grid.CellToWorld(gridPosition);
-        //if (lastDetectedPosition != gridPosition)
-        //{
-        //    buildingState.UpdateState(gridPosition);
-        //    lastDetectedPosition = gridPosition;
-        //}
+            mouseIndicator.transform.position = mousePosition;
+            preview.UpdatePosition(grid.CellToWorld(gridPosition), placementValidity);
+            //cellIndicator.transform.position = grid.CellToWorld(gridPosition);
+
+            //buildingState.UpdateState(gridPosition);
+            lastDetectedPosition = gridPosition;
+        }
+
 
     }
 }
