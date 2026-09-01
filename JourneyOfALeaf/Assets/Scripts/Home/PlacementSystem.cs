@@ -86,7 +86,7 @@ public class PlacementSystem : MonoBehaviour
 
         inputManager.OnClicked += PlaceStructure;
         inputManager.OnExit += StopPlacement;
-        Debug.Log("Subscribed to OnClicked");
+        //Debug.Log("Subscribed to OnClicked");
         //}
         //public void StartRemoving()
         //{
@@ -99,7 +99,7 @@ public class PlacementSystem : MonoBehaviour
 
     private void PlaceStructure()
     {
-        Debug.Log("PlaceStructure called");
+        //Debug.Log("PlaceStructure called");
 
         if (inputManager.IsPointerOverUI())
         {
@@ -109,26 +109,26 @@ public class PlacementSystem : MonoBehaviour
             var results = new System.Collections.Generic.List<UnityEngine.EventSystems.RaycastResult>();
             UnityEngine.EventSystems.EventSystem.current.RaycastAll(pointerData, results);
 
-            foreach (var r in results)
-                Debug.Log($"Blocked by UI element: {r.gameObject.name}");
+            //foreach (var r in results)
+            //    //Debug.Log($"Blocked by UI element: {r.gameObject.name}");
 
-            Debug.Log("Blocked: pointer is over UI");
+            //Debug.Log("Blocked: pointer is over UI");
             return;
         }
 
         Vector3 mousePosition = inputManager.GetSelectedMapPosition();
         Vector3Int gridPosition = grid.WorldToCell(mousePosition);
-        Debug.Log($"Grid position: {gridPosition}");
+        //Debug.Log($"Grid position: {gridPosition}");
 
         bool placementValidity = CheckPlacementValidity(gridPosition, selectedObjectIndex);
-        Debug.Log($"Placement validity: {placementValidity}");
+        //Debug.Log($"Placement validity: {placementValidity}");
         if (placementValidity == false)
             return;
 
         source.Play();
         GameObject newObject = Instantiate(database.objectsData[selectedObjectIndex].Prefab);
         newObject.transform.position = grid.CellToWorld(gridPosition);
-        Debug.Log($"Instantiated at {newObject.transform.position}");
+        //Debug.Log($"Instantiated at {newObject.transform.position}");
 
         placedGameObject.Add(newObject);
         GridData selectedData = database.objectsData[selectedObjectIndex].ID == 0 ?
@@ -141,7 +141,7 @@ public class PlacementSystem : MonoBehaviour
             placedGameObject.Count - 1);
         preview.UpdatePosition(grid.CellToWorld(gridPosition), false);
 
-        Debug.Log("item placed");
+        //Debug.Log("item placed");
 
 
 
@@ -164,7 +164,7 @@ public class PlacementSystem : MonoBehaviour
 
     private void StopPlacement()
     {
-        Debug.Log("StopPlacement called");
+        //Debug.Log("StopPlacement called");
         selectedObjectIndex = -1;
 
         //    soundFeedback.PlaySound(SoundType.Click);

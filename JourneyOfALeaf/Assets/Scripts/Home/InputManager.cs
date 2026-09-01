@@ -41,7 +41,7 @@ public class InputManager : MonoBehaviour
             //remove int and debug after checking if works
 
             int subCount = OnClicked?.GetInvocationList().Length ?? 0;
-            Debug.Log($"Pointer press detected. OnClicked subscriber count: {subCount}");
+            ////Debug.Log($"Pointer press detected. OnClicked subscriber count: {subCount}");
             OnClicked?.Invoke();
         }
     }
