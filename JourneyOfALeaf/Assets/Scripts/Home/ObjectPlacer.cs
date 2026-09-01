@@ -10,6 +10,12 @@ public class ObjectPlacer : MonoBehaviour
 
     public int PlaceObject(GameObject prefab, Vector3 position)
     {
+        //GameObject newObject = Instantiate(database.objectsData[selectedObjectIndex].Prefab);
+        //newObject.transform.position = grid.CellToWorld(gridPosition);
+        ////Debug.Log($"Instantiated at {newObject.transform.position}");
+
+        //placedGameObject.Add(newObject);
+
         GameObject newObject = Instantiate(prefab);
         newObject.transform.position = position;
         placedGameObjects.Add(newObject);
