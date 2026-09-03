@@ -83,6 +83,9 @@ public class PlacementSystem : MonoBehaviour
                                           floorData,
                                           furnitureData,
                                           objectPlacer);
+
+        inputManager.EnterBuildMode();
+
         inputManager.OnClicked += PlaceStructure;
         inputManager.OnExit += StopPlacement;
     }

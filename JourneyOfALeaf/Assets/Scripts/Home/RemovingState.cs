@@ -36,30 +36,31 @@ public class RemovingState : IBuildingState
     public void OnAction(Vector3Int gridPosition)
     {
         GridData selectedData = null;
+
         if (furnitureData.CanPlaceObjectAt(gridPosition, Vector2Int.one) == false)
-        {
             selectedData = furnitureData;
-        }
         else if (floorData.CanPlaceObjectAt(gridPosition, Vector2Int.one) == false)
-        {
             selectedData = floorData;
+
+        // Nothing at this position
+        if (selectedData == null)
+        {
+            previewSystem.UpdatePosition(grid.CellToWorld(gridPosition), CheckIfSelectionIsValid(gridPosition));
+            return;
         }
 
-        if (selectedData != null)
-        {
-            //sound
-        }
-        else
-        {
-            gameObjectIndex = selectedData.GetRepresentationIndex(gridPosition);
-            if (gameObjectIndex == -1)
-                return;
-            selectedData.RemoveObjectAt(gridPosition);
-            objectPlacer.RemoveObjectAt(gameObjectIndex);
-        }
+        // Remove it
+        gameObjectIndex = selectedData.GetRepresentationIndex(gridPosition);
+        if (gameObjectIndex == -1)
+            return;
+
+        selectedData.RemoveObjectAt(gridPosition);
+        objectPlacer.RemoveObjectAt(gameObjectIndex);
+
         Vector3 cellPosition = grid.CellToWorld(gridPosition);
         previewSystem.UpdatePosition(cellPosition, CheckIfSelectionIsValid(gridPosition));
     }
+
     private bool CheckIfSelectionIsValid(Vector3Int gridPosition)
     {
         return !(furnitureData.CanPlaceObjectAt(gridPosition, Vector2Int.one) &&
