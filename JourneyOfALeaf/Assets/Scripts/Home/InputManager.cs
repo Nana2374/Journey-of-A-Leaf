@@ -2,73 +2,114 @@ using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using System.Collections.Generic;
+using UnityEngine.UI;
 
-// Handles tap/click input for the furniture-placement system.
-// Only reports placement taps while Build Mode is active — call
-// EnterBuildMode() from your "build" button's OnClick, and
-// ExitBuildMode() from your "X" button's OnClick.
 public class InputManager : MonoBehaviour
 {
-    [SerializeField]
-    private Camera sceneCamera;
-
-    [SerializeField]
-    private LayerMask placementLayermask;
+    [SerializeField] private Camera sceneCamera;
+    [SerializeField] private LayerMask placementLayermask;
 
     private Vector3 lastPosition;
 
-    // Fired when the player taps/clicks somewhere valid to place/select
-    // an item, but ONLY while build mode is active.
     public event Action OnClicked;
-
-    // Fired the moment build mode is exited (via ExitBuildMode()).
-    // Useful for e.g. deselecting the currently-held furniture item.
     public event Action OnExit;
-
-    // Fired whenever build mode turns on or off, in case other scripts
-    // (UI, player movement, etc.) want to react to the mode change.
     public event Action<bool> OnBuildModeChanged;
 
     public bool IsBuildModeActive { get; private set; }
 
-    private void Update()
+    [Header("Drag Settings")]
+    [Tooltip("How many pixels the finger must move before it counts as a drag")]
+    public float dragThreshold = 10f;
+
+    private Vector2 pressStartPos;
+    private bool isDragging = false;
+    private bool pressStartedOverUI = false;
+
+    void Update()
     {
-        if (!IsBuildModeActive)
-            return; // ignore all placement input outside build mode
+        if (!IsBuildModeActive) return;
 
-        if (Pointer.current != null && Pointer.current.press.wasPressedThisFrame)
+        if (Pointer.current == null) return;
+
+        // Finger/mouse just pressed down
+        if (Pointer.current.press.wasPressedThisFrame)
         {
-            //remove int and debug after checking if works
+            pressStartPos = Pointer.current.position.ReadValue();
+            isDragging = false;
+            pressStartedOverUI = IsPointerOverInteractableUI();
+        }
 
-            int subCount = OnClicked?.GetInvocationList().Length ?? 0;
-            ////Debug.Log($"Pointer press detected. OnClicked subscriber count: {subCount}");
-            OnClicked?.Invoke();
+        // Finger/mouse is held down — check if dragging
+        if (Pointer.current.press.isPressed && !pressStartedOverUI)
+        {
+            Vector2 currentPos = Pointer.current.position.ReadValue();
+            float distance = Vector2.Distance(currentPos, pressStartPos);
+
+            if (distance > dragThreshold)
+                isDragging = true;
+        }
+
+        // Finger/mouse lifted
+        if (Pointer.current.press.wasReleasedThisFrame)
+        {
+            isDragging = false;
+            pressStartedOverUI = false;
         }
     }
 
-    // Call this from your "Enter Build Mode" button's OnClick()
+    // PlacementSystem.Update() calls this to move the preview
+    public bool IsDragging() => isDragging && !pressStartedOverUI;
+
     public void EnterBuildMode()
     {
-        if (IsBuildModeActive)
-            return;
-
+        if (IsBuildModeActive) return;
         IsBuildModeActive = true;
         OnBuildModeChanged?.Invoke(true);
     }
 
-    // Call this from your "X" (exit build mode) button's OnClick()
     public void ExitBuildMode()
     {
-        if (!IsBuildModeActive)
-            return;
-
+        if (!IsBuildModeActive) return;
         IsBuildModeActive = false;
         OnExit?.Invoke();
         OnBuildModeChanged?.Invoke(false);
     }
 
-    public bool IsPointerOverUI()
-        => EventSystem.current.IsPointerOverGameObject();
+    public bool IsPointerOverUI() => IsPointerOverInteractableUI();
+
+    private bool IsPointerOverInteractableUI()
+    {
+        Vector2 pointerPos = Pointer.current != null
+            ? Pointer.current.position.ReadValue()
+            : Vector2.zero;
+
+        PointerEventData eventData = new PointerEventData(EventSystem.current)
+        {
+            position = pointerPos
+        };
+
+        List<RaycastResult> results = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(eventData, results);
+
+        foreach (var result in results)
+        {
+            Transform current = result.gameObject.transform;
+            while (current != null)
+            {
+                if (current.GetComponent<Button>() != null) return true;
+                if (current.GetComponent<Toggle>() != null) return true;
+                if (current.GetComponent<Slider>() != null) return true;
+                if (current.GetComponent<ScrollRect>() != null) return true;
+                if (current.GetComponent<CanvasGroup>() != null &&
+                    current.GetComponent<CanvasGroup>().blocksRaycasts &&
+                    current.GetComponent<CanvasGroup>().interactable) return true;
+                current = current.parent;
+            }
+        }
+
+        return false;
+    }
 
     public Vector3 GetSelectedMapPosition()
     {
@@ -78,9 +119,8 @@ public class InputManager : MonoBehaviour
 
         Ray ray = sceneCamera.ScreenPointToRay(pointerScreenPos);
         if (Physics.Raycast(ray, out RaycastHit hit, 100f, placementLayermask))
-        {
             lastPosition = hit.point;
-        }
+
         return lastPosition;
     }
 }

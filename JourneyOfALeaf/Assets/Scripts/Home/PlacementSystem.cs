@@ -1,144 +1,102 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
+
 public class PlacementSystem : MonoBehaviour
 {
-    [SerializeField]
-    private InputManager inputManager;
-
-    //[SerializeField]
-    //private GameObject mouseIndicator;
-
-    [SerializeField]
-    private Grid grid;
-
-    [SerializeField]
-    private ObjectsDatabaseSO database;
-    //private int selectedObjectIndex = -1;
-
-    [SerializeField]
-    private GameObject gridVisualization;
-
-
-    [SerializeField]
-    private AudioClip correctPlacementClip, wrongPlacementClip;
-
-    [SerializeField]
-    private AudioSource source;
+    [SerializeField] private InputManager inputManager;
+    [SerializeField] private Grid grid;
+    [SerializeField] private ObjectsDatabaseSO database;
+    [SerializeField] private GameObject gridVisualization;
+    [SerializeField] private AudioClip correctPlacementClip, wrongPlacementClip;
+    [SerializeField] private AudioSource source;
+    [SerializeField] private PreviewSystem preview;
+    [SerializeField] private ObjectPlacer objectPlacer;
 
     private GridData furnitureData;
     private GridData floorData;
-
-
-
-    [SerializeField]
-    private PreviewSystem preview;
-
     private Vector3Int lastDetectedPosition = Vector3Int.zero;
+    private Vector3Int confirmedGridPosition = Vector3Int.zero; // last dragged position
+    private IBuildingState buildingState;
 
-    [SerializeField]
-    private ObjectPlacer objectPlacer;
-
-    IBuildingState buildingState;
-    //[SerializeField]
-    //private SoundFeedback soundFeedback;
-
+    private int currentRotationIndex = 0;
+    private readonly float[] rotationAngles = { 0f, 90f, 180f, 270f }; // 90 degree steps
+    private int currentPlacementID = -1;
+    private Vector2Int currentObjectSize = Vector2Int.one;
 
     private void Start()
     {
+        gridVisualization.SetActive(false);
         StopPlacement();
-        //   gridVisualization.SetActive(false);
         floorData = new();
         furnitureData = new();
-        //previewRenderer = cellIndicator.GetComponentInChildren<Renderer>();
     }
 
     public void StartPlacement(int ID)
     {
         StopPlacement();
+        currentPlacementID = ID;
+        currentRotationIndex = 0;
+
+        int index = database.objectsData.FindIndex(data => data.ID == ID);
+        if (index >= 0)
+            currentObjectSize = database.objectsData[index].Size;
+
         gridVisualization.SetActive(true);
-        buildingState = new PlacementState(ID,
-                                           grid,
-                                           preview,
-                                           database,
-                                           floorData,
-                                           furnitureData,
-                                           objectPlacer);
+        buildingState = new PlacementState(ID, grid, preview, database, floorData, furnitureData, objectPlacer);
 
         inputManager.EnterBuildMode();
-
-        inputManager.OnClicked += PlaceStructure;
         inputManager.OnExit += StopPlacement;
-        //Debug.Log("Subscribed to OnClicked");
-        //}
     }
+
     public void StartRemoving()
     {
         StopPlacement();
         gridVisualization.SetActive(true);
-        buildingState = new RemovingState(grid,
-                                          preview,
-                                          floorData,
-                                          furnitureData,
-                                          objectPlacer);
+        buildingState = new RemovingState(grid, preview, floorData, furnitureData, objectPlacer);
 
         inputManager.EnterBuildMode();
-
         inputManager.OnClicked += PlaceStructure;
         inputManager.OnExit += StopPlacement;
     }
 
+    // Called by Place button — uses last dragged position, not pointer position
+    public void PlaceCurrentItem()
+    {
+        if (buildingState == null) return;
+        buildingState.OnAction(confirmedGridPosition);
+    }
+
+    // Called by Rotate button
+    public void RotateCurrentItem()
+    {
+        if (buildingState == null || currentPlacementID == -1) return;
+
+        currentRotationIndex = (currentRotationIndex + 1) % rotationAngles.Length;
+        float angle = rotationAngles[currentRotationIndex];
+
+        buildingState.EndState();
+        buildingState = new PlacementState(currentPlacementID, grid, preview, database, floorData, furnitureData, objectPlacer);
+
+        // Rotate around centre by offsetting by half size
+        preview.SetPreviewRotation(Quaternion.Euler(0f, angle, 0f), currentObjectSize);
+    }
+
+    public void ForceStop() => StopPlacement();
 
     private void PlaceStructure()
     {
-        //Debug.Log("PlaceStructure called");
-
-        if (inputManager.IsPointerOverUI())
-        {
-            //var pointerData = new UnityEngine.EventSystems.PointerEventData(UnityEngine.EventSystems.EventSystem.current);
-            //pointerData.position = UnityEngine.InputSystem.Pointer.current.position.ReadValue();
-
-            //var results = new System.Collections.Generic.List<UnityEngine.EventSystems.RaycastResult>();
-            //UnityEngine.EventSystems.EventSystem.current.RaycastAll(pointerData, results);
-
-            //foreach (var r in results)
-            //    //Debug.Log($"Blocked by UI element: {r.gameObject.name}");
-
-            //Debug.Log("Blocked: pointer is over UI");
-            return;
-        }
+        if (inputManager.IsPointerOverUI()) return;
 
         Vector3 mousePosition = inputManager.GetSelectedMapPosition();
         Vector3Int gridPosition = grid.WorldToCell(mousePosition);
-        //Debug.Log($"Grid position: {gridPosition}");
-
         buildingState.OnAction(gridPosition);
-        //}
-        //private bool CheckPlacementValidity(Vector3Int gridPosition, int selectedObjectIndex)
-        //{
-        //    GridData selectedData = database.objectsData[selectedObjectIndex].ID == 0 ? 
-        //        floorData : 
-        //        furnitureData;
-        //    return selectedData.CanPlaceObejctAt(gridPosition, database.objectsData[selectedObjectIndex].Size);
     }
-    //private bool CheckPlacementValidity(Vector3Int gridPosition, int selectedObjectIndex)
-    //{
-    //    GridData selectedData = database.objectsData[selectedObjectIndex].ID == 0 ?
-    //            floorData :
-    //            furnitureData;
-    //    return selectedData.CanPlaceObejctAt(gridPosition, database.objectsData[selectedObjectIndex].Size);
-    //}
 
     private void StopPlacement()
     {
-        //Debug.Log("StopPlacement called");
-        //selectedObjectIndex = -1;
-
-        //    soundFeedback.PlaySound(SoundType.Click);
-        if (buildingState == null)
-            return;
+        if (buildingState == null) return;
 
         gridVisualization.SetActive(false);
         buildingState.EndState();
@@ -147,29 +105,27 @@ public class PlacementSystem : MonoBehaviour
         inputManager.OnExit -= StopPlacement;
 
         lastDetectedPosition = Vector3Int.zero;
+        confirmedGridPosition = Vector3Int.zero;
         buildingState = null;
+        currentPlacementID = -1;
 
         if (inputManager.IsBuildModeActive)
             inputManager.ExitBuildMode();
     }
+
     private void Update()
     {
-        if (buildingState == null)
-            return;
+        if (buildingState == null) return;
+        if (!inputManager.IsDragging()) return;
 
         Vector3 mousePosition = inputManager.GetSelectedMapPosition();
         Vector3Int gridPosition = grid.WorldToCell(mousePosition);
 
         if (lastDetectedPosition != gridPosition)
         {
-            //bool placementValidity = CheckPlacementValidity(gridPosition, selectedObjectIndex);
-            //previewRenderer.material.color = placementValidity ? Color.green : Color.red;
-
-
             buildingState.UpdateState(gridPosition);
             lastDetectedPosition = gridPosition;
+            confirmedGridPosition = gridPosition; // save last dragged position
         }
-
-
     }
 }

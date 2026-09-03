@@ -33,6 +33,11 @@ public class PreviewSystem : MonoBehaviour
         cellIndicator.SetActive(true);
     }
 
+    public GameObject GetPreviewObject()
+    {
+        return previewObject;
+    }
+
     private void PrepareCursor(Vector2Int size)
     {
         if (size.x > 0 || size.y > 0)
@@ -61,6 +66,26 @@ public class PreviewSystem : MonoBehaviour
         cellIndicator.SetActive(false);
         if (previewObject != null)
             Destroy(previewObject);
+    }
+
+    // Old — remove this
+    public void SetPreviewRotation(Quaternion rotation, Vector2Int size)
+    {
+        if (previewObject == null) return;
+
+        previewObject.transform.rotation = rotation;
+
+        // Offset position so it rotates around centre instead of bottom-left pivot
+        Vector3 centreOffset = new Vector3((size.x - 1) * 0.5f, 0f, (size.y - 1) * 0.5f);
+        Vector3 rotatedOffset = rotation * centreOffset;
+        Vector3 basePosition = previewObject.transform.position;
+
+        // Adjust position to keep it snapped to grid after rotation
+        previewObject.transform.position = new Vector3(
+            basePosition.x - centreOffset.x + rotatedOffset.x,
+            basePosition.y,
+            basePosition.z - centreOffset.z + rotatedOffset.z
+        );
     }
 
     public void UpdatePosition(Vector3 position, bool validity)
