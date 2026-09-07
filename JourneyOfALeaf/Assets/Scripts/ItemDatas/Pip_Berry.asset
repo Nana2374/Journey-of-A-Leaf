@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Pip_Berry
   prefab: {fileID: 0}
-  icon: {fileID: 21300000, guid: fad1fefa3a315b44fa16b164776ee149, type: 3}
+  icon: {fileID: 21300000, guid: 6764715489671db40a88223ef31c29de, type: 3}
   description: 'PickUp_Test1
 
 '

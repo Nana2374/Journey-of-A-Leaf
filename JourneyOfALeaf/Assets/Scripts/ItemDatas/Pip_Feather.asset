@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Pip_Feather
   prefab: {fileID: 0}
-  icon: {fileID: 21300000, guid: da4d3d9a6976f0447bf42080e1220d7a, type: 3}
+  icon: {fileID: 21300000, guid: e7347df0af46cd548908146eeaceedab, type: 3}
   description: 'PickUp_Test2
 
 '
