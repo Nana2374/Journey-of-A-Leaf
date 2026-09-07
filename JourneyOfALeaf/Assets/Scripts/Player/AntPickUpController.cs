@@ -40,7 +40,11 @@ public class AntPickupController : MonoBehaviour
 
         Ray ray = mainCamera.ScreenPointToRay(screenPosition);
         if (!Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, interactionLayerMask))
+        {
+            // Tapped empty space - dismiss any open drop prompt
+            ItemDropPromptUI.Instance?.Hide();
             return;
+        }
 
         // ==========================================
         // TAPPED AN NPC -> talk to them
@@ -49,6 +53,7 @@ public class AntPickupController : MonoBehaviour
         NPCController npc = hit.collider.GetComponentInParent<NPCController>();
         if (npc != null)
         {
+            ItemDropPromptUI.Instance?.Hide();
             npc.Interact();
             return;
         }
@@ -58,7 +63,10 @@ public class AntPickupController : MonoBehaviour
         // ==========================================
         LeafItem item = hit.collider.GetComponentInParent<LeafItem>();
         if (item == null)
+        {
+            ItemDropPromptUI.Instance?.Hide();
             return;
+        }
 
         float distance = Vector3.Distance(transform.position, item.transform.position);
         if (distance > pickupRange)
@@ -69,9 +77,16 @@ public class AntPickupController : MonoBehaviour
 
         if (item.IsOnLeaf)
         {
-            // Tapping an item already on the leaf removes it back to the ground
-            item.RemoveFromLeaf();
-            Debug.Log("Removed " + item.name + " from leaf.");
+            // Tapping the item again while its Drop prompt is showing dismisses it;
+            // otherwise show the Drop prompt for this item.
+            if (ItemDropPromptUI.Instance != null && ItemDropPromptUI.Instance.IsShowingFor(item))
+            {
+                ItemDropPromptUI.Instance.Hide();
+            }
+            else
+            {
+                ItemDropPromptUI.Instance?.Show(item);
+            }
             return;
         }
 
