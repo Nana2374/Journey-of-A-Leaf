@@ -11,7 +11,6 @@ public class AntPickupController : MonoBehaviour
     [SerializeField] private LayerMask interactionLayerMask;
 
     private Camera mainCamera;
-    private LeafItem selectedItem;
 
     private void Start()
     {
@@ -44,25 +43,13 @@ public class AntPickupController : MonoBehaviour
             return;
 
         // ==========================================
-        // TAPPED AN NPC
+        // TAPPED AN NPC -> talk to them
+        // (Giving items is now handled by NPCGiveItemPromptUI, the icon above their head)
         // ==========================================
         NPCController npc = hit.collider.GetComponentInParent<NPCController>();
         if (npc != null)
         {
-            if (selectedItem == null)
-            {
-                Debug.Log("No item selected to give.");
-                return;
-            }
-
-            if (!npc.CanAccept(selectedItem))
-            {
-                Debug.Log(npc.name + " doesn't need this item right now.");
-                return;
-            }
-
-            npc.ReceiveItem(selectedItem);
-            selectedItem = null;
+            npc.Interact();
             return;
         }
 
@@ -82,16 +69,9 @@ public class AntPickupController : MonoBehaviour
 
         if (item.IsOnLeaf)
         {
-            // Tapping the currently selected item again deselects it
-            if (selectedItem == item)
-            {
-                selectedItem = null;
-                Debug.Log("Deselected " + item.name);
-                return;
-            }
-
-            selectedItem = item;
-            Debug.Log("Selected " + item.name + " to give.");
+            // Tapping an item already on the leaf removes it back to the ground
+            item.RemoveFromLeaf();
+            Debug.Log("Removed " + item.name + " from leaf.");
             return;
         }
 

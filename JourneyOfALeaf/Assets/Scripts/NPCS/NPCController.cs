@@ -21,6 +21,9 @@ public class NPCController : MonoBehaviour
     public string DisplayName => string.IsNullOrEmpty(npcDisplayName) ? name : npcDisplayName;
     public string QuestTitle => request != null ? request.questTitle : "";
 
+    // Whether the CURRENT step has been formally offered (quest accepted by the player)
+    public bool CurrentStepOffered => currentStepOffered;
+
     public bool IsFullyComplete =>
         request == null || currentStepIndex >= request.steps.Count;
 
@@ -28,6 +31,12 @@ public class NPCController : MonoBehaviour
         (request != null && currentStepIndex < request.steps.Count)
             ? request.steps[currentStepIndex]
             : null;
+
+    // What item the NPC currently needs, or null if nothing is currently requested
+    public ItemData GetCurrentRequiredItem()
+    {
+        return CurrentStep?.requiredItem;
+    }
 
     // ==========================================
     // Called by AntPickupController (tap on NPC) OR NPCInteraction (proximity button)
@@ -94,7 +103,12 @@ public class NPCController : MonoBehaviour
         if (step == null) return "All requests fulfilled!";
 
         if (!currentStepOffered)
-            return $"Talk to {DisplayName} for a new request!";
+        {
+            string template = (request != null && !string.IsNullOrEmpty(request.talkAgainPrompt))
+                ? request.talkAgainPrompt
+                : "Talk to {0} for a new request!";
+            return string.Format(template, DisplayName);
+        }
 
         string itemName = step.requiredItem != null ? step.requiredItem.itemName : "???";
         return $"Bring {itemsDeliveredThisStep}/{step.quantityNeeded} {itemName} to {DisplayName}";

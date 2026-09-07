@@ -1,7 +1,6 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
+using System.Collections.Generic;
 
 // A single ask within an NPC's request chain (e.g. "3 Berries")
 [System.Serializable]
@@ -29,6 +28,10 @@ public class NPCRequestData : ScriptableObject
 {
     [Header("Quest Info")]
     public string questTitle; // e.g. "Meghill's Herbs" - shown on the quest board
+
+    [Header("Between-step prompt (shown on tracker/board before the next request is offered)")]
+    [Tooltip("Use {0} where the NPC's name should go. Leave blank to use the default phrasing.")]
+    public string talkAgainPrompt = "Talk to {0} for a new request!";
 
     [Header("Requests, in order")]
     [Tooltip("Drag elements up/down in this list to change the order the NPC asks for them.")]
