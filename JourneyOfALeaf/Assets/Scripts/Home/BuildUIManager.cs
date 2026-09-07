@@ -4,21 +4,19 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-
-
 public class BuildUIManager : MonoBehaviour
 {
     [Header("Cameras")]
-    public InputActionReference lookAroundAction;  // drag LookAround action here
+    public InputActionReference lookAroundAction;
     public CinemachineVirtualCamera topDownCamera;
     public int activePriority = 20;
     public int inactivePriority = 0;
 
-    [SerializeField]
-    private GameObject gridVisualization;
+    [SerializeField] private GameObject gridVisualization;
 
     [Header("References")]
     public PlacementSystem placementSystem;
+    public FurnitureSelector furnitureSelector;
 
     [Header("Main Button")]
     public Button mainBuildButton;
@@ -29,7 +27,7 @@ public class BuildUIManager : MonoBehaviour
     public float slideDuration = 0.3f;
 
     [Header("UI Text")]
-    public GameObject buildModeText; // drag your Text GameObject here
+    public GameObject buildModeText;
 
     [Header("Action Bar")]
     public ActionBarFollower actionBarFollower;
@@ -37,14 +35,13 @@ public class BuildUIManager : MonoBehaviour
     [Header("Action Buttons")]
     public Button placeButton;
     public Button rotateButton;
-    public Button removeButton;
+    public Button storeButton;   // was removeButton, now stores furniture to inventory
 
     [Header("Furniture Buttons")]
     public Button[] furnitureButtons;
     public int[] furnitureIDs;
 
     private bool isBuildModeOpen = false;
-    private bool isRemoving = false;
     private Vector2 panelHiddenPos;
     private Vector2 panelShownPos;
 
@@ -60,25 +57,17 @@ public class BuildUIManager : MonoBehaviour
 
         mainBuildButton.onClick.AddListener(ToggleBuildMode);
 
-        //placeButton.onClick.AddListener(OnPlacePressed);
-        //rotateButton.onClick.AddListener(OnRotatePressed);
-        //removeButton.onClick.AddListener(OnRemovePressed);
-
         for (int i = 0; i < furnitureButtons.Length; i++)
         {
             int id = furnitureIDs[i];
             furnitureButtons[i].onClick.AddListener(() => OnFurnitureSelected(id));
         }
-
-        actionBarFollower.Hide();
     }
 
     void ToggleBuildMode()
     {
-        if (isBuildModeOpen)
-            CloseBuildMode();
-        else
-            OpenBuildMode();
+        if (isBuildModeOpen) CloseBuildMode();
+        else OpenBuildMode();
     }
 
     void OpenBuildMode()
@@ -86,11 +75,10 @@ public class BuildUIManager : MonoBehaviour
         isBuildModeOpen = true;
         buildModeText.SetActive(true);
         gridVisualization.SetActive(true);
-
-        isRemoving = false;
-        lookAroundAction.action.Disable();       // disable camera swipe
+        lookAroundAction.action.Disable();
         topDownCamera.Priority = activePriority;
         buildPanel.gameObject.SetActive(true);
+        furnitureSelector.EnterSelectionMode();
         StopAllCoroutines();
         StartCoroutine(SlidePanel(panelShownPos));
         actionBarFollower.Hide();
@@ -101,11 +89,10 @@ public class BuildUIManager : MonoBehaviour
         isBuildModeOpen = false;
         buildModeText.SetActive(false);
         gridVisualization.SetActive(false);
-
-        isRemoving = false;
         placementSystem.ForceStop();
+        furnitureSelector.ExitSelectionMode();
         actionBarFollower.Hide();
-        lookAroundAction.action.Enable();         // re-enable camera swipe
+        lookAroundAction.action.Enable();
         topDownCamera.Priority = inactivePriority;
         StopAllCoroutines();
         StartCoroutine(SlidePanel(panelHiddenPos, () =>
@@ -116,58 +103,71 @@ public class BuildUIManager : MonoBehaviour
 
     void OnFurnitureSelected(int id)
     {
-        isRemoving = false;
+        furnitureSelector.Deselect();
         placementSystem.StartPlacement(id);
+        // Show place and rotate only, not store (store is for placed furniture)
+        placeButton.gameObject.SetActive(true);
+        rotateButton.gameObject.SetActive(true);
+        storeButton.gameObject.SetActive(false);
         actionBarFollower.Show();
-        HighlightRemoveButton(false);
-        ShowPlaceRotate(true);
+    }
+
+    // Called after placing to go back to selection mode
+    public void OnItemPlaced()
+    {
+        actionBarFollower.Hide();
+        furnitureSelector.EnterSelectionMode();
+        RefreshFurnitureButtons();
+    }
+
+    // Called when tapping an already-placed furniture piece
+    public void ShowActionBarOnFurniture(GameObject furniture)
+    {
+        actionBarFollower.TrackWorldObject(furniture);
+        actionBarFollower.Show();
+        placeButton.gameObject.SetActive(false);  // no place when selecting
+        rotateButton.gameObject.SetActive(true);
+        storeButton.gameObject.SetActive(true);   // store back to inventory
+    }
+
+    public void HideActionBar()
+    {
+        actionBarFollower.Hide();
     }
 
     public void OnPlacePressed()
     {
-        Debug.Log("PLACE pressed");
         placementSystem.PlaceCurrentItem();
-
     }
 
     public void OnRotatePressed()
     {
-        Debug.Log("ROTATE pressed");
-        placementSystem.RotateCurrentItem();
-
-    }
-
-    public void OnRemovePressed()
-    {
-        Debug.Log("REMOVE pressed");
-
-        isRemoving = !isRemoving;
-        if (isRemoving)
-        {
-            placementSystem.StartRemoving();
-            HighlightRemoveButton(true);
-            ShowPlaceRotate(false);
-        }
+        // Rotate preview if placing, rotate selected if selecting
+        if (furnitureSelector.SelectedFurniture != null)
+            furnitureSelector.RotateSelected();
         else
+            placementSystem.RotateCurrentItem();
+    }
+
+    public void OnStorePressed()
+    {
+        furnitureSelector.StoreSelected();
+        RefreshFurnitureButtons();
+    }
+
+    public void RefreshFurnitureButtons()
+    {
+        for (int i = 0; i < furnitureButtons.Length; i++)
         {
-            placementSystem.ForceStop();
-            HighlightRemoveButton(false);
-            ShowPlaceRotate(false);
+            int id = furnitureIDs[i];
+            int qty = FurnitureInventory.Instance.GetQuantity(id);
+
+            var text = furnitureButtons[i].GetComponentInChildren<TMPro.TextMeshProUGUI>();
+            if (text != null)
+                text.text = $"{qty}x";
+
+            furnitureButtons[i].interactable = qty > 0;
         }
-        actionBarFollower.Show();
-    }
-
-    void ShowPlaceRotate(bool visible)
-    {
-        placeButton.gameObject.SetActive(visible);
-        rotateButton.gameObject.SetActive(visible);
-    }
-
-    void HighlightRemoveButton(bool active)
-    {
-        var colors = removeButton.colors;
-        colors.normalColor = active ? Color.red : Color.white;
-        removeButton.colors = colors;
     }
 
     IEnumerator SlidePanel(Vector2 targetPos, System.Action onComplete = null)
