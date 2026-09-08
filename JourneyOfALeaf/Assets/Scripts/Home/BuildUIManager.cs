@@ -109,19 +109,34 @@ public class BuildUIManager : MonoBehaviour
 
     void OnFurnitureSelected(int id)
     {
-        Debug.Log($"OnFurnitureSelected called with ID={id}");
         furnitureSelector.Deselect();
+        actionBarFollower.StopTracking();
         placementSystem.StartPlacement(id);
+
         placeButton.gameObject.SetActive(true);
         rotateButton.gameObject.SetActive(true);
-        storeButton.gameObject.SetActive(false);
+        storeButton.gameObject.SetActive(true);
+
+        // Show after one frame so preview object exists for tracking
+        StartCoroutine(ShowActionBarNextFrame());
+    }
+
+    IEnumerator ShowActionBarNextFrame()
+    {
+        yield return null;
         actionBarFollower.Show();
     }
 
     // Called after placing to go back to selection mode
     public void OnItemPlaced()
     {
+        // Hide action bar first
         actionBarFollower.Hide();
+        // Reset button states
+        placeButton.gameObject.SetActive(false);
+        rotateButton.gameObject.SetActive(false);
+        storeButton.gameObject.SetActive(false);
+        // Go back to selection mode
         furnitureSelector.EnterSelectionMode();
         RefreshFurnitureButtons();
     }
@@ -157,8 +172,23 @@ public class BuildUIManager : MonoBehaviour
 
     public void OnStorePressed()
     {
-        furnitureSelector.StoreSelected();
-        RefreshFurnitureButtons();
+        if (furnitureSelector.SelectedFurniture != null)
+        {
+            // Storing a placed piece
+            furnitureSelector.StoreSelected();
+            RefreshFurnitureButtons();
+        }
+        else if (placementSystem.IsPlacing())
+        {
+            // Cancelling a preview — item goes back to inventory once
+            placementSystem.CancelPlacement();
+            actionBarFollower.Hide();
+            placeButton.gameObject.SetActive(false);
+            rotateButton.gameObject.SetActive(false);
+            storeButton.gameObject.SetActive(false);
+            furnitureSelector.EnterSelectionMode();
+            RefreshFurnitureButtons();
+        }
     }
 
     public void RefreshFurnitureButtons()

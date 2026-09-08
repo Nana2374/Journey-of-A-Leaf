@@ -145,6 +145,25 @@ public class PlacementSystem : MonoBehaviour
         preview.SetPreviewRotation(Quaternion.Euler(0f, angle, 0f), currentObjectSize);
     }
 
+    // Returns true if currently in placement preview mode
+    public bool IsPlacing() => buildingState != null && currentPlacementID != -1;
+
+    // Cancels preview and returns item to inventory
+    public void CancelPlacement()
+    {
+        if (buildingState == null) return;
+
+        int idToReturn = currentPlacementID;
+        bool wasFree = placementIsFree;
+
+        // Stop first to clear state
+        StopPlacement();
+
+        // Then add back to inventory only if it wasn't a move
+        if (!wasFree && idToReturn != -1)
+            FurnitureInventory.Instance.AddItem(idToReturn);
+    }
+
     public void ForceStop() => StopPlacement();
 
     private void StopPlacement()

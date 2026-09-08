@@ -14,7 +14,8 @@ public class ActionBarFollower : MonoBehaviour
 
     private RectTransform canvasRect;
     private bool isTracking = false;
-    private GameObject trackedObject = null; // can be preview OR placed furniture
+    private bool isVisible = false;
+    private GameObject trackedObject = null;
 
     void Start()
     {
@@ -24,29 +25,21 @@ public class ActionBarFollower : MonoBehaviour
 
     void Update()
     {
-        if (!isTracking) return;
+        if (!isVisible) return;
 
-        // Prefer explicitly tracked object, fall back to preview
+        // Decide what to follow
         GameObject target = trackedObject != null
             ? trackedObject
             : previewSystem.GetPreviewObject();
 
-        if (target == null)
-        {
-            canvasGroup.alpha = 0f;
-            return;
-        }
+        // If no target, stay visible but don't move
+        if (target == null) return;
 
         Vector3 worldPos = GetCentre(target);
         Vector3 screenPos = Camera.main.WorldToScreenPoint(worldPos);
 
-        if (screenPos.z < 0)
-        {
-            canvasGroup.alpha = 0f;
-            return;
-        }
+        if (screenPos.z < 0) return;
 
-        canvasGroup.alpha = 1f;
         screenPos.y += yOffset;
         screenPos.x += xOffset;
 
@@ -59,6 +52,11 @@ public class ActionBarFollower : MonoBehaviour
     public void TrackWorldObject(GameObject obj)
     {
         trackedObject = obj;
+    }
+
+    public void StopTracking()
+    {
+        trackedObject = null;
     }
 
     private Vector3 GetCentre(GameObject obj)
@@ -75,6 +73,7 @@ public class ActionBarFollower : MonoBehaviour
 
     public void Show()
     {
+        isVisible = true;
         isTracking = true;
         canvasGroup.alpha = 1f;
         canvasGroup.interactable = true;
@@ -83,6 +82,7 @@ public class ActionBarFollower : MonoBehaviour
 
     public void Hide()
     {
+        isVisible = false;
         isTracking = false;
         trackedObject = null;
         canvasGroup.alpha = 0f;
