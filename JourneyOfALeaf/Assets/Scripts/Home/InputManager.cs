@@ -17,6 +17,7 @@ public class InputManager : MonoBehaviour
     public event Action<bool> OnBuildModeChanged;
 
     public bool IsBuildModeActive { get; private set; }
+    public bool IsBuildPanelOpen { get; private set; } // tracks if build panel is open
 
     [Header("Drag Settings")]
     [Tooltip("How many pixels the finger must move before it counts as a drag")]
@@ -28,11 +29,11 @@ public class InputManager : MonoBehaviour
 
     void Update()
     {
-        if (!IsBuildModeActive) return;
+        // Run drag detection if EITHER build mode OR build panel is open
+        if (!IsBuildModeActive && !IsBuildPanelOpen) return;
 
         if (Pointer.current == null) return;
 
-        // Finger/mouse just pressed down
         if (Pointer.current.press.wasPressedThisFrame)
         {
             pressStartPos = Pointer.current.position.ReadValue();
@@ -40,7 +41,6 @@ public class InputManager : MonoBehaviour
             pressStartedOverUI = IsPointerOverInteractableUI();
         }
 
-        // Finger/mouse is held down — check if dragging
         if (Pointer.current.press.isPressed && !pressStartedOverUI)
         {
             Vector2 currentPos = Pointer.current.position.ReadValue();
@@ -50,7 +50,6 @@ public class InputManager : MonoBehaviour
                 isDragging = true;
         }
 
-        // Finger/mouse lifted
         if (Pointer.current.press.wasReleasedThisFrame)
         {
             isDragging = false;
@@ -58,8 +57,13 @@ public class InputManager : MonoBehaviour
         }
     }
 
-    // PlacementSystem.Update() calls this to move the preview
     public bool IsDragging() => isDragging && !pressStartedOverUI;
+
+    // Called by BuildUIManager when build panel opens/closes
+    public void SetBuildPanelOpen(bool open)
+    {
+        IsBuildPanelOpen = open;
+    }
 
     public void EnterBuildMode()
     {

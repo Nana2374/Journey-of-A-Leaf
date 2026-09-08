@@ -8536,6 +8536,7 @@ MonoBehaviour:
   movementCanvas: {fileID: 900709877}
   placementSystem: {fileID: 1030594465}
   furnitureSelector: {fileID: 428135496}
+  inputManager: {fileID: 1322842003}
   mainBuildButton: {fileID: 749206250}
   buildPanel: {fileID: 320442466}
   slideDistance: -300

@@ -31,6 +31,8 @@ public class FurnitureInventory : MonoBehaviour
 
     public void AddItem(int furnitureID, int quantity = 1)
     {
+
+        Debug.Log($"AddItem called: ID={furnitureID}, quantity={quantity}");
         int current = GetTotalOwned(furnitureID);
         int max = GetMaxQuantity(furnitureID);
 

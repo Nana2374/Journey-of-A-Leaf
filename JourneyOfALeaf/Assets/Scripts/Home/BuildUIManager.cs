@@ -20,6 +20,7 @@ public class BuildUIManager : MonoBehaviour
     [Header("References")]
     public PlacementSystem placementSystem;
     public FurnitureSelector furnitureSelector;
+    public InputManager inputManager;
 
     [Header("Main Button")]
     public Button mainBuildButton;
@@ -47,6 +48,8 @@ public class BuildUIManager : MonoBehaviour
     private bool isBuildModeOpen = false;
     private Vector2 panelHiddenPos;
     private Vector2 panelShownPos;
+
+    private bool isMoving = false; // true while waiting for free placement after move
 
     void Start()
     {
@@ -81,6 +84,8 @@ public class BuildUIManager : MonoBehaviour
     void OpenBuildMode()
     {
         isBuildModeOpen = true;
+        inputManager.SetBuildPanelOpen(true);
+
         buildModeText.SetActive(true);
         gridVisualization.SetActive(true);
         lookAroundAction.action.Disable();
@@ -97,6 +102,8 @@ public class BuildUIManager : MonoBehaviour
     void CloseBuildMode()
     {
         isBuildModeOpen = false;
+        inputManager.SetBuildPanelOpen(true);
+
         buildModeText.SetActive(false);
         gridVisualization.SetActive(false);
         placementSystem.ForceStop();
@@ -138,6 +145,7 @@ public class BuildUIManager : MonoBehaviour
     // Called after placing to go back to selection mode
     public void OnItemPlaced()
     {
+        isMoving = false;
         actionBarFollower.Hide();
         placeButton.gameObject.SetActive(false);
         rotateButton.gameObject.SetActive(false);
@@ -164,21 +172,31 @@ public class BuildUIManager : MonoBehaviour
         actionBarFollower.Hide();
     }
 
+    public void StartCoroutine_ShowActionBarNextFrame()
+    {
+        StartCoroutine(ShowActionBarNextFrame());
+    }
+
     public void OnPlacePressed()
     {
-        // If furniture is selected, move it
-        if (furnitureSelector.SelectedFurniture != null)
+        if (furnitureSelector.SelectedFurniture != null && !isMoving)
         {
+            // Selected furniture — enter move mode
+            isMoving = true;
             furnitureSelector.MoveSelected();
-            // Show place/rotate/store for preview mode
+
             var placeText = placeButton.GetComponentInChildren<TMPro.TextMeshProUGUI>();
             if (placeText != null) placeText.text = "Place";
             StartCoroutine(ShowActionBarNextFrame());
             return;
         }
 
-        // Otherwise place the preview
-        placementSystem.PlaceCurrentItem();
+        // Place the preview down
+        if (placementSystem.IsPlacing())
+        {
+            isMoving = false;
+            placementSystem.PlaceCurrentItem();
+        }
     }
 
     public void OnRotatePressed()
@@ -194,13 +212,13 @@ public class BuildUIManager : MonoBehaviour
     {
         if (furnitureSelector.SelectedFurniture != null)
         {
-            // Storing a placed piece
+            isMoving = false;
             furnitureSelector.StoreSelected();
             RefreshFurnitureButtons();
         }
         else if (placementSystem.IsPlacing())
         {
-            // Cancelling a preview — item goes back to inventory once
+            isMoving = false;
             placementSystem.CancelPlacement();
             actionBarFollower.Hide();
             placeButton.gameObject.SetActive(false);
@@ -213,7 +231,7 @@ public class BuildUIManager : MonoBehaviour
 
     public void ContinuePlacement(int id)
     {
-        // Automatically re-enter preview for the same item if stock remains
+        isMoving = false;
         furnitureSelector.Deselect();
         actionBarFollower.StopTracking();
         placementSystem.StartPlacement(id);

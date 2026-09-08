@@ -9,9 +9,9 @@ public class FurnitureSelector : MonoBehaviour
     public PlacementSystem placementSystem;
     public LayerMask furnitureLayerMask;
 
-    // No separate camera field needed — gets active camera automatically
     private GameObject selectedFurniture = null;
     private bool isSelectionMode = false;
+    private bool isDragMoving = false;
 
     public GameObject SelectedFurniture => selectedFurniture;
 
@@ -19,24 +19,45 @@ public class FurnitureSelector : MonoBehaviour
     {
         isSelectionMode = true;
         selectedFurniture = null;
+        isDragMoving = false;
     }
 
     public void ExitSelectionMode()
     {
         isSelectionMode = false;
+        isDragMoving = false;
         Deselect();
     }
 
     void Update()
     {
         if (!isSelectionMode) return;
-        if (inputManager.IsDragging()) return;
-
-        // Don't try to select furniture while placement is active
         if (placementSystem.IsPlacing()) return;
 
+        // Debug every frame when furniture is selected
+        if (selectedFurniture != null)
+        {
+            Debug.Log($"Furniture selected: {selectedFurniture.name}, IsDragging: {inputManager.IsDragging()}, isDragMoving: {isDragMoving}");
+        }
+
+        // If furniture is selected and player starts dragging, auto-enter move mode
+        if (selectedFurniture != null && inputManager.IsDragging() && !isDragMoving)
+        {
+            Debug.Log("Drag detected on selected furniture — entering move mode");
+            isDragMoving = true;
+            MoveSelected();
+            return;
+        }
+
+        // Reset drag flag when finger lifts
         if (Pointer.current != null && Pointer.current.press.wasReleasedThisFrame)
-            TrySelectFurniture();
+        {
+            Debug.Log($"Pointer released. isDragging={inputManager.IsDragging()}, isDragMoving={isDragMoving}");
+            isDragMoving = false;
+
+            if (!inputManager.IsDragging())
+                TrySelectFurniture();
+        }
     }
 
     private void TrySelectFurniture()
@@ -44,9 +65,6 @@ public class FurnitureSelector : MonoBehaviour
         if (Pointer.current == null) return;
 
         Vector2 screenPos = Pointer.current.position.ReadValue();
-
-        // Use Camera.main which will be the active Cinemachine brain camera
-        // This correctly uses whichever virtual camera has highest priority
         Ray ray = Camera.main.ScreenPointToRay(screenPos);
 
         if (Physics.Raycast(ray, out RaycastHit hit, 100f, furnitureLayerMask))
@@ -64,11 +82,14 @@ public class FurnitureSelector : MonoBehaviour
     public void Deselect()
     {
         selectedFurniture = null;
+        isDragMoving = false;
         buildUIManager.HideActionBar();
     }
 
     public void StoreSelected()
     {
+        Debug.Log($"StoreSelected called. selectedFurniture={selectedFurniture?.name ?? "null"}");
+
         if (selectedFurniture == null)
         {
             Debug.Log("StoreSelected: selectedFurniture is null!");
@@ -79,39 +100,62 @@ public class FurnitureSelector : MonoBehaviour
 
         if (instance == null)
         {
-            Debug.Log($"StoreSelected: No FurnitureInstance component found on {selectedFurniture.name}!");
-            // Still destroy and return
+            Debug.Log($"StoreSelected: No FurnitureInstance on {selectedFurniture.name}!");
             Destroy(selectedFurniture);
             selectedFurniture = null;
             buildUIManager.HideActionBar();
             return;
         }
 
-        Debug.Log($"StoreSelected: Storing ID={instance.FurnitureID}");
+        Debug.Log($"StoreSelected: ID={instance.FurnitureID}, GridPos={instance.GridPosition}");
+        Debug.Log($"Inventory before: {FurnitureInventory.Instance.GetQuantity(instance.FurnitureID)}");
 
         placementSystem.RemoveFurnitureFromGrid(instance.GridPosition, instance.FurnitureID);
         FurnitureInventory.Instance.AddItem(instance.FurnitureID);
 
+        Debug.Log($"Inventory after: {FurnitureInventory.Instance.GetQuantity(instance.FurnitureID)}");
+
         Destroy(selectedFurniture);
         selectedFurniture = null;
+        isDragMoving = false;
         buildUIManager.HideActionBar();
         buildUIManager.RefreshFurnitureButtons();
     }
 
     public void MoveSelected()
     {
-        if (selectedFurniture == null) return;
+        if (selectedFurniture == null)
+        {
+            Debug.Log("MoveSelected: selectedFurniture is null!");
+            return;
+        }
 
         FurnitureInstance instance = selectedFurniture.GetComponent<FurnitureInstance>();
-        if (instance == null) return;
+        if (instance == null)
+        {
+            Debug.Log("MoveSelected: No FurnitureInstance found!");
+            return;
+        }
 
         int id = instance.FurnitureID;
         placementSystem.RemoveFurnitureFromGrid(instance.GridPosition, id);
         Destroy(selectedFurniture);
         selectedFurniture = null;
+        isDragMoving = false;
 
+        // Enter free placement — no inventory cost since already owned
+        Debug.Log($"Moving furniture ID={instance.FurnitureID} from GridPos={instance.GridPosition}");
         placementSystem.StartPlacementFree(id);
-        buildUIManager.HideActionBar();
+
+        // Update action bar to show Place button
+        var placeText = buildUIManager.placeButton.GetComponentInChildren<TMPro.TextMeshProUGUI>();
+        if (placeText != null) placeText.text = "Place";
+
+        buildUIManager.placeButton.gameObject.SetActive(true);
+        buildUIManager.rotateButton.gameObject.SetActive(true);
+        buildUIManager.storeButton.gameObject.SetActive(true);
+        buildUIManager.actionBarFollower.StopTracking();
+        buildUIManager.StartCoroutine_ShowActionBarNextFrame();
     }
 
     public void RotateSelected()
