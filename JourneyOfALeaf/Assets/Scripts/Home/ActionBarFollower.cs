@@ -13,7 +13,6 @@ public class ActionBarFollower : MonoBehaviour
     public float xOffset = 0f;
 
     private RectTransform canvasRect;
-    private bool isTracking = false;
     private bool isVisible = false;
     private GameObject trackedObject = null;
 
@@ -27,12 +26,10 @@ public class ActionBarFollower : MonoBehaviour
     {
         if (!isVisible) return;
 
-        // Decide what to follow
         GameObject target = trackedObject != null
             ? trackedObject
             : previewSystem.GetPreviewObject();
 
-        // If no target, stay visible but don't move
         if (target == null) return;
 
         Vector3 worldPos = GetCentre(target);
@@ -57,7 +54,6 @@ public class ActionBarFollower : MonoBehaviour
     public void StopTracking()
     {
         trackedObject = null;
-        // Move off screen so it doesn't flash at old position
         actionBarRect.anchoredPosition = new Vector2(-9999f, -9999f);
     }
 
@@ -76,7 +72,6 @@ public class ActionBarFollower : MonoBehaviour
     public void Show()
     {
         isVisible = true;
-        isTracking = true;
         canvasGroup.alpha = 1f;
         canvasGroup.interactable = true;
         canvasGroup.blocksRaycasts = true;
@@ -85,7 +80,6 @@ public class ActionBarFollower : MonoBehaviour
     public void Hide()
     {
         isVisible = false;
-        isTracking = false;
         trackedObject = null;
         canvasGroup.alpha = 0f;
         canvasGroup.interactable = false;

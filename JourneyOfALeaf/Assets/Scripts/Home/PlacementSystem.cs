@@ -13,7 +13,6 @@ public class PlacementSystem : MonoBehaviour
     [SerializeField] private PreviewSystem preview;
     [SerializeField] private ObjectPlacer objectPlacer;
     [SerializeField] private BuildUIManager buildUIManager;
-    // inventory field removed - using FurnitureInventory.Instance instead
 
     private GridData furnitureData;
     private GridData floorData;
@@ -39,7 +38,7 @@ public class PlacementSystem : MonoBehaviour
     {
         if (!FurnitureInventory.Instance.HasItem(ID))
         {
-            Debug.Log($"No items of ID {ID} in inventory");
+            //Debug.Log($"No items of ID {ID} in inventory");
             return;
         }
 
@@ -72,7 +71,7 @@ public class PlacementSystem : MonoBehaviour
         buildingState = new PlacementState(ID, grid, preview, database, floorData, furnitureData, objectPlacer, startGridPos);
 
         inputManager.EnterBuildMode();
-        inputManager.OnExit += StopPlacement;
+
     }
 
     private Vector3Int GetCentreGridPosition()
@@ -95,7 +94,7 @@ public class PlacementSystem : MonoBehaviour
 
         if (!furnitureData.CanPlaceObjectAt(confirmedGridPosition, currentObjectSize))
         {
-            Debug.Log("Cannot place here");
+            //Debug.Log("Cannot place here");
             return;
         }
 
@@ -131,24 +130,24 @@ public class PlacementSystem : MonoBehaviour
 
         if (placed == null)
         {
-            Debug.LogWarning("TagPlacedObject: placed object is null!");
+            //Debug.LogWarning("TagPlacedObject: placed object is null!");
             yield break;
         }
 
         FurnitureInstance fi = placed.GetComponent<FurnitureInstance>();
         if (fi == null)
         {
-            Debug.LogWarning($"No FurnitureInstance on {placed.name}!");
+            //Debug.LogWarning($"No FurnitureInstance on {placed.name}!");
             yield break;
         }
 
         fi.Initialize(id, gridPos, rotation);
-        Debug.Log($"Tagged {placed.name} with ID={id}, GridPos={gridPos}");
+        //Debug.Log($"Tagged {placed.name} with ID={id}, GridPos={gridPos}");
     }
 
     public void RemoveFurnitureFromGrid(Vector3Int gridPosition, int furnitureID)
     {
-        Debug.Log($"RemoveFurnitureFromGrid: trying to remove at gridPosition={gridPosition}");
+        //Debug.Log($"RemoveFurnitureFromGrid: trying to remove at gridPosition={gridPosition}");
 
         if (!furnitureData.CanPlaceObjectAt(gridPosition, Vector2Int.one))
         {
@@ -180,12 +179,12 @@ public class PlacementSystem : MonoBehaviour
         if (buildingState == null) return;
 
         int idToReturn = currentPlacementID;
-        bool wasFree = placementIsFree;
 
         StopPlacement();
 
-        // Add back to inventory only if it was not a move operation
-        if (!wasFree && idToReturn != -1)
+        // Always return to inventory when cancelling — 
+        // free placement means it was a move, item should go back to storage
+        if (idToReturn != -1)
             FurnitureInventory.Instance.AddItem(idToReturn);
     }
 
@@ -193,13 +192,7 @@ public class PlacementSystem : MonoBehaviour
     {
         if (buildingState == null) return;
 
-        // Don't hide grid here — BuildUIManager controls grid visibility
-        // gridVisualization.SetActive(false); // remove this line
-
         buildingState.EndState();
-
-        inputManager.OnClicked -= PlaceStructure;
-        inputManager.OnExit -= StopPlacement;
 
         lastDetectedPosition = Vector3Int.zero;
         confirmedGridPosition = Vector3Int.zero;
@@ -216,13 +209,7 @@ public class PlacementSystem : MonoBehaviour
         StopPlacement();
     }
 
-    private void PlaceStructure()
-    {
-        if (inputManager.IsPointerOverUI()) return;
-        Vector3 mousePosition = inputManager.GetSelectedMapPosition();
-        Vector3Int gridPosition = grid.WorldToCell(mousePosition);
-        buildingState.OnAction(gridPosition);
-    }
+
 
     private void Update()
     {

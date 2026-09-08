@@ -230,12 +230,14 @@ public class BuildUIManager : MonoBehaviour
     {
         if (furnitureSelector.SelectedFurniture != null)
         {
+            // Storing a placed piece — adds to inventory
             isMoving = false;
             furnitureSelector.StoreSelected();
             RefreshFurnitureButtons();
         }
         else if (placementSystem.IsPlacing())
         {
+            // Cancelling preview (either new placement or move) — always returns to inventory
             isMoving = false;
             placementSystem.CancelPlacement();
             actionBarFollower.Hide();
