@@ -25,14 +25,19 @@ public class PreviewSystem : MonoBehaviour
         cellIndicatorRenderer = cellIndicator.GetComponentInChildren<Renderer>();
     }
 
-    public void StartShowingPlacementPreview(GameObject prefab, Vector2Int size)
+    public void StartShowingPlacementPreview(GameObject prefab, Vector2Int size, Vector3 startWorldPosition)
     {
         previewObject = Instantiate(prefab);
         PreparePreview(previewObject);
         PrepareCursor(size);
-        cellIndicator.SetActive(false); // stay hidden until first drag
-                                        // Move preview off screen until first drag
-        previewObject.transform.position = new Vector3(-9999f, -9999f, -9999f);
+        cellIndicator.SetActive(true);
+
+        // Place preview at start position immediately
+        previewObject.transform.position = new Vector3(
+            startWorldPosition.x,
+            startWorldPosition.y + previewYOffset,
+            startWorldPosition.z);
+        cellIndicator.transform.position = startWorldPosition;
     }
 
     public GameObject GetPreviewObject()

@@ -20,7 +20,8 @@ public class PlacementState : IBuildingState
                           ObjectsDatabaseSO database,
                           GridData floorData,
                           GridData furnitureData,
-                          ObjectPlacer objectPlacer)
+                          ObjectPlacer objectPlacer,
+                          Vector3Int startGridPosition) // add this
     {
         ID = iD;
         this.grid = grid;
@@ -29,19 +30,21 @@ public class PlacementState : IBuildingState
         this.floorData = floorData;
         this.furnitureData = furnitureData;
         this.objectPlacer = objectPlacer;
-        //SoundFeedback soundFeedback;
 
         selectedObjectIndex = database.objectsData.FindIndex(data => data.ID == ID);
         if (selectedObjectIndex > -1)
         {
-            //gridVisualization.SetActive(true);
+            Vector3 startWorldPos = grid.CellToWorld(startGridPosition);
             previewSystem.StartShowingPlacementPreview(
                 database.objectsData[selectedObjectIndex].Prefab,
-                database.objectsData[selectedObjectIndex].Size);
+                database.objectsData[selectedObjectIndex].Size,
+                startWorldPos);
+
+            // Also update validity display immediately
+            UpdateState(startGridPosition);
         }
         else
             throw new System.Exception($"No object with ID found {iD}");
-
     }
 
     public void EndState()

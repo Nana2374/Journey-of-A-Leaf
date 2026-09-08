@@ -58,18 +58,35 @@ public class PlacementSystem : MonoBehaviour
         StopPlacement();
         currentPlacementID = ID;
         currentRotationIndex = 0;
-        lastDetectedPosition = Vector3Int.zero;
-        confirmedGridPosition = Vector3Int.zero; // reset so no stale position
 
         int index = database.objectsData.FindIndex(data => data.ID == ID);
         if (index >= 0)
             currentObjectSize = database.objectsData[index].Size;
 
+        // Calculate default start position — centre of camera view on the grid
+        Vector3Int startGridPos = GetCentreGridPosition();
+        lastDetectedPosition = startGridPos;
+        confirmedGridPosition = startGridPos;
+
         gridVisualization.SetActive(true);
-        buildingState = new PlacementState(ID, grid, preview, database, floorData, furnitureData, objectPlacer);
+        buildingState = new PlacementState(ID, grid, preview, database, floorData, furnitureData, objectPlacer, startGridPos);
 
         inputManager.EnterBuildMode();
         inputManager.OnExit += StopPlacement;
+    }
+
+    private Vector3Int GetCentreGridPosition()
+    {
+        // Raycast from camera centre to find grid position
+        Ray ray = Camera.main.ScreenPointToRay(
+            new Vector3(Screen.width * 0.5f, Screen.height * 0.5f, 0f));
+
+        if (Physics.Raycast(ray, out RaycastHit hit, 100f))
+            return grid.WorldToCell(hit.point);
+
+        // Fallback — use camera position projected onto grid
+        Vector3 camPos = Camera.main.transform.position;
+        return grid.WorldToCell(new Vector3(camPos.x, 0f, camPos.z));
     }
 
     public void PlaceCurrentItem()
@@ -150,7 +167,9 @@ public class PlacementSystem : MonoBehaviour
         float angle = rotationAngles[currentRotationIndex];
 
         buildingState.EndState();
-        buildingState = new PlacementState(currentPlacementID, grid, preview, database, floorData, furnitureData, objectPlacer);
+        // Pass confirmedGridPosition so preview stays where it was
+        buildingState = new PlacementState(currentPlacementID, grid, preview, database,
+            floorData, furnitureData, objectPlacer, confirmedGridPosition);
         preview.SetPreviewRotation(Quaternion.Euler(0f, angle, 0f), currentObjectSize);
     }
 
