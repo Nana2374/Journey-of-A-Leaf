@@ -58,6 +58,8 @@ public class PlacementSystem : MonoBehaviour
         StopPlacement();
         currentPlacementID = ID;
         currentRotationIndex = 0;
+        lastDetectedPosition = Vector3Int.zero;
+        confirmedGridPosition = Vector3Int.zero; // reset so no stale position
 
         int index = database.objectsData.FindIndex(data => data.ID == ID);
         if (index >= 0)

@@ -57,6 +57,8 @@ public class ActionBarFollower : MonoBehaviour
     public void StopTracking()
     {
         trackedObject = null;
+        // Move off screen so it doesn't flash at old position
+        actionBarRect.anchoredPosition = new Vector2(-9999f, -9999f);
     }
 
     private Vector3 GetCentre(GameObject obj)

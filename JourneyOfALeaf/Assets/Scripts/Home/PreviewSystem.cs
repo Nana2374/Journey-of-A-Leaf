@@ -30,7 +30,9 @@ public class PreviewSystem : MonoBehaviour
         previewObject = Instantiate(prefab);
         PreparePreview(previewObject);
         PrepareCursor(size);
-        cellIndicator.SetActive(true);
+        cellIndicator.SetActive(false); // stay hidden until first drag
+                                        // Move preview off screen until first drag
+        previewObject.transform.position = new Vector3(-9999f, -9999f, -9999f);
     }
 
     public GameObject GetPreviewObject()
@@ -94,8 +96,11 @@ public class PreviewSystem : MonoBehaviour
         {
             MovePreview(position);
             ApplyFeedbackToPreview(validity);
-
         }
+
+        // Only show cell indicator once we have a real position
+        if (!cellIndicator.activeSelf)
+            cellIndicator.SetActive(true);
 
         MoveCursor(position);
         ApplyFeedbackToCursor(validity);

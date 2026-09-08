@@ -122,10 +122,28 @@ public class BuildUIManager : MonoBehaviour
     void OnFurnitureSelected(int id)
     {
         furnitureSelector.Deselect();
-        actionBarFollower.StopTracking();
+        actionBarFollower.Hide();           // hide first
+        actionBarFollower.StopTracking();   // then clear position
         placementSystem.StartPlacement(id);
 
-        // Restore place button label
+        var placeText = placeButton.GetComponentInChildren<TMPro.TextMeshProUGUI>();
+        if (placeText != null) placeText.text = "Place";
+
+        placeButton.gameObject.SetActive(true);
+        rotateButton.gameObject.SetActive(true);
+        storeButton.gameObject.SetActive(true);
+
+        StartCoroutine(ShowActionBarNextFrame());
+    }
+
+    public void ContinuePlacement(int id)
+    {
+        isMoving = false;
+        furnitureSelector.Deselect();
+        actionBarFollower.Hide();           // hide first
+        actionBarFollower.StopTracking();   // then clear position
+        placementSystem.StartPlacement(id);
+
         var placeText = placeButton.GetComponentInChildren<TMPro.TextMeshProUGUI>();
         if (placeText != null) placeText.text = "Place";
 
@@ -229,22 +247,7 @@ public class BuildUIManager : MonoBehaviour
         }
     }
 
-    public void ContinuePlacement(int id)
-    {
-        isMoving = false;
-        furnitureSelector.Deselect();
-        actionBarFollower.StopTracking();
-        placementSystem.StartPlacement(id);
 
-        var placeText = placeButton.GetComponentInChildren<TMPro.TextMeshProUGUI>();
-        if (placeText != null) placeText.text = "Place";
-
-        placeButton.gameObject.SetActive(true);
-        rotateButton.gameObject.SetActive(true);
-        storeButton.gameObject.SetActive(true);
-
-        StartCoroutine(ShowActionBarNextFrame());
-    }
 
     public void RefreshFurnitureButtons()
     {
