@@ -25,4 +25,7 @@ public class ObjectData
     //Ref to prefabs in the assets folder: Add all furniture into prefabs
     //Make sure all furniture have pivot point set to bottom left corner since grid is set to that
 
+    [field: SerializeField]
+    public int MaxQuantity { get; private set; } = 1; // max the player can ever own
+
 }

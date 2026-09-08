@@ -32,6 +32,9 @@ public class FurnitureSelector : MonoBehaviour
         if (!isSelectionMode) return;
         if (inputManager.IsDragging()) return;
 
+        // Don't try to select furniture while placement is active
+        if (placementSystem.IsPlacing()) return;
+
         if (Pointer.current != null && Pointer.current.press.wasReleasedThisFrame)
             TrySelectFurniture();
     }

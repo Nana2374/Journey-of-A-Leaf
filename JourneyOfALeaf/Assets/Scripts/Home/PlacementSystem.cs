@@ -13,7 +13,7 @@ public class PlacementSystem : MonoBehaviour
     [SerializeField] private PreviewSystem preview;
     [SerializeField] private ObjectPlacer objectPlacer;
     [SerializeField] private BuildUIManager buildUIManager;
-    [SerializeField] private FurnitureInventory inventory;
+    // inventory field removed - using FurnitureInventory.Instance instead
 
     private GridData furnitureData;
     private GridData floorData;
@@ -25,7 +25,7 @@ public class PlacementSystem : MonoBehaviour
     private readonly float[] rotationAngles = { 0f, 90f, 180f, 270f };
     private int currentPlacementID = -1;
     private Vector2Int currentObjectSize = Vector2Int.one;
-    private bool placementIsFree = false; // true when moving existing furniture
+    private bool placementIsFree = false;
 
     private void Start()
     {
@@ -35,10 +35,9 @@ public class PlacementSystem : MonoBehaviour
         furnitureData = new();
     }
 
-    // Place a new item — costs one from inventory
     public void StartPlacement(int ID)
     {
-        if (!inventory.HasItem(ID))
+        if (!FurnitureInventory.Instance.HasItem(ID))
         {
             Debug.Log($"No items of ID {ID} in inventory");
             return;
@@ -48,7 +47,6 @@ public class PlacementSystem : MonoBehaviour
         BeginPlacement(ID);
     }
 
-    // Place an existing item being moved — no inventory cost
     public void StartPlacementFree(int ID)
     {
         placementIsFree = true;
@@ -76,44 +74,46 @@ public class PlacementSystem : MonoBehaviour
     {
         if (buildingState == null) return;
 
-        // Check validity before placing
         if (!furnitureData.CanPlaceObjectAt(confirmedGridPosition, currentObjectSize))
         {
             Debug.Log("Cannot place here");
             return;
         }
 
-        // Deduct from inventory only if not a move operation
+        // Only deduct from inventory if not a move operation
         if (!placementIsFree)
-            inventory.RemoveItem(currentPlacementID);
+            FurnitureInventory.Instance.RemoveItem(currentPlacementID);
 
         buildingState.OnAction(confirmedGridPosition);
 
-        // Tag the placed object with FurnitureInstance data
-        // ObjectPlacer places the last object — find it and tag it
         StartCoroutine(TagLastPlacedObject(currentPlacementID, confirmedGridPosition, currentRotationIndex));
 
         buildUIManager.OnItemPlaced();
         buildUIManager.RefreshFurnitureButtons();
     }
 
-    private System.Collections.IEnumerator TagLastPlacedObject(int id, Vector3Int gridPos, int rotation)
+    private IEnumerator TagLastPlacedObject(int id, Vector3Int gridPos, int rotation)
     {
-        yield return null; // wait one frame for object to be instantiated
-        // Find the most recently placed furniture by tag
-        GameObject[] furniture = GameObject.FindGameObjectsWithTag("Furniture");
-        foreach (var f in furniture)
+        yield return null;
+
+        GameObject placed = objectPlacer.LastPlacedObject;
+        if (placed == null)
         {
-            FurnitureInstance fi = f.GetComponent<FurnitureInstance>();
-            if (fi != null && fi.FurnitureID == 0) // uninitialized
-            {
-                fi.Initialize(id, gridPos, rotation);
-                break;
-            }
+            Debug.LogWarning("TagLastPlacedObject: LastPlacedObject is null!");
+            yield break;
         }
+
+        FurnitureInstance fi = placed.GetComponent<FurnitureInstance>();
+        if (fi == null)
+        {
+            Debug.LogWarning($"TagLastPlacedObject: No FurnitureInstance on {placed.name}! Make sure your prefab has FurnitureInstance attached.");
+            yield break;
+        }
+
+        fi.Initialize(id, gridPos, rotation);
+        Debug.Log($"Tagged {placed.name} with ID={id}, GridPos={gridPos}");
     }
 
-    // Called by FurnitureSelector when storing/moving furniture
     public void RemoveFurnitureFromGrid(Vector3Int gridPosition, int furnitureID)
     {
         int index = database.objectsData.FindIndex(d => d.ID == furnitureID);
@@ -121,7 +121,6 @@ public class PlacementSystem : MonoBehaviour
 
         Vector2Int size = database.objectsData[index].Size;
 
-        // Remove all occupied cells
         for (int x = 0; x < size.x; x++)
         {
             for (int z = 0; z < size.y; z++)
@@ -145,10 +144,8 @@ public class PlacementSystem : MonoBehaviour
         preview.SetPreviewRotation(Quaternion.Euler(0f, angle, 0f), currentObjectSize);
     }
 
-    // Returns true if currently in placement preview mode
     public bool IsPlacing() => buildingState != null && currentPlacementID != -1;
 
-    // Cancels preview and returns item to inventory
     public void CancelPlacement()
     {
         if (buildingState == null) return;
@@ -156,10 +153,9 @@ public class PlacementSystem : MonoBehaviour
         int idToReturn = currentPlacementID;
         bool wasFree = placementIsFree;
 
-        // Stop first to clear state
         StopPlacement();
 
-        // Then add back to inventory only if it wasn't a move
+        // Add back to inventory only if it was not a move operation
         if (!wasFree && idToReturn != -1)
             FurnitureInventory.Instance.AddItem(idToReturn);
     }
