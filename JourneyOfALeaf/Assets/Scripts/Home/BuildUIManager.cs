@@ -55,6 +55,11 @@ public class BuildUIManager : MonoBehaviour
 
         actionBarFollower.Hide();
 
+        // Make sure all action buttons start hidden
+        placeButton.gameObject.SetActive(false);
+        rotateButton.gameObject.SetActive(false);
+        storeButton.gameObject.SetActive(false);
+
         mainBuildButton.onClick.AddListener(ToggleBuildMode);
 
         for (int i = 0; i < furnitureButtons.Length; i++)
@@ -104,9 +109,9 @@ public class BuildUIManager : MonoBehaviour
 
     void OnFurnitureSelected(int id)
     {
+        Debug.Log($"OnFurnitureSelected called with ID={id}");
         furnitureSelector.Deselect();
         placementSystem.StartPlacement(id);
-        // Show place and rotate only, not store (store is for placed furniture)
         placeButton.gameObject.SetActive(true);
         rotateButton.gameObject.SetActive(true);
         storeButton.gameObject.SetActive(false);

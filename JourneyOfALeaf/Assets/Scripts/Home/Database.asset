@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Database
   m_EditorClassIdentifier: 
   objectsData:
-  - <Name>k__BackingField: Egg
+  - <Name>k__BackingField: Chair
     <ID>k__BackingField: 0
     <Size>k__BackingField: {x: 1, y: 1}
     <Prefab>k__BackingField: {fileID: 1527072956424492494, guid: 2a4fe95db95b05646bea98115c04600e,
