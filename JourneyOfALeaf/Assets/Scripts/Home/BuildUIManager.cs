@@ -14,6 +14,9 @@ public class BuildUIManager : MonoBehaviour
 
     [SerializeField] private GameObject gridVisualization;
 
+    [Header("Player UI")]
+    public GameObject movementCanvas; // drag CanvasUI_Movement here
+
     [Header("References")]
     public PlacementSystem placementSystem;
     public FurnitureSelector furnitureSelector;
@@ -84,10 +87,11 @@ public class BuildUIManager : MonoBehaviour
         topDownCamera.Priority = activePriority;
         buildPanel.gameObject.SetActive(true);
         furnitureSelector.EnterSelectionMode();
+        movementCanvas.SetActive(false);  // hide movement UI
         StopAllCoroutines();
         StartCoroutine(SlidePanel(panelShownPos));
         actionBarFollower.Hide();
-        RefreshFurnitureButtons(); // add this line
+        RefreshFurnitureButtons();
     }
 
     void CloseBuildMode()
@@ -100,6 +104,7 @@ public class BuildUIManager : MonoBehaviour
         actionBarFollower.Hide();
         lookAroundAction.action.Enable();
         topDownCamera.Priority = inactivePriority;
+        movementCanvas.SetActive(true);   // restore movement UI
         StopAllCoroutines();
         StartCoroutine(SlidePanel(panelHiddenPos, () =>
         {

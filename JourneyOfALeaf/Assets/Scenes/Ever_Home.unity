@@ -2820,7 +2820,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 377, y: -319.99997}
+  m_AnchoredPosition: {x: 555, y: -265}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &749206250
@@ -4576,8 +4576,8 @@ MonoBehaviour:
   actionBarRect: {fileID: 1069129656}
   canvas: {fileID: 1320935368}
   canvasGroup: {fileID: 1069129658}
-  yOffset: 260
-  xOffset: -450
+  yOffset: 185
+  xOffset: -650
 --- !u!225 &1069129658
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -8533,6 +8533,7 @@ MonoBehaviour:
   activePriority: 20
   inactivePriority: 0
   gridVisualization: {fileID: 1913200141}
+  movementCanvas: {fileID: 900709877}
   placementSystem: {fileID: 1030594465}
   furnitureSelector: {fileID: 428135496}
   mainBuildButton: {fileID: 749206250}
