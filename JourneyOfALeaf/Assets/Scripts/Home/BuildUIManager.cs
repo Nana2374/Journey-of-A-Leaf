@@ -118,11 +118,14 @@ public class BuildUIManager : MonoBehaviour
         actionBarFollower.StopTracking();
         placementSystem.StartPlacement(id);
 
+        // Restore place button label
+        var placeText = placeButton.GetComponentInChildren<TMPro.TextMeshProUGUI>();
+        if (placeText != null) placeText.text = "Place";
+
         placeButton.gameObject.SetActive(true);
         rotateButton.gameObject.SetActive(true);
         storeButton.gameObject.SetActive(true);
 
-        // Show after one frame so preview object exists for tracking
         StartCoroutine(ShowActionBarNextFrame());
     }
 
@@ -135,13 +138,10 @@ public class BuildUIManager : MonoBehaviour
     // Called after placing to go back to selection mode
     public void OnItemPlaced()
     {
-        // Hide action bar first
         actionBarFollower.Hide();
-        // Reset button states
         placeButton.gameObject.SetActive(false);
         rotateButton.gameObject.SetActive(false);
         storeButton.gameObject.SetActive(false);
-        // Go back to selection mode
         furnitureSelector.EnterSelectionMode();
         RefreshFurnitureButtons();
     }
@@ -151,11 +151,14 @@ public class BuildUIManager : MonoBehaviour
     {
         actionBarFollower.TrackWorldObject(furniture);
         actionBarFollower.Show();
-        placeButton.gameObject.SetActive(false);  // no place when selecting
+        placeButton.gameObject.SetActive(true);   // show as Move button
         rotateButton.gameObject.SetActive(true);
-        storeButton.gameObject.SetActive(true);   // store back to inventory
-    }
+        storeButton.gameObject.SetActive(true);
 
+        // Change place button label to Move
+        var placeText = placeButton.GetComponentInChildren<TMPro.TextMeshProUGUI>();
+        if (placeText != null) placeText.text = "Move";
+    }
     public void HideActionBar()
     {
         actionBarFollower.Hide();
@@ -163,6 +166,18 @@ public class BuildUIManager : MonoBehaviour
 
     public void OnPlacePressed()
     {
+        // If furniture is selected, move it
+        if (furnitureSelector.SelectedFurniture != null)
+        {
+            furnitureSelector.MoveSelected();
+            // Show place/rotate/store for preview mode
+            var placeText = placeButton.GetComponentInChildren<TMPro.TextMeshProUGUI>();
+            if (placeText != null) placeText.text = "Place";
+            StartCoroutine(ShowActionBarNextFrame());
+            return;
+        }
+
+        // Otherwise place the preview
         placementSystem.PlaceCurrentItem();
     }
 
@@ -194,6 +209,23 @@ public class BuildUIManager : MonoBehaviour
             furnitureSelector.EnterSelectionMode();
             RefreshFurnitureButtons();
         }
+    }
+
+    public void ContinuePlacement(int id)
+    {
+        // Automatically re-enter preview for the same item if stock remains
+        furnitureSelector.Deselect();
+        actionBarFollower.StopTracking();
+        placementSystem.StartPlacement(id);
+
+        var placeText = placeButton.GetComponentInChildren<TMPro.TextMeshProUGUI>();
+        if (placeText != null) placeText.text = "Place";
+
+        placeButton.gameObject.SetActive(true);
+        rotateButton.gameObject.SetActive(true);
+        storeButton.gameObject.SetActive(true);
+
+        StartCoroutine(ShowActionBarNextFrame());
     }
 
     public void RefreshFurnitureButtons()

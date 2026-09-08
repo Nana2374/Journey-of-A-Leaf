@@ -80,33 +80,46 @@ public class PlacementSystem : MonoBehaviour
             return;
         }
 
-        // Only deduct from inventory if not a move operation
         if (!placementIsFree)
             FurnitureInventory.Instance.RemoveItem(currentPlacementID);
 
         buildingState.OnAction(confirmedGridPosition);
 
-        StartCoroutine(TagLastPlacedObject(currentPlacementID, confirmedGridPosition, currentRotationIndex));
+        // Capture everything before StopPlacement resets state
+        GameObject justPlaced = objectPlacer.LastPlacedObject;
+        int idToTag = currentPlacementID;
+        Vector3Int posToTag = confirmedGridPosition;
+        int rotToTag = currentRotationIndex;
+        bool hasMoreStock = !placementIsFree && FurnitureInventory.Instance.HasItem(currentPlacementID);
+        int idToContinue = currentPlacementID;
+
+        // Stop placement — this destroys the preview and clears state
+        StopPlacement();
 
         buildUIManager.OnItemPlaced();
         buildUIManager.RefreshFurnitureButtons();
+
+        StartCoroutine(TagPlacedObject(justPlaced, idToTag, posToTag, rotToTag));
+
+        // Continue preview only if more stock remains
+        if (hasMoreStock)
+            buildUIManager.ContinuePlacement(idToContinue);
     }
 
-    private IEnumerator TagLastPlacedObject(int id, Vector3Int gridPos, int rotation)
+    private IEnumerator TagPlacedObject(GameObject placed, int id, Vector3Int gridPos, int rotation)
     {
         yield return null;
 
-        GameObject placed = objectPlacer.LastPlacedObject;
         if (placed == null)
         {
-            Debug.LogWarning("TagLastPlacedObject: LastPlacedObject is null!");
+            Debug.LogWarning("TagPlacedObject: placed object is null!");
             yield break;
         }
 
         FurnitureInstance fi = placed.GetComponent<FurnitureInstance>();
         if (fi == null)
         {
-            Debug.LogWarning($"TagLastPlacedObject: No FurnitureInstance on {placed.name}! Make sure your prefab has FurnitureInstance attached.");
+            Debug.LogWarning($"No FurnitureInstance on {placed.name}!");
             yield break;
         }
 
@@ -155,13 +168,13 @@ public class PlacementSystem : MonoBehaviour
             FurnitureInventory.Instance.AddItem(idToReturn);
     }
 
-    public void ForceStop() => StopPlacement();
-
     private void StopPlacement()
     {
         if (buildingState == null) return;
 
-        gridVisualization.SetActive(false);
+        // Don't hide grid here — BuildUIManager controls grid visibility
+        // gridVisualization.SetActive(false); // remove this line
+
         buildingState.EndState();
 
         inputManager.OnClicked -= PlaceStructure;
@@ -175,6 +188,11 @@ public class PlacementSystem : MonoBehaviour
 
         if (inputManager.IsBuildModeActive)
             inputManager.ExitBuildMode();
+    }
+    public void ForceStop()
+    {
+        gridVisualization.SetActive(false);
+        StopPlacement();
     }
 
     private void PlaceStructure()
