@@ -83,6 +83,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: Egg
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 2c330938992098445b20f3c337330659,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 2c330938992098445b20f3c337330659,
+        type: 3}
+      propertyPath: m_TagString
+      value: Furniture
+      objectReference: {fileID: 0}
+    - target: {fileID: 3057452131956964986, guid: 2c330938992098445b20f3c337330659,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 5895141569738445721, guid: 2c330938992098445b20f3c337330659,
         type: 3}
       propertyPath: m_LocalScale.x
@@ -122,24 +137,43 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 3057452131956964986, guid: 2c330938992098445b20f3c337330659,
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2c330938992098445b20f3c337330659,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 3468916545299945308}
+      addedObject: {fileID: -1534007537932144141}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2c330938992098445b20f3c337330659,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4628196859559803577}
   m_SourcePrefab: {fileID: 100100000, guid: 2c330938992098445b20f3c337330659, type: 3}
---- !u!1 &3719526415604553445 stripped
+--- !u!1 &1527072956424492494 stripped
 GameObject:
-  m_CorrespondingSourceObject: {fileID: 3057452131956964986, guid: 2c330938992098445b20f3c337330659,
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 2c330938992098445b20f3c337330659,
     type: 3}
   m_PrefabInstance: {fileID: 1869039005828688031}
   m_PrefabAsset: {fileID: 0}
---- !u!65 &3468916545299945308
+--- !u!114 &-1534007537932144141
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1527072956424492494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 758d267b68632de43bc98079161579ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FurnitureID: 0
+  GridPosition: {x: 0, y: 0, z: 0}
+  RotationIndex: 0
+--- !u!65 &4628196859559803577
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3719526415604553445}
+  m_GameObject: {fileID: 1527072956424492494}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -152,5 +186,5 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.038910028, y: 0.028154287, z: 0.038910028}
-  m_Center: {x: -0.018316163, y: 0.013892457, z: -0.019028699}
+  m_Size: {x: 1.8930054, y: 1, z: 1}
+  m_Center: {x: 0.4465027, y: 0, z: 0}
