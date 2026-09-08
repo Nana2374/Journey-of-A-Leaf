@@ -210,7 +210,6 @@ public class PlacementSystem : MonoBehaviour
     }
 
 
-
     private void Update()
     {
         if (buildingState == null) return;
@@ -225,5 +224,11 @@ public class PlacementSystem : MonoBehaviour
             lastDetectedPosition = gridPosition;
             confirmedGridPosition = gridPosition;
         }
+    }
+
+    public Vector3 SnapToGrid(Vector3 worldPosition)
+    {
+        Vector3Int gridPos = grid.WorldToCell(worldPosition);
+        return grid.CellToWorld(gridPos);
     }
 }

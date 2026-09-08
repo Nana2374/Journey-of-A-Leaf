@@ -161,7 +161,17 @@ public class FurnitureSelector : MonoBehaviour
     public void RotateSelected()
     {
         if (selectedFurniture == null) return;
-        selectedFurniture.transform.Rotate(0f, 90f, 0f);
+
+        Bounds bounds = new Bounds(selectedFurniture.transform.position, Vector3.zero);
+        Renderer[] renderers = selectedFurniture.GetComponentsInChildren<Renderer>();
+        foreach (var r in renderers) bounds.Encapsulate(r.bounds);
+        Vector3 centre = bounds.center;
+
+        selectedFurniture.transform.RotateAround(centre, Vector3.up, 90f);
+
+        // Snap back to grid
+        selectedFurniture.transform.position = placementSystem.SnapToGrid(
+            selectedFurniture.transform.position);
 
         FurnitureInstance instance = selectedFurniture.GetComponent<FurnitureInstance>();
         if (instance != null)
