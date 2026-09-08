@@ -98,6 +98,11 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 9
       objectReference: {fileID: 0}
+    - target: {fileID: 3057452131956964986, guid: 2c330938992098445b20f3c337330659,
+        type: 3}
+      propertyPath: m_TagString
+      value: Furniture
+      objectReference: {fileID: 0}
     - target: {fileID: 5895141569738445721, guid: 2c330938992098445b20f3c337330659,
         type: 3}
       propertyPath: m_LocalScale.x
@@ -164,7 +169,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 758d267b68632de43bc98079161579ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FurnitureID: 0
+  FurnitureID: 1
   GridPosition: {x: 0, y: 0, z: 0}
   RotationIndex: 0
 --- !u!65 &4628196859559803577
@@ -186,5 +191,5 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.8930054, y: 1, z: 1}
-  m_Center: {x: 0.4465027, y: 0, z: 0}
+  m_Size: {x: 0.91713333, y: 0.66122854, z: 0.83939874}
+  m_Center: {x: 1.1436791, y: 0.26902425, z: 0.53023046}

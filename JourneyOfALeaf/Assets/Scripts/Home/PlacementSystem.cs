@@ -116,20 +116,15 @@ public class PlacementSystem : MonoBehaviour
 
     public void RemoveFurnitureFromGrid(Vector3Int gridPosition, int furnitureID)
     {
-        int index = database.objectsData.FindIndex(d => d.ID == furnitureID);
-        if (index < 0) return;
+        Debug.Log($"RemoveFurnitureFromGrid: trying to remove at gridPosition={gridPosition}");
 
-        Vector2Int size = database.objectsData[index].Size;
-
-        for (int x = 0; x < size.x; x++)
+        if (!furnitureData.CanPlaceObjectAt(gridPosition, Vector2Int.one))
         {
-            for (int z = 0; z < size.y; z++)
-            {
-                Vector3Int pos = gridPosition + new Vector3Int(x, 0, z);
-                if (!furnitureData.CanPlaceObjectAt(pos, Vector2Int.one))
-                    furnitureData.RemoveObjectAt(pos);
-            }
+            furnitureData.RemoveObjectAt(gridPosition);
+            Debug.Log($"Successfully removed at {gridPosition}");
         }
+        else
+            Debug.Log($"Nothing found at {gridPosition}!");
     }
 
     public void RotateCurrentItem()

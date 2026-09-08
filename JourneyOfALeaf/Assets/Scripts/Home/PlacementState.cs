@@ -52,29 +52,23 @@ public class PlacementState : IBuildingState
     public void OnAction(Vector3Int gridPosition)
     {
         bool placementValidity = CheckPlacementValidity(gridPosition, selectedObjectIndex);
-        //Debug.Log($"Placement validity: {placementValidity}");
-        if (placementValidity == false)
-        {
-            //source.PlayOneShot(wrongPlacementClip);
-            return;
-        }
+        if (placementValidity == false) return;
 
+        Debug.Log($"PlacementState.OnAction: placing at gridPosition={gridPosition}");
 
-        //source.PlayOneShot(correctPlacementClip);
-
-        int index = objectPlacer.PlaceObject(database.objectsData[selectedObjectIndex].Prefab, grid.CellToWorld(gridPosition));
-
+        int index = objectPlacer.PlaceObject(
+            database.objectsData[selectedObjectIndex].Prefab,
+            grid.CellToWorld(gridPosition));
 
         GridData selectedData = database.objectsData[selectedObjectIndex].ID == 0 ?
-                floorData :
-                furnitureData;
+            floorData : furnitureData;
 
         selectedData.AddObjectAt(gridPosition,
             database.objectsData[selectedObjectIndex].Size,
             database.objectsData[selectedObjectIndex].ID,
             index);
-        previewSystem.UpdatePosition(grid.CellToWorld(gridPosition), false);
 
+        previewSystem.UpdatePosition(grid.CellToWorld(gridPosition), false);
     }
 
     private bool CheckPlacementValidity(Vector3Int gridPosition, int selectedObjectIndex)
