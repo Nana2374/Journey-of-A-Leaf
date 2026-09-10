@@ -16,7 +16,7 @@ MonoBehaviour:
   - <Name>k__BackingField: Carpet
     <ID>k__BackingField: 0
     <Size>k__BackingField: {x: 1, y: 1}
-    <Prefab>k__BackingField: {fileID: 4910099292440922814, guid: e46ebbcea2cf88749af58b2a7c2ed9e9,
+    <Prefab>k__BackingField: {fileID: 1527072956424492494, guid: 2a4fe95db95b05646bea98115c04600e,
       type: 3}
     <MaxQuantity>k__BackingField: 1
   - <Name>k__BackingField: Chair
@@ -25,10 +25,10 @@ MonoBehaviour:
     <Prefab>k__BackingField: {fileID: 1527072956424492494, guid: 2a4fe95db95b05646bea98115c04600e,
       type: 3}
     <MaxQuantity>k__BackingField: 1
-  - <Name>k__BackingField: Egg2
+  - <Name>k__BackingField: Bed
     <ID>k__BackingField: 2
     <Size>k__BackingField: {x: 1, y: 1}
-    <Prefab>k__BackingField: {fileID: 1527072956424492494, guid: 2a4fe95db95b05646bea98115c04600e,
+    <Prefab>k__BackingField: {fileID: 6220161050104309887, guid: f906d9250b6e49b488cf7b18a0793175,
       type: 3}
     <MaxQuantity>k__BackingField: 1
   - <Name>k__BackingField: Egg3
