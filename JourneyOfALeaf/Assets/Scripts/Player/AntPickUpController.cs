@@ -47,18 +47,6 @@ public class AntPickupController : MonoBehaviour
         }
 
         // ==========================================
-        // TAPPED AN NPC -> talk to them
-        // (Giving items is now handled by NPCGiveItemPromptUI, the icon above their head)
-        // ==========================================
-        NPCController npc = hit.collider.GetComponentInParent<NPCController>();
-        if (npc != null)
-        {
-            ItemDropPromptUI.Instance?.Hide();
-            npc.Interact();
-            return;
-        }
-
-        // ==========================================
         // TAPPED AN ITEM
         // ==========================================
         LeafItem item = hit.collider.GetComponentInParent<LeafItem>();
