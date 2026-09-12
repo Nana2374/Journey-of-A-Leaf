@@ -19,36 +19,39 @@ public class AntPickupController : MonoBehaviour
 
     private void Update()
     {
-        // Testing in Unity Editor
-        if (Input.GetMouseButtonDown(0))
+        if (Input.touchCount > 0)
         {
-            TryInteract(Input.mousePosition);
+            Touch touch = Input.GetTouch(0);
+            if (touch.phase == TouchPhase.Began)
+            {
+                TryInteract(touch.position, touch.fingerId);
+            }
+        }
+        else if (Input.GetMouseButtonDown(0))
+        {
+            TryInteract(Input.mousePosition, -1);
         }
     }
 
     // Called by mobile touch system
-    public void OnScreenTap(Vector2 screenPosition)
+    public void OnScreenTap(Vector2 screenPosition, int fingerId)
     {
-        TryInteract(screenPosition);
+        TryInteract(screenPosition, fingerId);
     }
 
-    private void TryInteract(Vector2 screenPosition)
+    private void TryInteract(Vector2 screenPosition, int pointerId)
     {
         // Don't let taps on UI buttons/HUD leak through to the world
-        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject(pointerId))
             return;
 
         Ray ray = mainCamera.ScreenPointToRay(screenPosition);
         if (!Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, interactionLayerMask))
         {
-            // Tapped empty space - dismiss any open drop prompt
             ItemDropPromptUI.Instance?.Hide();
             return;
         }
 
-        // ==========================================
-        // TAPPED AN ITEM
-        // ==========================================
         LeafItem item = hit.collider.GetComponentInParent<LeafItem>();
         if (item == null)
         {
@@ -65,8 +68,6 @@ public class AntPickupController : MonoBehaviour
 
         if (item.IsOnLeaf)
         {
-            // Tapping the item again while its Drop prompt is showing dismisses it;
-            // otherwise show the Drop prompt for this item.
             if (ItemDropPromptUI.Instance != null && ItemDropPromptUI.Instance.IsShowingFor(item))
             {
                 ItemDropPromptUI.Instance.Hide();
@@ -78,7 +79,6 @@ public class AntPickupController : MonoBehaviour
             return;
         }
 
-        // Item is on the ground -> pick it up onto the leaf
         Transform placementPoint = leaf.GetAvailablePlacementPoint();
         if (placementPoint == null)
         {
