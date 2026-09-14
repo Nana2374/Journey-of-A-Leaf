@@ -55,7 +55,10 @@ public class AntPickupController : MonoBehaviour
         LeafItem item = hit.collider.GetComponentInParent<LeafItem>();
         if (item == null)
         {
-            ItemDropPromptUI.Instance?.Hide();
+            if (ItemDropPromptUI.Instance != null)
+            {
+                ItemDropPromptUI.Instance.Hide();
+            }
             return;
         }
 
