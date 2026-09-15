@@ -5,7 +5,7 @@ using UnityEngine;
 public class PreviewSystem : MonoBehaviour
 {
     [SerializeField]
-    private float previewYOffset = 0.06f;
+    private float previewXOffset = 0.06f;
 
     [SerializeField]
     private GameObject cellIndicator;
@@ -34,8 +34,8 @@ public class PreviewSystem : MonoBehaviour
 
         // Place preview at start position immediately
         previewObject.transform.position = new Vector3(
-            startWorldPosition.x,
-            startWorldPosition.y + previewYOffset,
+            startWorldPosition.x + previewXOffset,
+            startWorldPosition.y,
             startWorldPosition.z);
         cellIndicator.transform.position = startWorldPosition;
     }
@@ -124,8 +124,8 @@ public class PreviewSystem : MonoBehaviour
     private void MovePreview(Vector3 position)
     {
         previewObject.transform.position = new Vector3(
-            position.x,
-            position.y + previewYOffset,
+            position.x + previewXOffset,
+            position.y,
             position.z);
     }
 

@@ -11,17 +11,17 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: f2a41000531442b458dca410efbd4e84,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 30
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f2a41000531442b458dca410efbd4e84,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 30
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f2a41000531442b458dca410efbd4e84,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 30
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f2a41000531442b458dca410efbd4e84,
         type: 3}
@@ -104,7 +104,7 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f2a41000531442b458dca410efbd4e84,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 2352319943378162507}
+      addedObject: {fileID: 4059846772434430048}
   m_SourcePrefab: {fileID: 100100000, guid: f2a41000531442b458dca410efbd4e84, type: 3}
 --- !u!1 &6220161050104309887 stripped
 GameObject:
@@ -127,7 +127,7 @@ MonoBehaviour:
   FurnitureID: 2
   GridPosition: {x: 0, y: 0, z: 0}
   RotationIndex: 0
---- !u!65 &2352319943378162507
+--- !u!65 &4059846772434430048
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -146,5 +146,5 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.092099756, y: 0.03995329, z: 0.09279017}
-  m_Center: {x: -0.0000000037252903, y: 0.019976646, z: 0.0019143278}
+  m_Size: {x: 2.7629924, y: 1.1985987, z: 2.7837052}
+  m_Center: {x: 0, y: 0.5992994, z: 0.05742985}
