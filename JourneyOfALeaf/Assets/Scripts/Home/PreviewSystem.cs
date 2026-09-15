@@ -79,8 +79,13 @@ public class PreviewSystem : MonoBehaviour
     public void SetPreviewRotation(Quaternion rotation, Vector2Int size)
     {
         if (previewObject == null) return;
-        previewObject.transform.rotation = rotation;
-        // Position will snap correctly on next drag update
+
+        // Try to rotate child model if it exists
+        Transform model = previewObject.transform.childCount > 0
+            ? previewObject.transform.GetChild(0)
+            : previewObject.transform;
+
+        model.localRotation = rotation;
     }
 
     public void UpdatePosition(Vector3 position, bool validity)

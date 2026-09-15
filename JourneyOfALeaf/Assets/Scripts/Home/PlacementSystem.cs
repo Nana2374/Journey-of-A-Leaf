@@ -117,7 +117,13 @@ public class PlacementSystem : MonoBehaviour
         lastRotationPerID[currentPlacementID] = currentRotationIndex;
 
         if (justPlaced != null)
-            justPlaced.transform.rotation = Quaternion.Euler(0f, rotToTag * 90f, 0f);
+        {
+            FurnitureInstance fi = justPlaced.GetComponent<FurnitureInstance>();
+            if (fi != null)
+                fi.ApplyRotation(rotToTag);
+            else
+                justPlaced.transform.rotation = Quaternion.Euler(0f, rotToTag * 90f, 0f);
+        }
 
         StopPlacement();
 

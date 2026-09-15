@@ -153,6 +153,7 @@ MonoBehaviour:
   FurnitureID: 3
   GridPosition: {x: 0, y: 0, z: 0}
   RotationIndex: 0
+  modelTransform: {fileID: 6383702819764837714}
 --- !u!1001 &6853861364805630649
 PrefabInstance:
   m_ObjectHideFlags: 0

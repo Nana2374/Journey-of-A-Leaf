@@ -127,6 +127,7 @@ MonoBehaviour:
   FurnitureID: 2
   GridPosition: {x: 0, y: 0, z: 0}
   RotationIndex: 0
+  modelTransform: {fileID: 6708572514143990469}
 --- !u!65 &4059846772434430048
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -148,3 +149,9 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2.7629924, y: 1.1985987, z: 2.7837052}
   m_Center: {x: 0, y: 0.5992994, z: 0.05742985}
+--- !u!4 &6708572514143990469 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: f2a41000531442b458dca410efbd4e84,
+    type: 3}
+  m_PrefabInstance: {fileID: 6526589237519521070}
+  m_PrefabAsset: {fileID: 0}
