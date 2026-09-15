@@ -85,11 +85,12 @@ public class BuildUIManager : MonoBehaviour
     {
         isBuildModeOpen = true;
         inputManager.SetBuildPanelOpen(true);
+        topDownCamera.Priority = activePriority;
 
         buildModeText.SetActive(true);
         gridVisualization.SetActive(true);
         lookAroundAction.action.Disable();
-        topDownCamera.Priority = activePriority;
+
         buildPanel.gameObject.SetActive(true);
         furnitureSelector.EnterSelectionMode();
         movementCanvas.SetActive(false);  // hide movement UI
@@ -103,6 +104,7 @@ public class BuildUIManager : MonoBehaviour
     {
         isBuildModeOpen = false;
         inputManager.SetBuildPanelOpen(true);
+        topDownCamera.Priority = inactivePriority;
 
         buildModeText.SetActive(false);
         gridVisualization.SetActive(false);
@@ -110,7 +112,7 @@ public class BuildUIManager : MonoBehaviour
         furnitureSelector.ExitSelectionMode();
         actionBarFollower.Hide();
         lookAroundAction.action.Enable();
-        topDownCamera.Priority = inactivePriority;
+
         movementCanvas.SetActive(true);   // restore movement UI
         StopAllCoroutines();
         StartCoroutine(SlidePanel(panelHiddenPos, () =>

@@ -32,11 +32,7 @@ public class PreviewSystem : MonoBehaviour
         PrepareCursor(size);
         cellIndicator.SetActive(true);
 
-        // Place preview at start position immediately
-        previewObject.transform.position = new Vector3(
-            startWorldPosition.x + previewXOffset,
-            startWorldPosition.y,
-            startWorldPosition.z);
+        previewObject.transform.position = startWorldPosition; // no offset
         cellIndicator.transform.position = startWorldPosition;
     }
 
@@ -128,10 +124,7 @@ public class PreviewSystem : MonoBehaviour
 
     private void MovePreview(Vector3 position)
     {
-        previewObject.transform.position = new Vector3(
-            position.x + previewXOffset,
-            position.y,
-            position.z);
+        previewObject.transform.position = position; // no offset — baked into prefab child
     }
 
     internal void StartShowingRemovePreview()

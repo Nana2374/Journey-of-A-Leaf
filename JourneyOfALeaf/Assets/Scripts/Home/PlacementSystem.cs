@@ -225,6 +225,9 @@ public class PlacementSystem : MonoBehaviour
 
         Vector3 mousePosition = inputManager.GetSelectedMapPosition();
         Vector3Int gridPosition = grid.WorldToCell(mousePosition);
+        Vector3 cellWorldPos = grid.CellToWorld(gridPosition);
+
+        //Debug.Log($"Mouse={mousePosition}, GridCell={gridPosition}, CellWorld={cellWorldPos}, PreviewPos={preview.GetPreviewObject()?.transform.position}");
 
         if (lastDetectedPosition != gridPosition)
         {
