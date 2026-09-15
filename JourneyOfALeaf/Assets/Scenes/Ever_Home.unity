@@ -3523,7 +3523,7 @@ MonoBehaviour:
   m_LookAt: {fileID: 527982923}
   m_Follow: {fileID: 527982923}
   m_Lens:
-    FieldOfView: 36.03607
+    FieldOfView: 36.030415
     OrthographicSize: 10
     NearClipPlane: 0.1
     FarClipPlane: 5000
@@ -4727,8 +4727,8 @@ MonoBehaviour:
   actionBarRect: {fileID: 1069129656}
   canvas: {fileID: 1320935368}
   canvasGroup: {fileID: 1069129658}
-  yOffset: 185
-  xOffset: -650
+  yOffset: 13
+  xOffset: -250
 --- !u!225 &1069129658
 CanvasGroup:
   m_ObjectHideFlags: 0
