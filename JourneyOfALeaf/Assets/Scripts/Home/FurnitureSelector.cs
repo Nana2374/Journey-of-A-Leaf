@@ -166,9 +166,10 @@ public class FurnitureSelector : MonoBehaviour
         if (instance == null) return;
 
         instance.RotationIndex = (instance.RotationIndex + 1) % 4;
-
-        // Apply rotation directly from index so it's always consistent
         selectedFurniture.transform.rotation = Quaternion.Euler(0f, instance.RotationIndex * 90f, 0f);
+
+        // Save so next placement of this ID remembers it
+        placementSystem.SaveRotationForID(instance.FurnitureID, instance.RotationIndex);
 
         buildUIManager.ShowActionBarOnFurniture(selectedFurniture);
     }

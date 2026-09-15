@@ -26,6 +26,8 @@ public class PlacementSystem : MonoBehaviour
     private Vector2Int currentObjectSize = Vector2Int.one;
     private bool placementIsFree = false;
 
+    private Dictionary<int, int> lastRotationPerID = new Dictionary<int, int>();
+
     private void Start()
     {
         gridVisualization.SetActive(false);
@@ -56,13 +58,14 @@ public class PlacementSystem : MonoBehaviour
     {
         StopPlacement();
         currentPlacementID = ID;
-        currentRotationIndex = 0;
+
+        // Restore last used rotation for this furniture ID
+        currentRotationIndex = lastRotationPerID.ContainsKey(ID) ? lastRotationPerID[ID] : 0;
 
         int index = database.objectsData.FindIndex(data => data.ID == ID);
         if (index >= 0)
             currentObjectSize = database.objectsData[index].Size;
 
-        // Calculate default start position — centre of camera view on the grid
         Vector3Int startGridPos = GetCentreGridPosition();
         lastDetectedPosition = startGridPos;
         confirmedGridPosition = startGridPos;
@@ -70,8 +73,11 @@ public class PlacementSystem : MonoBehaviour
         gridVisualization.SetActive(true);
         buildingState = new PlacementState(ID, grid, preview, database, floorData, furnitureData, objectPlacer, startGridPos);
 
-        inputManager.EnterBuildMode();
+        // Apply restored rotation to preview immediately
+        if (currentRotationIndex != 0)
+            preview.SetPreviewRotation(Quaternion.Euler(0f, currentRotationIndex * 90f, 0f), currentObjectSize);
 
+        inputManager.EnterBuildMode();
     }
 
     private Vector3Int GetCentreGridPosition()
@@ -100,7 +106,6 @@ public class PlacementSystem : MonoBehaviour
 
         buildingState.OnAction(confirmedGridPosition);
 
-        // Capture everything before StopPlacement resets state
         GameObject justPlaced = objectPlacer.LastPlacedObject;
         int idToTag = currentPlacementID;
         Vector3Int posToTag = confirmedGridPosition;
@@ -108,7 +113,9 @@ public class PlacementSystem : MonoBehaviour
         bool hasMoreStock = !placementIsFree && FurnitureInventory.Instance.HasItem(currentPlacementID);
         int idToContinue = currentPlacementID;
 
-        // Apply rotation immediately — don't wait for coroutine
+        // Save rotation before stopping
+        lastRotationPerID[currentPlacementID] = currentRotationIndex;
+
         if (justPlaced != null)
             justPlaced.transform.rotation = Quaternion.Euler(0f, rotToTag * 90f, 0f);
 
@@ -158,8 +165,10 @@ public class PlacementSystem : MonoBehaviour
         currentRotationIndex = (currentRotationIndex + 1) % rotationAngles.Length;
         float angle = rotationAngles[currentRotationIndex];
 
+        // Save rotation for this furniture ID
+        lastRotationPerID[currentPlacementID] = currentRotationIndex;
+
         buildingState.EndState();
-        // Pass confirmedGridPosition so preview stays where it was
         buildingState = new PlacementState(currentPlacementID, grid, preview, database,
             floorData, furnitureData, objectPlacer, confirmedGridPosition);
         preview.SetPreviewRotation(Quaternion.Euler(0f, angle, 0f), currentObjectSize);
@@ -223,5 +232,10 @@ public class PlacementSystem : MonoBehaviour
     {
         Vector3Int gridPos = grid.WorldToCell(worldPosition);
         return grid.CellToWorld(gridPos);
+    }
+
+    public void SaveRotationForID(int id, int rotationIndex)
+    {
+        lastRotationPerID[id] = rotationIndex;
     }
 }

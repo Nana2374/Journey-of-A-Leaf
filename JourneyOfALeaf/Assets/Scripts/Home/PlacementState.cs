@@ -88,4 +88,6 @@ public class PlacementState : IBuildingState
 
         previewSystem.UpdatePosition(grid.CellToWorld(gridPosition), placementValidity);
     }
+
+
 }
