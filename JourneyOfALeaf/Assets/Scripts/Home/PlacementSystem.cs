@@ -93,10 +93,7 @@ public class PlacementSystem : MonoBehaviour
         if (buildingState == null) return;
 
         if (!furnitureData.CanPlaceObjectAt(confirmedGridPosition, currentObjectSize))
-        {
-            //Debug.Log("Cannot place here");
             return;
-        }
 
         if (!placementIsFree)
             FurnitureInventory.Instance.RemoveItem(currentPlacementID);
@@ -111,7 +108,10 @@ public class PlacementSystem : MonoBehaviour
         bool hasMoreStock = !placementIsFree && FurnitureInventory.Instance.HasItem(currentPlacementID);
         int idToContinue = currentPlacementID;
 
-        // Stop placement — this destroys the preview and clears state
+        // Apply rotation immediately — don't wait for coroutine
+        if (justPlaced != null)
+            justPlaced.transform.rotation = Quaternion.Euler(0f, rotToTag * 90f, 0f);
+
         StopPlacement();
 
         buildUIManager.OnItemPlaced();
@@ -119,7 +119,6 @@ public class PlacementSystem : MonoBehaviour
 
         StartCoroutine(TagPlacedObject(justPlaced, idToTag, posToTag, rotToTag));
 
-        // Continue preview only if more stock remains
         if (hasMoreStock)
             buildUIManager.ContinuePlacement(idToContinue);
     }
@@ -128,21 +127,15 @@ public class PlacementSystem : MonoBehaviour
     {
         yield return null;
 
-        if (placed == null)
-        {
-            //Debug.LogWarning("TagPlacedObject: placed object is null!");
-            yield break;
-        }
+        if (placed == null) yield break;
 
         FurnitureInstance fi = placed.GetComponent<FurnitureInstance>();
-        if (fi == null)
-        {
-            //Debug.LogWarning($"No FurnitureInstance on {placed.name}!");
-            yield break;
-        }
+        if (fi == null) yield break;
 
-        fi.Initialize(id, gridPos, rotation);
-        //Debug.Log($"Tagged {placed.name} with ID={id}, GridPos={gridPos}");
+        // Just store the data — rotation already applied in PlaceCurrentItem
+        fi.FurnitureID = id;
+        fi.GridPosition = gridPos;
+        fi.RotationIndex = rotation;
     }
 
     public void RemoveFurnitureFromGrid(Vector3Int gridPosition, int furnitureID)

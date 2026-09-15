@@ -162,20 +162,13 @@ public class FurnitureSelector : MonoBehaviour
     {
         if (selectedFurniture == null) return;
 
-        Bounds bounds = new Bounds(selectedFurniture.transform.position, Vector3.zero);
-        Renderer[] renderers = selectedFurniture.GetComponentsInChildren<Renderer>();
-        foreach (var r in renderers) bounds.Encapsulate(r.bounds);
-        Vector3 centre = bounds.center;
-
-        selectedFurniture.transform.RotateAround(centre, Vector3.up, 90f);
-
-        // Snap back to grid
-        selectedFurniture.transform.position = placementSystem.SnapToGrid(
-            selectedFurniture.transform.position);
-
         FurnitureInstance instance = selectedFurniture.GetComponent<FurnitureInstance>();
-        if (instance != null)
-            instance.RotationIndex = (instance.RotationIndex + 1) % 4;
+        if (instance == null) return;
+
+        instance.RotationIndex = (instance.RotationIndex + 1) % 4;
+
+        // Apply rotation directly from index so it's always consistent
+        selectedFurniture.transform.rotation = Quaternion.Euler(0f, instance.RotationIndex * 90f, 0f);
 
         buildUIManager.ShowActionBarOnFurniture(selectedFurniture);
     }
