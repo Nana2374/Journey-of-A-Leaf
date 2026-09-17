@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class PreviewSystem : MonoBehaviour
 {
-    //[SerializeField]
-    //private float previewXOffset = 0.06f;
-
     [SerializeField]
     private GameObject cellIndicator;
     private GameObject previewObject;

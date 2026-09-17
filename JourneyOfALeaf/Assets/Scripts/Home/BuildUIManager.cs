@@ -124,8 +124,9 @@ public class BuildUIManager : MonoBehaviour
     void OnFurnitureSelected(int id)
     {
         furnitureSelector.Deselect();
-        actionBarFollower.Hide();           // hide first
-        actionBarFollower.StopTracking();   // then clear position
+        actionBarFollower.Hide();
+        actionBarFollower.StopTracking();
+        actionBarFollower.SetFurnitureID(id); // set ID for offset calculation
         placementSystem.StartPlacement(id);
 
         var placeText = placeButton.GetComponentInChildren<TMPro.TextMeshProUGUI>();
@@ -142,8 +143,9 @@ public class BuildUIManager : MonoBehaviour
     {
         isMoving = false;
         furnitureSelector.Deselect();
-        actionBarFollower.Hide();           // hide first
-        actionBarFollower.StopTracking();   // then clear position
+        actionBarFollower.Hide();
+        actionBarFollower.StopTracking();
+        actionBarFollower.SetFurnitureID(id); // set ID for offset
         placementSystem.StartPlacement(id);
 
         var placeText = placeButton.GetComponentInChildren<TMPro.TextMeshProUGUI>();
@@ -178,12 +180,17 @@ public class BuildUIManager : MonoBehaviour
     public void ShowActionBarOnFurniture(GameObject furniture)
     {
         actionBarFollower.TrackWorldObject(furniture);
+
+        // Get furniture ID from FurnitureInstance
+        FurnitureInstance instance = furniture.GetComponent<FurnitureInstance>();
+        if (instance != null)
+            actionBarFollower.SetFurnitureID(instance.FurnitureID);
+
         actionBarFollower.Show();
-        placeButton.gameObject.SetActive(true);   // show as Move button
+        placeButton.gameObject.SetActive(true);
         rotateButton.gameObject.SetActive(true);
         storeButton.gameObject.SetActive(true);
 
-        // Change place button label to Move
         var placeText = placeButton.GetComponentInChildren<TMPro.TextMeshProUGUI>();
         if (placeText != null) placeText.text = "Move";
     }

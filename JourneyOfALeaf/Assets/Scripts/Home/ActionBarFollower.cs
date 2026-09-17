@@ -7,15 +7,18 @@ public class ActionBarFollower : MonoBehaviour
     public RectTransform actionBarRect;
     public Canvas canvas;
     public CanvasGroup canvasGroup;
+    public ObjectsDatabaseSO database;
 
     [Header("Offset")]
-    [Tooltip("Negative value moves it below the furniture centre")]
-    public float yOffset = -80f;
+    [Tooltip("Base offset below furniture centre per grid unit")]
+    public float yOffsetPerUnit = -30f;
+    public float yOffsetBase = -40f;
     public float xOffset = 0f;
 
     private RectTransform canvasRect;
     private bool isVisible = false;
     private GameObject trackedObject = null;
+    private int currentFurnitureID = -1;
 
     void Start()
     {
@@ -38,12 +41,14 @@ public class ActionBarFollower : MonoBehaviour
 
         if (screenPos.z < 0) return;
 
-        // Apply offset in screen space scaled to canvas
         float scaleFactor = canvas.scaleFactor;
+
+        // Calculate y offset based on furniture size
+        float yOffset = CalculateYOffset();
+
         screenPos.y += yOffset * scaleFactor;
         screenPos.x += xOffset * scaleFactor;
 
-        // Use canvas camera for Screen Space - Camera, null for Overlay
         Camera canvasCamera = canvas.renderMode == RenderMode.ScreenSpaceOverlay
             ? null
             : canvas.worldCamera;
@@ -57,6 +62,24 @@ public class ActionBarFollower : MonoBehaviour
         actionBarRect.anchoredPosition = localPos;
     }
 
+    private float CalculateYOffset()
+    {
+        if (database == null || currentFurnitureID == -1)
+            return yOffsetBase;
+
+        var data = database.objectsData.Find(d => d.ID == currentFurnitureID);
+        if (data == null) return yOffsetBase;
+
+        // Use the larger of X or Z size to determine offset
+        int maxSize = Mathf.Max(data.Size.x, data.Size.y);
+        return yOffsetBase + (yOffsetPerUnit * (maxSize - 1));
+    }
+
+    public void SetFurnitureID(int id)
+    {
+        currentFurnitureID = id;
+    }
+
     public void TrackWorldObject(GameObject obj)
     {
         trackedObject = obj;
@@ -65,6 +88,7 @@ public class ActionBarFollower : MonoBehaviour
     public void StopTracking()
     {
         trackedObject = null;
+        // Don't reset currentFurnitureID here — it's needed for preview mode offset
         actionBarRect.anchoredPosition = new Vector2(-9999f, -9999f);
     }
 
@@ -92,6 +116,7 @@ public class ActionBarFollower : MonoBehaviour
     {
         isVisible = false;
         trackedObject = null;
+        currentFurnitureID = -1; // only reset when fully hidden
         canvasGroup.alpha = 0f;
         canvasGroup.interactable = false;
         canvasGroup.blocksRaycasts = false;

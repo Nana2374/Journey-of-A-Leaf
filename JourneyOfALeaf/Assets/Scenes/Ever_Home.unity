@@ -4642,7 +4642,9 @@ MonoBehaviour:
   actionBarRect: {fileID: 1069129656}
   canvas: {fileID: 1320935368}
   canvasGroup: {fileID: 1069129658}
-  yOffset: -260
+  database: {fileID: 11400000, guid: eaf34e67400ef354bb9f16e0dcc20c26, type: 2}
+  yOffsetPerUnit: -50
+  yOffsetBase: -150
   xOffset: 0
 --- !u!225 &1069129658
 CanvasGroup:
