@@ -9,7 +9,8 @@ public class ActionBarFollower : MonoBehaviour
     public CanvasGroup canvasGroup;
 
     [Header("Offset")]
-    public float yOffset = 80f;
+    [Tooltip("Negative value moves it below the furniture centre")]
+    public float yOffset = -80f;
     public float xOffset = 0f;
 
     private RectTransform canvasRect;
@@ -37,11 +38,21 @@ public class ActionBarFollower : MonoBehaviour
 
         if (screenPos.z < 0) return;
 
-        screenPos.y += yOffset;
-        screenPos.x += xOffset;
+        // Apply offset in screen space scaled to canvas
+        float scaleFactor = canvas.scaleFactor;
+        screenPos.y += yOffset * scaleFactor;
+        screenPos.x += xOffset * scaleFactor;
+
+        // Use canvas camera for Screen Space - Camera, null for Overlay
+        Camera canvasCamera = canvas.renderMode == RenderMode.ScreenSpaceOverlay
+            ? null
+            : canvas.worldCamera;
 
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            canvasRect, screenPos, null, out Vector2 localPos);
+            canvasRect,
+            screenPos,
+            canvasCamera,
+            out Vector2 localPos);
 
         actionBarRect.anchoredPosition = localPos;
     }
