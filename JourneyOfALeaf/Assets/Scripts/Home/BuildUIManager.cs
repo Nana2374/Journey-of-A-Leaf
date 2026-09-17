@@ -9,6 +9,7 @@ public class BuildUIManager : MonoBehaviour
     [Header("Cameras")]
     public InputActionReference lookAroundAction;
     public CinemachineVirtualCamera topDownCamera;
+    public CinemachineFreeLook freeLookCamera;
     public int activePriority = 20;
     public int inactivePriority = 0;
 
@@ -85,7 +86,13 @@ public class BuildUIManager : MonoBehaviour
     {
         isBuildModeOpen = true;
         inputManager.SetBuildPanelOpen(true);
+        topDownCamera.gameObject.SetActive(true);  // enable first
         topDownCamera.Priority = activePriority;
+        freeLookCamera.Priority = 0;
+        //Debug.Log($"TopDown camera priority set to: {topDownCamera.Priority}");
+
+        // Explicitly set orthographic for build mode
+        //Camera.main.orthographic = true;
 
         buildModeText.SetActive(true);
         gridVisualization.SetActive(true);
@@ -103,8 +110,12 @@ public class BuildUIManager : MonoBehaviour
     void CloseBuildMode()
     {
         isBuildModeOpen = false;
-        inputManager.SetBuildPanelOpen(true);
+        inputManager.SetBuildPanelOpen(false);
         topDownCamera.Priority = inactivePriority;
+        freeLookCamera.Priority = 10;
+
+        // Explicitly restore perspective projection on the main camera
+        //Camera.main.orthographic = false;
 
         buildModeText.SetActive(false);
         gridVisualization.SetActive(false);
@@ -112,14 +123,16 @@ public class BuildUIManager : MonoBehaviour
         furnitureSelector.ExitSelectionMode();
         actionBarFollower.Hide();
         lookAroundAction.action.Enable();
+        movementCanvas.SetActive(true);
 
-        movementCanvas.SetActive(true);   // restore movement UI
         StopAllCoroutines();
         StartCoroutine(SlidePanel(panelHiddenPos, () =>
         {
             buildPanel.gameObject.SetActive(false);
+            topDownCamera.gameObject.SetActive(false);
         }));
     }
+
 
     void OnFurnitureSelected(int id)
     {
