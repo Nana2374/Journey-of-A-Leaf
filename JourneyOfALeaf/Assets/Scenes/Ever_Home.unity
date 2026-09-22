@@ -8272,7 +8272,7 @@ GameObject:
   - component: {fileID: 1806665739}
   - component: {fileID: 1806665738}
   m_Layer: 0
-  m_Name: PostProccessing
+  m_Name: PostProcessing
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
