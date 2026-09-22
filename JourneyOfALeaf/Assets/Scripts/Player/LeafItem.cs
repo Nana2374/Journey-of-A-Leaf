@@ -8,11 +8,15 @@ public class LeafItem : MonoBehaviour
 
     private Rigidbody rb;
     private Transform currentPlacementPoint;
+    private ParticleSystem[] particles;
+
     public bool IsOnLeaf => currentPlacementPoint != null;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        // Get all particle systems on children
+        particles = GetComponentsInChildren<ParticleSystem>();
     }
 
     public void PlaceOnLeaf(Transform placementPoint)
@@ -27,6 +31,9 @@ public class LeafItem : MonoBehaviour
             rb.isKinematic = true;
             rb.useGravity = false;
         }
+
+        // Stop and hide particles when collected
+        SetParticlesActive(false);
     }
 
     public void RemoveFromLeaf()
@@ -38,6 +45,20 @@ public class LeafItem : MonoBehaviour
         {
             rb.isKinematic = false;
             rb.useGravity = true;
+        }
+
+        // Re-enable particles when dropped back into world
+        SetParticlesActive(true);
+    }
+
+    private void SetParticlesActive(bool active)
+    {
+        foreach (var ps in particles)
+        {
+            if (active)
+                ps.Play();
+            else
+                ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         }
     }
 }
