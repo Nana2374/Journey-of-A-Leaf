@@ -2,6 +2,8 @@ using System.Collections;
 using Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 
 public class BuildUIManager : MonoBehaviour
@@ -46,6 +48,9 @@ public class BuildUIManager : MonoBehaviour
     public Button[] furnitureButtons;
     public int[] furnitureIDs;
 
+    [Header("Post Processing")]
+    public Volume postProcessingVolume; // drag your PostProcessing GO here
+
     private bool isBuildModeOpen = false;
     private Vector2 panelHiddenPos;
     private Vector2 panelShownPos;
@@ -84,6 +89,8 @@ public class BuildUIManager : MonoBehaviour
 
     void OpenBuildMode()
     {
+        SetDepthOfField(false);
+
         isBuildModeOpen = true;
         inputManager.SetBuildPanelOpen(true);
         topDownCamera.gameObject.SetActive(true);  // enable first
@@ -131,7 +138,10 @@ public class BuildUIManager : MonoBehaviour
             buildPanel.gameObject.SetActive(false);
             topDownCamera.gameObject.SetActive(false);
         }));
+
+        StartCoroutine(ReEnableDepthOfField());
     }
+
 
 
     void OnFurnitureSelected(int id)
@@ -305,4 +315,28 @@ public class BuildUIManager : MonoBehaviour
         buildPanel.anchoredPosition = targetPos;
         onComplete?.Invoke();
     }
+
+    private void SetDepthOfField(bool active)
+    {
+        if (postProcessingVolume == null) return;
+
+        if (postProcessingVolume.profile.TryGet(out UnityEngine.Rendering.Universal.DepthOfField dof))
+            dof.active = active;
+    }
+
+    IEnumerator ReEnableDepthOfField()
+    {
+        // Wait for Cinemachine blend to finish
+        CinemachineBrain brain = Camera.main.GetComponent<CinemachineBrain>();
+
+        // Wait until blend is complete
+        while (brain.IsBlending)
+            yield return null;
+
+        // Extra frame to make sure everything settled
+        yield return null;
+
+        SetDepthOfField(true);
+    }
+
 }

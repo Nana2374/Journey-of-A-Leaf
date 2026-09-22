@@ -9003,6 +9003,7 @@ MonoBehaviour:
   - {fileID: 396307484}
   - {fileID: 1750641197}
   furnitureIDs: 00000000010000000200000003000000
+  postProcessingVolume: {fileID: 1806665738}
 --- !u!1 &2035177443
 GameObject:
   m_ObjectHideFlags: 0
