@@ -13,13 +13,14 @@ MonoBehaviour:
   m_Name: PipRequest
   m_EditorClassIdentifier: 
   questTitle: Pip's Flight
+  talkAgainPrompt: Talk to {0} for a new request!
   steps:
   - requestDialogue: {fileID: 11400000, guid: 79ac3ef919b94824b84d8eff253aadfc, type: 2}
     requiredItem: {fileID: 11400000, guid: f2de78f4031fca543a2aea1b2c550ab3, type: 2}
     quantityNeeded: 1
     acceptDialogue: Thanks!
     rejectDialogue: I don't want this
-    unlocksMapId: 
+    unlocksMapId: Ever_Home
   - requestDialogue: {fileID: 11400000, guid: 1eb006c275344f44fae3da3d4145083f, type: 2}
     requiredItem: {fileID: 11400000, guid: 51301664586be2042b1c50f1d8b59864, type: 2}
     quantityNeeded: 1

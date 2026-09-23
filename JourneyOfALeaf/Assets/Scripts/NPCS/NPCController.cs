@@ -148,7 +148,7 @@ public class NPCController : MonoBehaviour
 
             if (!string.IsNullOrEmpty(step.unlocksMapId))
             {
-                // MapManager.Instance.Unlock(step.unlocksMapId);
+                MapManager.Instance.Unlock(step.unlocksMapId);
             }
 
             AdvanceToNextStep();
