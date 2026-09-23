@@ -7,6 +7,9 @@ public class MapManager : MonoBehaviour
 {
     public static MapManager Instance { get; private set; }
 
+    [Header("Always unlocked from the start (e.g. starting area, hub)")]
+    [SerializeField] private List<string> defaultUnlockedMapIds = new List<string>();
+
     private readonly HashSet<string> unlockedMapIds = new HashSet<string>();
 
     public event Action<string> OnMapUnlocked;
@@ -19,6 +22,13 @@ public class MapManager : MonoBehaviour
             return;
         }
         Instance = this;
+        DontDestroyOnLoad(gameObject);
+
+        foreach (string id in defaultUnlockedMapIds)
+        {
+            if (!string.IsNullOrEmpty(id))
+                unlockedMapIds.Add(id);
+        }
     }
 
     public void Unlock(string mapId)
@@ -34,7 +44,6 @@ public class MapManager : MonoBehaviour
 
     public bool IsUnlocked(string mapId)
     {
-        // blank ID = always unlocked (for biomes you don't want gated at all)
         return string.IsNullOrEmpty(mapId) || unlockedMapIds.Contains(mapId);
     }
 }

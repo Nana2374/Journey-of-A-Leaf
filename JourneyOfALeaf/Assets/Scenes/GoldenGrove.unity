@@ -1672,10 +1672,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13ac405ac4ea2c445bff9ba9e9af6755, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneName: 
-  mapId: 
-  lockedOverlay: {fileID: 0}
-  button: {fileID: 0}
 --- !u!4 &219624921
 Transform:
   m_ObjectHideFlags: 0
@@ -17098,6 +17094,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1dd89fff389c3943bd5609606d30c01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  defaultUnlockedMapIds:
+  - GoldenGrove
 --- !u!4 &1234140080
 Transform:
   m_ObjectHideFlags: 0
