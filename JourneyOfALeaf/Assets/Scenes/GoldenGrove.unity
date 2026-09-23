@@ -16114,6 +16114,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mapPanel: {fileID: 1000339312}
   pauseGameWhenOpen: 1
+  hudToHideDuringMap: []
 --- !u!1 &1165797688
 GameObject:
   m_ObjectHideFlags: 0

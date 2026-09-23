@@ -28,13 +28,13 @@ public class NPCInteraction : MonoBehaviour
 
     private void Update()
     {
-        if (player == null || InteractPromptUI.Instance == null)
+        if (player == null || InteractPromptUI.Instance == null || MapPopupController.IsMapOpen)
+        {
+            InteractPromptUI.Instance?.HideIfOwnedBy(OnInteractPressed);
             return;
+        }
 
         float distance = Vector3.Distance(transform.position, player.position);
-
-        // Only show if there's actually something new to talk about right now:
-        // either the current request hasn't been offered yet, and there's still one to give.
         bool hasSomethingToOffer = !npcController.CurrentStepOffered && !npcController.IsFullyComplete;
 
         if (distance <= interactRange && hasSomethingToOffer)
