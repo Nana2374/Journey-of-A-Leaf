@@ -148,8 +148,6 @@ public class NPCController : MonoBehaviour
 
             if (!string.IsNullOrEmpty(step.unlocksMapId))
             {
-                Debug.Log($"item={item}, item null? {item == null}");
-                // add any other variable used on line 151 here too
                 MapManager.Instance.Unlock(step.unlocksMapId);
             }
 
