@@ -5710,7 +5710,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 219624920}
         m_TargetAssemblyTypeName: BiomeTeleporter, Assembly-CSharp
         m_MethodName: TeleportTo
         m_Mode: 5
@@ -6330,7 +6330,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 219624920}
         m_TargetAssemblyTypeName: BiomeTeleporter, Assembly-CSharp
         m_MethodName: TeleportTo
         m_Mode: 5
@@ -13587,7 +13587,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 219624920}
         m_TargetAssemblyTypeName: BiomeTeleporter, Assembly-CSharp
         m_MethodName: TeleportTo
         m_Mode: 5
@@ -14951,7 +14951,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 219624920}
         m_TargetAssemblyTypeName: BiomeTeleporter, Assembly-CSharp
         m_MethodName: TeleportTo
         m_Mode: 5
@@ -21675,7 +21675,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 219624920}
         m_TargetAssemblyTypeName: BiomeTeleporter, Assembly-CSharp
         m_MethodName: TeleportTo
         m_Mode: 5
@@ -35801,7 +35801,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 219624920}
         m_TargetAssemblyTypeName: BiomeTeleporter, Assembly-CSharp
         m_MethodName: TeleportTo
         m_Mode: 5

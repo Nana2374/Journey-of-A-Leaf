@@ -16871,7 +16871,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1234140079
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22568,6 +22568,55 @@ Transform:
   - {fileID: 1637828781}
   - {fileID: 1428066351}
   m_Father: {fileID: 1938565110}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1497274428
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1497274430}
+  - component: {fileID: 1497274429}
+  m_Layer: 0
+  m_Name: MapManager(fortest)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1497274429
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1497274428}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1dd89fff389c3943bd5609606d30c01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  defaultUnlockedMapIds:
+  - GoldenGrove
+  - RedwoodHinderlands
+  - StreamOfGentleWaters
+  - TheAbandonedWoods
+--- !u!4 &1497274430
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1497274428}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1506495506
 GameObject:
@@ -35389,3 +35438,4 @@ SceneRoots:
   - {fileID: 692416330}
   - {fileID: 1904587345}
   - {fileID: 32860406}
+  - {fileID: 1497274430}

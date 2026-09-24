@@ -26,4 +26,4 @@ MonoBehaviour:
     quantityNeeded: 1
     acceptDialogue: Thanks!
     rejectDialogue: I don't want this
-    unlocksMapId: 
+    unlocksMapId: GoldenGrove

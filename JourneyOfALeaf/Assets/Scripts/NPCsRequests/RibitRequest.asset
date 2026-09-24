@@ -13,16 +13,17 @@ MonoBehaviour:
   m_Name: RibitRequest
   m_EditorClassIdentifier: Assembly-CSharp::NPCRequestData
   questTitle: Ribit's Hunger
+  talkAgainPrompt: Talk to {0} for a new request!
   steps:
   - requestDialogue: {fileID: 11400000, guid: 50560cf726a8c0442b48576408e7229e, type: 2}
     requiredItem: {fileID: 11400000, guid: 0eab1d183d2fa8a48a83a1761ae59171, type: 2}
     quantityNeeded: 2
     acceptDialogue: Thanks
     rejectDialogue: No
-    unlocksMapId: 
+    unlocksMapId: RedwoodHinderlands
   - requestDialogue: {fileID: 11400000, guid: b2648a352991ac347869094e96d92261, type: 2}
     requiredItem: {fileID: 11400000, guid: 21dcb693ccb54be4aad9ca9c59a2ae0f, type: 2}
     quantityNeeded: 1
     acceptDialogue: Thanks
     rejectDialogue: No
-    unlocksMapId: 
+    unlocksMapId: StreamOfGentleWaters
