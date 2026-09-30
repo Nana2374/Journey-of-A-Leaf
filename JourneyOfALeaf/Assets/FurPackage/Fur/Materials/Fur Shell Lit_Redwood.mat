@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Fur Shell Lit 1
+  m_Name: Fur Shell Lit_Redwood
   m_Shader: {fileID: 4800000, guid: 589ea0397284e0e42b1985a0455d66b2, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -42,8 +42,8 @@ Material:
     - _Metallic: 0
     - _NormalScale: 0
     - _Occlusion: 0.22
-    - _RimLightIntensity: 1
-    - _RimLightPower: 20
+    - _RimLightIntensity: 0
+    - _RimLightPower: 1
     - _ShadowExtraBias: -0.678
     - _ShellAmount: 9
     - _ShellStep: 0.01
