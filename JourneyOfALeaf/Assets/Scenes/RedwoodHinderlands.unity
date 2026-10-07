@@ -5901,6 +5901,12 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 822323070}
   m_PrefabAsset: {fileID: 0}
+--- !u!137 &158518566 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -2923810080303434448, guid: 9bb0828577aa9b74e8de4ebcbd68418a,
+    type: 3}
+  m_PrefabInstance: {fileID: 822323070}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &185686152
 GameObject:
   m_ObjectHideFlags: 0
@@ -6567,6 +6573,7 @@ GameObject:
   - component: {fileID: 360698179}
   - component: {fileID: 360698178}
   - component: {fileID: 360698183}
+  - component: {fileID: 360698184}
   m_Layer: 8
   m_Name: Main_Cam
   m_TagString: MainCamera
@@ -6740,6 +6747,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 2023001610}
   volume: {fileID: 1745077095}
+--- !u!114 &360698184
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 360698177}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c49b4cc203aa6414fae5c798d1d0e7d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EventMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_MaxRayIntersections: 0
 --- !u!1 &395844813
 GameObject:
   m_ObjectHideFlags: 0
@@ -14592,7 +14615,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2044243828234c142af846f3b35dc0a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  leaf: {fileID: 1349499503}
+  leaf: {fileID: 0}
   pickupRange: 2
   interactionLayerMask:
     serializedVersion: 2
@@ -15518,7 +15541,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 995117089}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.21390893, y: -0.000000003843468, z: -2.1072036e-10, w: 0.97685367}
+  m_LocalRotation: {x: 0.21390896, y: 0, z: 0, w: 0.9768536}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -16607,6 +16630,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1125577295}
   - component: {fileID: 1125577296}
+  - component: {fileID: 1125577297}
   m_Layer: 0
   m_Name: Trigger_Top
   m_TagString: Untagged
@@ -16623,7 +16647,7 @@ Transform:
   m_GameObject: {fileID: 1125577294}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.0054, y: 0.0031, z: -0.0719}
+  m_LocalPosition: {x: 0.0098, y: 0.0018, z: -0.0524}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -16644,12 +16668,30 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 1
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.04, y: 0.01, z: 0.04}
+  m_Size: {x: 0.11, y: 0.1, z: 0.06}
   m_Center: {x: 0.0000004777687, y: 0.00000016624118, z: 0.000016127247}
+--- !u!114 &1125577297
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1125577294}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: feb0e90e01f81ff41ad6fee7ff23ca35, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  leaf: {fileID: 1349499503}
+  axis: 2
+  holdThreshold: 0.25
+  dragStartDistance: 20
+  dragDistanceForFullCurl: 2
+  debugLogs: 1
 --- !u!1 &1131101038
 GameObject:
   m_ObjectHideFlags: 0
@@ -23279,10 +23321,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1349499501}
-  - component: {fileID: 1349499503}
   - component: {fileID: 1349499502}
+  - component: {fileID: 1349499503}
   m_Layer: 0
-  m_Name: Leaf
+  m_Name: Leaf_Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -23338,9 +23380,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 141d770db2639464881db25b20d573d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  leafModel: {fileID: 0}
-  maxCurlAngle: 45
+  leafModel: {fileID: 822323071}
+  leafRenderer: {fileID: 158518566}
   curlSpeed: 5
+  attachThreshold: 0.95
+  nameLeft: Leaf_States.Curl_L
+  nameRight: Leaf_States.Curl_R
+  nameTop: Leaf_States.Curl_Top
+  debugLogs: 1
   glideTiltAmount: 30
   glideTransitionSpeed: 5
   itemPlacementPoints:
@@ -24223,6 +24270,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1544484240}
   - component: {fileID: 1544484241}
+  - component: {fileID: 1544484242}
   m_Layer: 0
   m_Name: Trigger_R
   m_TagString: Untagged
@@ -24260,12 +24308,30 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 1
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 0.04, y: 0.01, z: 0.09}
   m_Center: {x: 0.0000004777687, y: 0.00000016624118, z: 0.000016127247}
+--- !u!114 &1544484242
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1544484239}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: feb0e90e01f81ff41ad6fee7ff23ca35, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  leaf: {fileID: 1349499503}
+  axis: 1
+  holdThreshold: 0.25
+  dragStartDistance: 20
+  dragDistanceForFullCurl: 2
+  debugLogs: 1
 --- !u!1 &1560450864
 GameObject:
   m_ObjectHideFlags: 0
@@ -29315,8 +29381,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1586942082}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.22975288, y: 0.0000000018668531, z: -0.0000000012313941,
-    w: 0.9732491}
+  m_LocalRotation: {x: 0.22975294, y: 0, z: 0, w: 0.973249}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -36108,7 +36173,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 2023001615}
   playerMovement: {fileID: 2023001612}
-  leaf: {fileID: 1349499503}
+  leaf: {fileID: 0}
   minimumFallHeight: 2
   glideGravity: -0.3
   maxGlideFallSpeed: 0.5
@@ -36920,6 +36985,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2124989908}
   - component: {fileID: 2124989909}
+  - component: {fileID: 2124989910}
   m_Layer: 0
   m_Name: Trigger_L
   m_TagString: Untagged
@@ -36957,12 +37023,30 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 1
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 0.04, y: 0.01, z: 0.09}
   m_Center: {x: 0.0000004777687, y: 0.00000016624118, z: 0.000016127247}
+--- !u!114 &2124989910
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2124989907}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: feb0e90e01f81ff41ad6fee7ff23ca35, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  leaf: {fileID: 1349499503}
+  axis: 0
+  holdThreshold: 0.25
+  dragStartDistance: 20
+  dragDistanceForFullCurl: 2
+  debugLogs: 1
 --- !u!1 &2128040524
 GameObject:
   m_ObjectHideFlags: 3
@@ -37034,8 +37118,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2128040524}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.19804199, y: -0.0000000031874743, z: 0.0000000011085495,
-    w: 0.98019356}
+  m_LocalRotation: {x: 0.19804205, y: 0, z: 0, w: 0.98019356}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
