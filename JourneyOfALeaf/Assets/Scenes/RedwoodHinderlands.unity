@@ -6573,7 +6573,6 @@ GameObject:
   - component: {fileID: 360698179}
   - component: {fileID: 360698178}
   - component: {fileID: 360698183}
-  - component: {fileID: 360698184}
   m_Layer: 8
   m_Name: Main_Cam
   m_TagString: MainCamera
@@ -6747,22 +6746,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 2023001610}
   volume: {fileID: 1745077095}
---- !u!114 &360698184
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 360698177}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c49b4cc203aa6414fae5c798d1d0e7d6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_EventMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_MaxRayIntersections: 0
 --- !u!1 &395844813
 GameObject:
   m_ObjectHideFlags: 0
@@ -14615,7 +14598,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2044243828234c142af846f3b35dc0a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  leaf: {fileID: 0}
+  leaf: {fileID: 1349499503}
   pickupRange: 2
   interactionLayerMask:
     serializedVersion: 2
@@ -16631,7 +16614,7 @@ GameObject:
   - component: {fileID: 1125577295}
   - component: {fileID: 1125577296}
   - component: {fileID: 1125577297}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Trigger_Top
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -23323,6 +23306,7 @@ GameObject:
   - component: {fileID: 1349499501}
   - component: {fileID: 1349499502}
   - component: {fileID: 1349499503}
+  - component: {fileID: 1349499504}
   m_Layer: 0
   m_Name: Leaf_Model
   m_TagString: Untagged
@@ -23393,6 +23377,22 @@ MonoBehaviour:
   itemPlacementPoints:
   - {fileID: 520133159}
   - {fileID: 648601491}
+--- !u!114 &1349499504
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1349499500}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce4aa24103a9fa0428603294d2318c75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  leafHitboxLayerMask:
+    serializedVersion: 2
+    m_Bits: 1024
+  debugLogs: 1
 --- !u!1 &1356656222
 GameObject:
   m_ObjectHideFlags: 0
@@ -24271,7 +24271,7 @@ GameObject:
   - component: {fileID: 1544484240}
   - component: {fileID: 1544484241}
   - component: {fileID: 1544484242}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Trigger_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -36173,7 +36173,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 2023001615}
   playerMovement: {fileID: 2023001612}
-  leaf: {fileID: 0}
+  leaf: {fileID: 1349499503}
   minimumFallHeight: 2
   glideGravity: -0.3
   maxGlideFallSpeed: 0.5
@@ -36986,7 +36986,7 @@ GameObject:
   - component: {fileID: 2124989908}
   - component: {fileID: 2124989909}
   - component: {fileID: 2124989910}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Trigger_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}

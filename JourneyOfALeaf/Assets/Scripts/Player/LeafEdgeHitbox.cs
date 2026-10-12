@@ -1,61 +1,62 @@
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 public enum CurlAxis { Left, Right, Top }
 
-public class LeafEdgeHitbox : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
+/// <summary>
+/// Lives on each of the 3 leaf edge hitboxes. Holds only the per-axis
+/// curl logic; input detection/raycasting is driven externally by
+/// LeafCurlInputController, matching the manual-raycast pattern used
+/// by AntPickupController (no EventSystem/PhysicsRaycaster involved).
+/// </summary>
+public class LeafEdgeHitbox : MonoBehaviour
 {
     [SerializeField] private LeafController leaf;
     [SerializeField] private CurlAxis axis;
 
     [Header("Tap-and-hold toggle")]
-    [SerializeField] private float holdThreshold = 0.25f; // seconds pointer must stay down to count as a hold
+    [SerializeField] private float holdThreshold = 0.25f;
 
     [Header("Top-only drag-to-hand")]
-    [SerializeField] private float dragStartDistance = 20f;      // px of movement before it counts as a drag, not a hold
-    [SerializeField] private float dragDistanceForFullCurl = 300f; // px of drag that maps to fully curled/attached
+    [SerializeField] private float dragStartDistance = 20f;
+    [SerializeField] private float dragDistanceForFullCurl = 300f;
 
     [Header("Debug")]
     [SerializeField] private bool debugLogs = true;
 
+    public CurlAxis Axis => axis;
+
     private float pointerDownTime;
     private Vector2 pointerDownPos;
     private bool isDragging;
-    private bool isCurled; // toggle state, used when NOT dragging
+    private bool isCurled;
 
     private void Awake()
     {
         if (leaf == null)
-            Debug.LogError($"[LeafEdgeHitbox:{axis}] 'Leaf' reference is not assigned in the Inspector. Curling will not work.");
+            Debug.LogError($"[LeafEdgeHitbox:{axis}] 'Leaf' reference is not assigned in the Inspector.");
 
         if (GetComponent<Collider>() == null)
-            Debug.LogError($"[LeafEdgeHitbox:{axis}] No Collider found on this GameObject. Taps will never be detected.");
+            Debug.LogError($"[LeafEdgeHitbox:{axis}] No Collider found on this GameObject. Raycasts will never hit it.");
     }
 
-    public void OnPointerDown(PointerEventData eventData)
+    public void HandlePointerDown(Vector2 screenPos)
     {
         pointerDownTime = Time.time;
-        pointerDownPos = eventData.position;
+        pointerDownPos = screenPos;
         isDragging = false;
 
-        if (debugLogs) Debug.Log($"[LeafEdgeHitbox:{axis}] OnPointerDown at {eventData.position}");
+        if (debugLogs) Debug.Log($"[LeafEdgeHitbox:{axis}] Down at {screenPos}");
     }
 
-    public void OnDrag(PointerEventData eventData)
+    public void HandleDrag(Vector2 screenPos)
     {
         if (axis != CurlAxis.Top)
-        {
-            if (debugLogs) Debug.Log($"[LeafEdgeHitbox:{axis}] OnDrag ignored (only Top supports dragging)");
-            return;
-        }
+            return; // only Top supports drag-to-hand
 
-        float dragDistance = Vector2.Distance(eventData.position, pointerDownPos);
+        float dragDistance = Vector2.Distance(screenPos, pointerDownPos);
 
         if (!isDragging && dragDistance < dragStartDistance)
-        {
-            if (debugLogs) Debug.Log($"[LeafEdgeHitbox:{axis}] Movement {dragDistance:F1}px, below drag threshold {dragStartDistance}px");
             return;
-        }
 
         isDragging = true;
 
@@ -64,9 +65,9 @@ public class LeafEdgeHitbox : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         leaf.SetTopCurl(t);
     }
 
-    public void OnPointerUp(PointerEventData eventData)
+    public void HandlePointerUp()
     {
-        if (debugLogs) Debug.Log($"[LeafEdgeHitbox:{axis}] OnPointerUp, isDragging={isDragging}");
+        if (debugLogs) Debug.Log($"[LeafEdgeHitbox:{axis}] Up, isDragging={isDragging}");
 
         if (axis == CurlAxis.Top && isDragging)
         {
@@ -78,10 +79,8 @@ public class LeafEdgeHitbox : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         }
 
         float heldDuration = Time.time - pointerDownTime;
-        if (debugLogs) Debug.Log($"[LeafEdgeHitbox:{axis}] Held for {heldDuration:F2}s (threshold {holdThreshold}s)");
-
         if (heldDuration < holdThreshold)
-            return; // too quick to count, ignore
+            return;
 
         isCurled = !isCurled;
         float target = isCurled ? 1f : 0f;
@@ -100,5 +99,12 @@ public class LeafEdgeHitbox : MonoBehaviour, IPointerDownHandler, IDragHandler, 
                 if (isCurled) leaf.SetTopCurl(target); else leaf.ReleaseTop();
                 break;
         }
+    }
+
+    // Called externally if a drag/hold gets interrupted (e.g. another system
+    // claims the touch mid-gesture) so state doesn't get stuck.
+    public void CancelInteraction()
+    {
+        isDragging = false;
     }
 }
