@@ -12,6 +12,11 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: MAT_Lif
+    second: {fileID: 2100000, guid: 8eaf6daa95bfe9944b53f759aab5d53d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: MAT_dark_green
     second: {fileID: 2100000, guid: 1befacb28c96ba743ae5fbb7f2e9e4b2, type: 2}
   materials:
