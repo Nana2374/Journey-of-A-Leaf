@@ -40,7 +40,7 @@ public class SFXManager : MonoBehaviour
     // Generic method if you want to play any clip directly
     public void PlaySFX(AudioClip clip)
     {
-        if (clip != null)
+        if (clip != null && audioSource != null)
             audioSource.PlayOneShot(clip);
     }
 }
