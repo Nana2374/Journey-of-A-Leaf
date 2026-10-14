@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a96fa409fca7aa0489003aa36810f0d9, type: 3}
+  m_Name: CiciRequest
+  m_EditorClassIdentifier: Assembly-CSharp::NPCRequestData
+  questTitle: Meeting a Star
+  talkAgainPrompt: Talk to {0} for a new request!
+  steps:
+  - requestDialogue: {fileID: 11400000, guid: 93b58585f66d5e54c9d91cf0a8956a18, type: 2}
+    requiredItem: {fileID: 11400000, guid: f2de78f4031fca543a2aea1b2c550ab3, type: 2}
+    quantityNeeded: 1
+    acceptDialogue: Thank you, mon cheri~
+    rejectDialogue: Hmmm, not quite it~
+    unlocksMapId: Ever_Home
+  - requestDialogue: {fileID: 11400000, guid: b2648a352991ac347869094e96d92261, type: 2}
+    requiredItem: {fileID: 11400000, guid: 21dcb693ccb54be4aad9ca9c59a2ae0f, type: 2}
+    quantityNeeded: 1
+    acceptDialogue: Thanks
+    rejectDialogue: No
+    unlocksMapId: StreamOfGentleWaters
