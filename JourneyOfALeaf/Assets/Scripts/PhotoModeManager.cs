@@ -104,19 +104,16 @@ public class PhotoModeManager : MonoBehaviour
         Debug.Log($"Photo saved to: {downloadsPath}");
 
 #elif UNITY_ANDROID || UNITY_IOS
-    // Save to camera roll on mobile
-    // Requires NativeGallery plugin from Asset Store
+    // Save to camera roll on mobile (requires NativeGallery plugin)
     string tempPath = Path.Combine(Application.temporaryCachePath, fileName);
     File.WriteAllBytes(tempPath, bytes);
 
-    NativeGallery.Permission permission = NativeGallery.SaveImageToGallery(
+    NativeGallery.SaveImageToGallery(
         tempPath,
-        "YourGameName",  // album name
+        "YourGameName",  // album name, change this to your game's name
         fileName,
         (success, path) => Debug.Log($"Photo saved: {success}, path: {path}")
     );
-
-    Debug.Log($"Gallery permission: {permission}");
 #endif
 
         if (shutterClip != null)
