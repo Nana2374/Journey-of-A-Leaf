@@ -17590,7 +17590,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioSource: {fileID: 1318573895}
-  musicClip: {fileID: 8300000, guid: 1bfec2ae1882f494686190d4d90cbb20, type: 3}
+  musicClip: {fileID: 8300000, guid: 7671cbfca4961ce4dbe9241a3e568d81, type: 3}
   volume: 1
   fadeDuration: 1.5
 --- !u!4 &1318573897
