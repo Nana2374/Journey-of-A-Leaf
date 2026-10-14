@@ -12,6 +12,18 @@ public class MapPopupController : MonoBehaviour
     [Header("Hide while map is open")]
     [SerializeField] private GameObject[] hudToHideDuringMap;
 
+    private void Awake()
+    {
+        // Fresh scene = fresh state, in case we arrived here by teleporting with the map open
+        IsMapOpen = false;
+    }
+
+    private void OnDestroy()
+    {
+        // Covers leaving the scene while the map is open
+        IsMapOpen = false;
+    }
+
     public void OpenMap()
     {
         mapPanel.SetActive(true);
