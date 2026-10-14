@@ -3,6 +3,7 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 public class PhotoModeManager : MonoBehaviour
 {
     [Header("References")]
@@ -19,6 +20,7 @@ public class PhotoModeManager : MonoBehaviour
     public AudioClip shutterClip;
 
     private bool isPhotoMode = false;
+
 
     void Start()
     {
@@ -74,12 +76,8 @@ public class PhotoModeManager : MonoBehaviour
         photoModeUI.SetActive(false);
         photoModeButton.gameObject.SetActive(false);
 
-        Debug.Log("UI hidden, waiting for end of frame");
-
         yield return new WaitForEndOfFrame();
         yield return new WaitForEndOfFrame();
-
-        Debug.Log("End of frame passed, taking screenshot");
 
         // Flash effect
         if (flashImage != null)
@@ -89,27 +87,37 @@ public class PhotoModeManager : MonoBehaviour
             StartCoroutine(FadeFlash());
         }
 
-        Debug.Log("Capturing texture");
-
         Texture2D screenshot = ScreenCapture.CaptureScreenshotAsTexture();
-
-        Debug.Log("Encoding to PNG");
-
         byte[] bytes = screenshot.EncodeToPNG();
         Destroy(screenshot);
 
         string fileName = $"Photo_{System.DateTime.Now:yyyyMMdd_HHmmss}.png";
+
+#if UNITY_EDITOR || UNITY_STANDALONE
+        // Save to Downloads on laptop/PC
         string downloadsPath = Path.Combine(
             System.Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile),
             "Downloads",
             fileName
         );
-
-        Debug.Log($"Saving to: {downloadsPath}");
-
         File.WriteAllBytes(downloadsPath, bytes);
-
         Debug.Log($"Photo saved to: {downloadsPath}");
+
+#elif UNITY_ANDROID || UNITY_IOS
+    // Save to camera roll on mobile
+    // Requires NativeGallery plugin from Asset Store
+    string tempPath = Path.Combine(Application.temporaryCachePath, fileName);
+    File.WriteAllBytes(tempPath, bytes);
+
+    NativeGallery.Permission permission = NativeGallery.SaveImageToGallery(
+        tempPath,
+        "YourGameName",  // album name
+        fileName,
+        (success, path) => Debug.Log($"Photo saved: {success}, path: {path}")
+    );
+
+    Debug.Log($"Gallery permission: {permission}");
+#endif
 
         if (shutterClip != null)
             SFXManager.Instance?.PlaySFX(shutterClip);
