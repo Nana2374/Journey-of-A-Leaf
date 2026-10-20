@@ -43,8 +43,8 @@ Material:
     m_Ints: []
     m_Floats:
     - _BendRadius: 2
-    - _BendStrength: 0.8
-    - _FlattenAmount: 0.2
+    - _BendStrength: 1
+    - _FlattenAmount: 1
     - _QueueControl: 0
     - _QueueOffset: 0
     - _WindScale: 0.2
