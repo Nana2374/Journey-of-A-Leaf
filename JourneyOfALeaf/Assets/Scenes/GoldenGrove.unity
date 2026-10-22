@@ -23846,6 +23846,8 @@ MonoBehaviour:
   - RedwoodHinderlands
   - StreamOfGentleWaters
   - TheAbandonedWoods
+  - EvergreenMeadow
+  - Ever_Home
 --- !u!4 &1497274430
 Transform:
   m_ObjectHideFlags: 0
