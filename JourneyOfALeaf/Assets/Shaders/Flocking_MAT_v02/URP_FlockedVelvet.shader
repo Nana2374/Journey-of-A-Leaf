@@ -83,7 +83,8 @@ Shader "Custom/URP_FlockedVelvet"
             float3 pWS = TransformObjectToWorld(IN.positionOS.xyz);
 
             // Fibres fade out with distance: cheaper and no shimmer far away
-            float dist = distance(_WorldSpaceCameraPos, pWS);
+            // measure from the object pivot so every vertex fades together (per-vertex fading stretches triangles)
+            float dist = distance(_WorldSpaceCameraPos, TransformObjectToWorld(float3(0, 0, 0)));
             float fade = saturate((_FadeEnd - dist) / max(_FadeEnd - _FadeStart, 0.001));
 
             pWS += nWS * (_ShellLength * layer * 1.25 * fade);
