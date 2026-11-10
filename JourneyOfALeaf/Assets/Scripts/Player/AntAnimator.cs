@@ -40,7 +40,8 @@ public class AntAnimator : MonoBehaviour
         float targetSpeed = horizontalVelocity.magnitude;
 
         currentSpeed = Mathf.Lerp(
-            currentSpeed, targetSpeed, Time.deltaTime / animationSmoothTime);
+        currentSpeed, targetSpeed,
+        1f - Mathf.Exp(-Time.deltaTime / animationSmoothTime));
 
         animator.SetFloat(SpeedHash, currentSpeed);
     }
