@@ -7851,12 +7851,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1548655610}
   m_PrefabAsset: {fileID: 0}
---- !u!137 &1548655613 stripped
-SkinnedMeshRenderer:
-  m_CorrespondingSourceObject: {fileID: -2923810080303434448, guid: 9bb0828577aa9b74e8de4ebcbd68418a,
-    type: 3}
-  m_PrefabInstance: {fileID: 1548655610}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1567845876
 GameObject:
   m_ObjectHideFlags: 0
@@ -9256,7 +9250,6 @@ GameObject:
   - component: {fileID: 1843862875}
   - component: {fileID: 1843862878}
   - component: {fileID: 1843862876}
-  - component: {fileID: 1843862877}
   m_Layer: 0
   m_Name: Leaf_Model
   m_TagString: Untagged
@@ -9294,34 +9287,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   leafModel: {fileID: 1548655611}
-  leafRenderer: {fileID: 1548655613}
-  curlSpeed: 5
-  attachThreshold: 0.95
-  nameLeft: Leaf_States.Curl_L
-  nameRight: Leaf_States.Curl_R
-  nameTop: Leaf_States.Curl_Top
-  debugLogs: 1
   glideTiltAmount: 30
   glideTransitionSpeed: 5
   itemPlacementPoints:
   - {fileID: 1899579760}
   - {fileID: 1720006388}
---- !u!114 &1843862877
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1843862874}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce4aa24103a9fa0428603294d2318c75, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  leafHitboxLayerMask:
-    serializedVersion: 2
-    m_Bits: 1024
-  debugLogs: 1
 --- !u!65 &1843862878
 BoxCollider:
   m_ObjectHideFlags: 0
