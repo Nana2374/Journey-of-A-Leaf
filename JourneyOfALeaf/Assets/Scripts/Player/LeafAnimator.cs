@@ -57,6 +57,7 @@ public class LeafAnimator : MonoBehaviour
             !playerMovement.IsInWater)
         {
             animator.SetTrigger(JumpHash);
+            Debug.Log("LeafJump");
         }
 
         wasGrounded = isGrounded;
