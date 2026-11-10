@@ -6,12 +6,16 @@ public class LeafAnimator : MonoBehaviour
     [SerializeField] private Animator animator;
     [SerializeField] private Player_Movement playerMovement;
     [SerializeField] private CharacterController controller;
+    [SerializeField] LeafController leafController;
 
     private static readonly int SpeedHash = Animator.StringToHash("Speed");
     private static readonly int JumpHash = Animator.StringToHash("Jump");      // Trigger
     private static readonly int IsGroundedHash = Animator.StringToHash("IsGrounded");
     private static readonly int IsGlidingHash = Animator.StringToHash("IsGliding");
     private static readonly int IsInWaterHash = Animator.StringToHash("IsInWater");
+
+    private static readonly int GlideDirectionHash = Animator.StringToHash("GlideDirection");
+    private static readonly int VerticalSpeedHash = Animator.StringToHash("VerticalSpeed");
 
     [Header("Settings")]
     [SerializeField] private float animationSmoothTime = 0.1f;
@@ -58,7 +62,6 @@ public class LeafAnimator : MonoBehaviour
             !playerMovement.IsInWater)
         {
             animator.SetTrigger(JumpHash);
-            Debug.Log("LeafJump");
         }
 
         wasGrounded = isGrounded;
@@ -67,6 +70,7 @@ public class LeafAnimator : MonoBehaviour
     void UpdateGlide()
     {
         animator.SetBool(IsGlidingHash, playerMovement.IsGliding);
+        animator.SetFloat(VerticalSpeedHash, playerMovement.GetVerticalVelocity());
     }
 
     void UpdateWater()
