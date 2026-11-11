@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using TMPro;
 
@@ -13,6 +14,11 @@ public class DialogueManager : MonoBehaviour
     [SerializeField] private TMP_Text speakerNameText;
     [SerializeField] private TMP_Text dialogueText;
 
+    [Header("Quest Item Highlighting")]
+    [Tooltip("Words that will automatically be shown in bold red")]
+    [SerializeField] private string[] questKeywords = { "berry", "flower", "fish" };
+    [SerializeField] private string highlightColor = "#FF0000";
+
     [Header("Hide while dialogue is active")]
     [Tooltip("e.g. movement buttons, interact prompt - anything that shouldn't be usable mid-conversation")]
     [SerializeField] private GameObject[] hudToHideDuringDialogue;
@@ -20,6 +26,7 @@ public class DialogueManager : MonoBehaviour
     private DialogueData currentDialogue;
     private int currentLineIndex;
     private Action onComplete;
+    private Regex highlightRegex;
 
     private void Awake()
     {
@@ -30,6 +37,43 @@ public class DialogueManager : MonoBehaviour
         }
         Instance = this;
         dialoguePanel.SetActive(false);
+        BuildHighlightRegex();
+    }
+
+    // Builds one regex that matches any keyword as a whole word, case-insensitive
+    private void BuildHighlightRegex()
+    {
+        if (questKeywords == null || questKeywords.Length == 0)
+        {
+            highlightRegex = null;
+            return;
+        }
+
+        List<string> escaped = new List<string>();
+        foreach (string word in questKeywords)
+        {
+            if (!string.IsNullOrWhiteSpace(word))
+                escaped.Add(Regex.Escape(word.Trim()));
+        }
+
+        if (escaped.Count == 0)
+        {
+            highlightRegex = null;
+            return;
+        }
+
+        // \b = word boundary, so "fish" won't match inside "selfish"
+        // s? lets plurals match too: berry -> berries needs its own entry, but fish -> fishs is harmless
+        string pattern = @"\b(" + string.Join("|", escaped) + @")\b";
+        highlightRegex = new Regex(pattern, RegexOptions.IgnoreCase);
+    }
+
+    private string HighlightKeywords(string text)
+    {
+        if (highlightRegex == null || string.IsNullOrEmpty(text)) return text;
+
+        return highlightRegex.Replace(text,
+            $"<b><color={highlightColor}>$1</color></b>");
     }
 
     // Called by NPCInteraction when the player taps "Click to interact"
@@ -71,7 +115,7 @@ public class DialogueManager : MonoBehaviour
     {
         DialogueData.Line line = currentDialogue.lines[currentLineIndex];
         speakerNameText.text = line.speakerName;
-        dialogueText.text = line.text;
+        dialogueText.text = HighlightKeywords(line.text);
     }
 
     private void EndDialogue()
