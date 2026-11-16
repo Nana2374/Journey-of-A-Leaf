@@ -30923,6 +30923,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: RIG_Stick
       objectReference: {fileID: 0}
+    - target: {fileID: 4395192827719178803, guid: 6cfd0e91e803ec6419e6421549e54cc6,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7013548205841734387, guid: 6cfd0e91e803ec6419e6421549e54cc6,
         type: 3}
       propertyPath: m_Controller
