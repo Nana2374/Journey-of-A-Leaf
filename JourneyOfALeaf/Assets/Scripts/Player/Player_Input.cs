@@ -21,10 +21,15 @@ public class Player_Input : MonoBehaviour
     // (0,0,0) length means no input.
     public Vector3 MoveDirection { get; private set; }
 
+    // Raw D-pad input before camera-relative conversion
+    public Vector2 RawMoveInput { get; private set; }
+
     // True on the exact frame the jump action was pressed via the
     // configured input action (gamepad/keyboard). Does NOT include the
     // UI jump button — that's handled separately in Player_Movement via
     // TriggerJump(), since it comes from a different source (OnClick).
+
+
     public bool JumpPressedThisFrame { get; private set; }
 
     private void OnEnable()
@@ -42,6 +47,7 @@ public class Player_Input : MonoBehaviour
     private void Update()
     {
         Vector2 input = moveAction.action.ReadValue<Vector2>();
+        RawMoveInput = input;
 
         Vector3 move;
         if (cameraTransform != null)

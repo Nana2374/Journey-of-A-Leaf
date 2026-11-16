@@ -750,6 +750,8 @@ MonoBehaviour:
   animator: {fileID: 2136914138}
   playerMovement: {fileID: 603876976}
   controller: {fileID: 603876979}
+  leafController: {fileID: 86459020}
+  playerInput: {fileID: 603876977}
   animationSmoothTime: 0.1
 --- !u!114 &86459023
 MonoBehaviour:
@@ -9674,6 +9676,11 @@ MonoBehaviour:
   dialoguePanel: {fileID: 1249075631}
   speakerNameText: {fileID: 372424784}
   dialogueText: {fileID: 1370375699}
+  questKeywords:
+  - berry
+  - flower
+  - fish
+  highlightColor: '#FF0000'
   hudToHideDuringDialogue:
   - {fileID: 716305700}
 --- !u!4 &871231004
@@ -23290,6 +23297,8 @@ MonoBehaviour:
   animator: {fileID: 1015562333}
   playerMovement: {fileID: 603876976}
   controller: {fileID: 603876979}
+  leafController: {fileID: 86459020}
+  playerInput: {fileID: 603876977}
   animationSmoothTime: 0.1
 --- !u!114 &1532321825
 MonoBehaviour:

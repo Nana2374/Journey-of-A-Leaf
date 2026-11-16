@@ -17134,7 +17134,8 @@ MonoBehaviour:
   animator: {fileID: 1956859305}
   playerMovement: {fileID: 2023001612}
   controller: {fileID: 2023001615}
-  leafController: {fileID: 0}
+  leafController: {fileID: 1349499503}
+  playerInput: {fileID: 2023001613}
   animationSmoothTime: 0.1
 --- !u!1 &949317436
 GameObject:
@@ -25272,7 +25273,8 @@ MonoBehaviour:
   animator: {fileID: 1899677432}
   playerMovement: {fileID: 2023001612}
   controller: {fileID: 2023001615}
-  leafController: {fileID: 0}
+  leafController: {fileID: 1349499503}
+  playerInput: {fileID: 2023001613}
   animationSmoothTime: 0.1
 --- !u!1 &1356656222
 GameObject:

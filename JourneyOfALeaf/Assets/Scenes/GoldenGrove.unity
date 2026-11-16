@@ -4004,6 +4004,8 @@ MonoBehaviour:
   animator: {fileID: 1793970190}
   playerMovement: {fileID: 1172178977}
   controller: {fileID: 1172178972}
+  leafController: {fileID: 0}
+  playerInput: {fileID: 0}
   animationSmoothTime: 0.1
 --- !u!1 &549426927
 GameObject:
@@ -11249,6 +11251,8 @@ MonoBehaviour:
   animator: {fileID: 1827855897}
   playerMovement: {fileID: 1172178977}
   controller: {fileID: 1172178972}
+  leafController: {fileID: 954885786}
+  playerInput: {fileID: 1172178978}
   animationSmoothTime: 0.1
 --- !u!1001 &967048117
 PrefabInstance:
@@ -11729,6 +11733,11 @@ MonoBehaviour:
   dialoguePanel: {fileID: 1694433674}
   speakerNameText: {fileID: 1184287175}
   dialogueText: {fileID: 1190910664}
+  questKeywords:
+  - berry
+  - flower
+  - fish
+  highlightColor: '#FF0000'
   hudToHideDuringDialogue:
   - {fileID: 900709877}
 --- !u!4 &1003696921
@@ -34933,6 +34942,8 @@ MonoBehaviour:
   animator: {fileID: 1793970190}
   playerMovement: {fileID: 1172178977}
   controller: {fileID: 1172178972}
+  leafController: {fileID: 954885786}
+  playerInput: {fileID: 1172178978}
   animationSmoothTime: 0.1
 --- !u!1 &1805752935
 GameObject:
