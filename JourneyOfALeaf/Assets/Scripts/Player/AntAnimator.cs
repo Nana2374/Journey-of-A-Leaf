@@ -12,10 +12,14 @@ public class AntAnimator : MonoBehaviour
     private static readonly int SpeedHash = Animator.StringToHash("Speed");
     private static readonly int JumpHash = Animator.StringToHash("Jump");      // Trigger
     private static readonly int IsGroundedHash = Animator.StringToHash("IsGrounded");
-    private static readonly int IsGlidingHash = Animator.StringToHash("IsGliding");
+
+
     private static readonly int IsInWaterHash = Animator.StringToHash("IsInWater");
+    private static readonly int BoatStartHash = Animator.StringToHash("BoatStart");
+    private static readonly int BoatEndHash = Animator.StringToHash("BoatEnd");
+    private static readonly int BoatDirectionHash = Animator.StringToHash("BoatDirection");
 
-
+    private static readonly int IsGlidingHash = Animator.StringToHash("IsGliding");
     private static readonly int GlideDirectionHash = Animator.StringToHash("GlideDirection");
     private static readonly int VerticalSpeedHash = Animator.StringToHash("VerticalSpeed");
 
@@ -24,6 +28,7 @@ public class AntAnimator : MonoBehaviour
 
     private float currentSpeed;
     private bool wasGrounded;
+    private bool wasInWater;
 
     void Update()
     {
@@ -87,6 +92,41 @@ public class AntAnimator : MonoBehaviour
 
     void UpdateWater()
     {
-        animator.SetBool(IsInWaterHash, playerMovement.IsInWater);
+        bool isInWater = playerMovement.IsInWater;
+
+        animator.SetBool(IsInWaterHash, isInWater);
+
+        // Detect entering water
+        if (isInWater && !wasInWater)
+        {
+            animator.SetTrigger(BoatStartHash);
+        }
+
+        // Detect leaving water
+        if (!isInWater && wasInWater)
+        {
+            animator.SetTrigger(BoatEndHash);
+        }
+
+        wasInWater = isInWater;
+
+        // Calculate left/right steering direction
+        float targetDirection = 0f;
+
+        if (isInWater)
+        {
+            Vector3 localMove = playerMovement.transform.InverseTransformDirection(
+                playerInput.MoveDirection
+            );
+
+            targetDirection = Mathf.Clamp(localMove.x, -1f, 1f);
+        }
+
+        animator.SetFloat(
+            BoatDirectionHash,
+            targetDirection,
+            0.1f,
+            Time.deltaTime
+        );
     }
 }

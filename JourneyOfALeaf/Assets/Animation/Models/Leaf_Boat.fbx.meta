@@ -73,7 +73,7 @@ ModelImporter:
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 0
+      loopTime: 1
       loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0
@@ -93,7 +93,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Leaf_Boat_Left
       takeName: Take 001
-      internalID: -3291206362154003629
+      internalID: 3060872287085348379
       firstFrame: 100
       lastFrame: 140
       wrapMode: 0
@@ -122,7 +122,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Leaf_Boat_Right
       takeName: Take 001
-      internalID: -5059006814000262888
+      internalID: 6641085478485924818
       firstFrame: 160
       lastFrame: 200
       wrapMode: 0
@@ -152,7 +152,7 @@ ModelImporter:
       name: Leaf_Boat_End
       takeName: Take 001
       internalID: -5059006814000262888
-      firstFrame: 220
+      firstFrame: 200
       lastFrame: 240
       wrapMode: 0
       orientationOffsetY: 0
