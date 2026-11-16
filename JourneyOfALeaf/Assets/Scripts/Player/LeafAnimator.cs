@@ -7,12 +7,14 @@ public class LeafAnimator : MonoBehaviour
     [SerializeField] private Player_Movement playerMovement;
     [SerializeField] private CharacterController controller;
     [SerializeField] LeafController leafController;
+    [SerializeField] private Player_Input playerInput;   // drag from the Player
 
     private static readonly int SpeedHash = Animator.StringToHash("Speed");
     private static readonly int JumpHash = Animator.StringToHash("Jump");      // Trigger
     private static readonly int IsGroundedHash = Animator.StringToHash("IsGrounded");
     private static readonly int IsGlidingHash = Animator.StringToHash("IsGliding");
     private static readonly int IsInWaterHash = Animator.StringToHash("IsInWater");
+
 
     private static readonly int GlideDirectionHash = Animator.StringToHash("GlideDirection");
     private static readonly int VerticalSpeedHash = Animator.StringToHash("VerticalSpeed");
@@ -70,7 +72,17 @@ public class LeafAnimator : MonoBehaviour
     void UpdateGlide()
     {
         animator.SetBool(IsGlidingHash, playerMovement.IsGliding);
-        animator.SetFloat(VerticalSpeedHash, playerMovement.GetVerticalVelocity());
+
+        float target = 0f;
+        if (playerMovement.IsGliding)
+        {
+            // Rotation is frozen while gliding, so compare input to the player's facing
+            Vector3 move = playerInput.MoveDirection;
+            target = Mathf.Clamp(Vector3.Dot(move, playerMovement.transform.right), -1f, 1f);
+        }
+
+        // Damping smooths the lean so it doesn't snap
+        animator.SetFloat(GlideDirectionHash, target, 0.1f, Time.deltaTime);
     }
 
     void UpdateWater()

@@ -37,15 +37,11 @@ public class Player_Movement : MonoBehaviour
         // -----------------------------------------
         Vector3 move = playerInput.MoveDirection;
         // -----------------------------------------
+        // -----------------------------------------
         // ROTATION
         // -----------------------------------------
-        if (move != Vector3.zero && !IsGliding)
+        if (move.sqrMagnitude > 0.001f)
         {
-            // Instant snap. This used to feed a rotation feedback loop when
-            // the FreeLook camera was parented under the player (camera's
-            // rotation inherited the player's rotation, which fed back into
-            // this calculation). Now that the camera is unparented, this is
-            // safe again.
             transform.rotation = Quaternion.LookRotation(move, Vector3.up);
         }
         // -----------------------------------------
