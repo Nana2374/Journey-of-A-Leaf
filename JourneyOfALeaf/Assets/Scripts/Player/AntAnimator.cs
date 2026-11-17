@@ -4,6 +4,7 @@ public class AntAnimator : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private Animator animator;
+    [SerializeField] private Animator boatAnimator;      // Animator on the stick/boat rig (optional)
     [SerializeField] private Player_Movement playerMovement;
     [SerializeField] private CharacterController controller;
     [SerializeField] LeafController leafController;
@@ -95,17 +96,20 @@ public class AntAnimator : MonoBehaviour
         bool isInWater = playerMovement.IsInWater;
 
         animator.SetBool(IsInWaterHash, isInWater);
+        if (boatAnimator) boatAnimator.SetBool(IsInWaterHash, isInWater);
 
         // Detect entering water
         if (isInWater && !wasInWater)
         {
             animator.SetTrigger(BoatStartHash);
+            if (boatAnimator) boatAnimator.SetTrigger(BoatStartHash);
         }
 
         // Detect leaving water
         if (!isInWater && wasInWater)
         {
             animator.SetTrigger(BoatEndHash);
+            if (boatAnimator) boatAnimator.SetTrigger(BoatEndHash);
         }
 
         wasInWater = isInWater;
@@ -124,5 +128,15 @@ public class AntAnimator : MonoBehaviour
             0.1f,
             Time.deltaTime
         );
+
+        if (boatAnimator)
+        {
+            boatAnimator.SetFloat(
+                BoatDirectionHash,
+                targetDirection,
+                0.1f,
+                Time.deltaTime
+            );
+        }
     }
 }

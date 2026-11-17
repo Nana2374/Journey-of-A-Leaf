@@ -87,7 +87,7 @@ public class LeafAnimator : MonoBehaviour
         }
 
         // Damping smooths the lean so it doesn't snap
-        animator.SetFloat(GlideDirectionHash, target, 0.1f, Time.deltaTime);
+        //animator.SetFloat(GlideDirectionHash, target, 0.1f, Time.deltaTime);
     }
 
     void UpdateWater()
@@ -110,16 +110,12 @@ public class LeafAnimator : MonoBehaviour
 
         wasInWater = isInWater;
 
-        // Calculate left/right steering direction
+        // Read left/right D-pad input directly
         float targetDirection = 0f;
 
         if (isInWater)
         {
-            Vector3 localMove = playerMovement.transform.InverseTransformDirection(
-                playerInput.MoveDirection
-            );
-
-            targetDirection = Mathf.Clamp(localMove.x, -1f, 1f);
+            targetDirection = playerInput.RawMoveInput.x;
         }
 
         animator.SetFloat(
