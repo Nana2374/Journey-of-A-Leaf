@@ -24286,7 +24286,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1604898962}
         m_TargetAssemblyTypeName: Player_Movement, Assembly-CSharp
         m_MethodName: TriggerJump
         m_Mode: 1
@@ -36223,6 +36223,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1604898960}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1604898962 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2271708955489279585, guid: d660ad89a5341c640807534b0e2b4571,
+    type: 3}
+  m_PrefabInstance: {fileID: 1604898960}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e58a79c24d88b7e4087c8bca7feb5193, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1614812923
 GameObject:
   m_ObjectHideFlags: 0
