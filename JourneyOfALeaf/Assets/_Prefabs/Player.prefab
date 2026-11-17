@@ -341,11 +341,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 6002373874428832674}
   boatAnimator: {fileID: 1349401172402386220}
+  stickRenderers:
+  - {fileID: 3317220601154978549}
   playerMovement: {fileID: 2271708955489279585}
   controller: {fileID: 6223894441511304434}
   leafController: {fileID: 5624754167921733237}
   playerInput: {fileID: 725648651805425798}
   animationSmoothTime: 0.1
+  hideDelay: 0.5
 --- !u!1 &5360150645203059517
 GameObject:
   m_ObjectHideFlags: 0
@@ -814,6 +817,12 @@ PrefabInstance:
 --- !u!95 &1349401172402386220 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 7013548205841734387, guid: 6cfd0e91e803ec6419e6421549e54cc6,
+    type: 3}
+  m_PrefabInstance: {fileID: 8353941843981660127}
+  m_PrefabAsset: {fileID: 0}
+--- !u!137 &3317220601154978549 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 6766107959026986282, guid: 6cfd0e91e803ec6419e6421549e54cc6,
     type: 3}
   m_PrefabInstance: {fileID: 8353941843981660127}
   m_PrefabAsset: {fileID: 0}

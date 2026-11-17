@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class AntAnimator : MonoBehaviour
@@ -5,6 +6,7 @@ public class AntAnimator : MonoBehaviour
     [Header("References")]
     [SerializeField] private Animator animator;
     [SerializeField] private Animator boatAnimator;      // Animator on the stick/boat rig (optional)
+    [SerializeField] private Renderer[] stickRenderers;  // the stick's mesh renderer(s), hidden outside water
     [SerializeField] private Player_Movement playerMovement;
     [SerializeField] private CharacterController controller;
     [SerializeField] LeafController leafController;
@@ -26,10 +28,31 @@ public class AntAnimator : MonoBehaviour
 
     [Header("Settings")]
     [SerializeField] private float animationSmoothTime = 0.1f;
+    [SerializeField] private float hideDelay = 0.5f;     // length of the shrink clip, in seconds
 
     private float currentSpeed;
     private bool wasGrounded;
     private bool wasInWater;
+    private Coroutine hideRoutine;
+
+    void Start()
+    {
+        SetStickVisible(false);
+    }
+
+    void SetStickVisible(bool visible)
+    {
+        if (stickRenderers == null) return;
+        foreach (var r in stickRenderers)
+            if (r) r.enabled = visible;
+    }
+
+    IEnumerator HideStickAfterDelay()
+    {
+        yield return new WaitForSeconds(hideDelay);
+        SetStickVisible(false);
+        hideRoutine = null;
+    }
 
     void Update()
     {
@@ -101,6 +124,8 @@ public class AntAnimator : MonoBehaviour
         // Detect entering water
         if (isInWater && !wasInWater)
         {
+            if (hideRoutine != null) { StopCoroutine(hideRoutine); hideRoutine = null; }
+            SetStickVisible(true);   // show before the grow clip plays
             animator.SetTrigger(BoatStartHash);
             if (boatAnimator) boatAnimator.SetTrigger(BoatStartHash);
         }
@@ -110,6 +135,7 @@ public class AntAnimator : MonoBehaviour
         {
             animator.SetTrigger(BoatEndHash);
             if (boatAnimator) boatAnimator.SetTrigger(BoatEndHash);
+            hideRoutine = StartCoroutine(HideStickAfterDelay());   // hide once the shrink finishes
         }
 
         wasInWater = isInWater;
