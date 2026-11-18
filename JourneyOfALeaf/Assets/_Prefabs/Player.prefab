@@ -284,8 +284,9 @@ GameObject:
   - component: {fileID: 2540612472843459037}
   - component: {fileID: 1545103559706783770}
   - component: {fileID: 7133364288268790965}
+  - component: {fileID: 5758175371438312656}
   m_Layer: 0
-  m_Name: Ant
+  m_Name: ModelRoot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -349,6 +350,27 @@ MonoBehaviour:
   playerInput: {fileID: 725648651805425798}
   animationSmoothTime: 0.1
   hideDelay: 0.5
+--- !u!114 &5758175371438312656
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4521342773616292735}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f651a5151fba6d8459b21b2ebc5f28b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  modelRoot: {fileID: 2540612472843459037}
+  controller: {fileID: 6223894441511304434}
+  playerMovement: {fileID: 2271708955489279585}
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  rayExtraLength: 0.4
+  maxTiltAngle: 180
+  alignSpeed: 8
 --- !u!1 &5360150645203059517
 GameObject:
   m_ObjectHideFlags: 0
