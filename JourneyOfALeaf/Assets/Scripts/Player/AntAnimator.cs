@@ -114,6 +114,7 @@ public class AntAnimator : MonoBehaviour
         //animator.SetFloat(GlideDirectionHash, target, 0.1f, Time.deltaTime);
     }
 
+
     void UpdateWater()
     {
         bool isInWater = playerMovement.IsInWater;
@@ -121,32 +122,43 @@ public class AntAnimator : MonoBehaviour
         animator.SetBool(IsInWaterHash, isInWater);
         if (boatAnimator) boatAnimator.SetBool(IsInWaterHash, isInWater);
 
-        // Detect entering water
+        // Entering water
         if (isInWater && !wasInWater)
         {
-            if (hideRoutine != null) { StopCoroutine(hideRoutine); hideRoutine = null; }
-            SetStickVisible(true);   // show before the grow clip plays
+            if (hideRoutine != null)
+            {
+                StopCoroutine(hideRoutine);
+                hideRoutine = null;
+            }
+
             animator.SetTrigger(BoatStartHash);
             if (boatAnimator) boatAnimator.SetTrigger(BoatStartHash);
         }
 
-        // Detect leaving water
+        // Keep the stick visible throughout boating
+        if (isInWater)
+        {
+            SetStickVisible(true);
+        }
+
+        // Leaving water
         if (!isInWater && wasInWater)
         {
             animator.SetTrigger(BoatEndHash);
             if (boatAnimator) boatAnimator.SetTrigger(BoatEndHash);
-            hideRoutine = StartCoroutine(HideStickAfterDelay());   // hide once the shrink finishes
+
+            if (hideRoutine != null)
+            {
+                StopCoroutine(hideRoutine);
+            }
+
+            hideRoutine = StartCoroutine(HideStickAfterDelay());
         }
 
         wasInWater = isInWater;
 
-        // Read left/right D-pad input directly
-        float targetDirection = 0f;
-
-        if (isInWater)
-        {
-            targetDirection = playerInput.RawMoveInput.x;
-        }
+        // Read left/right D-pad input
+        float targetDirection = isInWater ? playerInput.RawMoveInput.x : 0f;
 
         animator.SetFloat(
             BoatDirectionHash,
@@ -165,4 +177,5 @@ public class AntAnimator : MonoBehaviour
             );
         }
     }
+
 }
