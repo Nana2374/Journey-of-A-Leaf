@@ -53,14 +53,7 @@ public class NPCController : MonoBehaviour
         {
             hasMetNPC = true;
 
-            if (introDialogue != null && DialogueManager.Instance != null)
-            {
-                DialogueManager.Instance.StartDialogue(introDialogue, OfferCurrentStep);
-            }
-            else
-            {
-                OfferCurrentStep();
-            }
+            PlayDialogue(introDialogue, OfferCurrentStep);
             return;
         }
 
@@ -83,14 +76,7 @@ public class NPCController : MonoBehaviour
         ItemRequestStep step = CurrentStep;
         if (step == null) return; // no more requests from this NPC
 
-        if (step.requestDialogue != null && DialogueManager.Instance != null)
-        {
-            DialogueManager.Instance.StartDialogue(step.requestDialogue, ActivateCurrentStep);
-        }
-        else
-        {
-            ActivateCurrentStep();
-        }
+        PlayDialogue(step.requestDialogue, ActivateCurrentStep);
     }
 
     private void ActivateCurrentStep()
