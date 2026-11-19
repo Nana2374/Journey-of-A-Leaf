@@ -13,10 +13,15 @@ public class NPCController : MonoBehaviour
     [SerializeField] private float dropRadius = 1.5f;
     [SerializeField] private float disappearDelay = 0.75f;
 
+    [Header("Animation")]
+    [SerializeField] private NPCAnimationController npcAnimation;
+
     private int currentStepIndex = 0;
     private int itemsDeliveredThisStep = 0;
     private bool hasMetNPC = false;        // has the player EVER talked to this NPC
     private bool currentStepOffered = false; // has the CURRENT step been formally offered/activated
+
+    private int dialogueToken;
 
     public string DisplayName => string.IsNullOrEmpty(npcDisplayName) ? name : npcDisplayName;
     public string QuestTitle => request != null ? request.questTitle : "";
@@ -180,4 +185,30 @@ public class NPCController : MonoBehaviour
             QuestManager.Instance?.NotifyProgressUpdated();
         }
     }
+
+    //FOR ANIMATIONS//
+    private void Awake()
+    {
+        if (npcAnimation == null) npcAnimation = GetComponent<NPCAnimationController>();
+    }
+
+    // Plays a dialogue with chat animations; only waves goodbye when the whole chain is finished
+    private void PlayDialogue(DialogueData dialogue, System.Action onDone)
+    {
+        if (dialogue == null || dialogue.lines.Length == 0 || DialogueManager.Instance == null)
+        {
+            onDone?.Invoke();
+            return;
+        }
+
+        int token = ++dialogueToken;
+        npcAnimation?.StartChat();
+
+        DialogueManager.Instance.StartDialogue(dialogue, () =>
+        {
+            onDone?.Invoke();                                   // may start another dialogue
+            if (token == dialogueToken) npcAnimation?.EndChat(); // nothing newer started, so chat is over
+        });
+    }
+
 }
