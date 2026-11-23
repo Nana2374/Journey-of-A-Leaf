@@ -3,7 +3,12 @@ guid: 1b51ad332065b5140be864cf675c0295
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Snail_MAT
+    second: {fileID: 2100000, guid: c404a1cd1fdba9145b4fb5a73fd66271, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
