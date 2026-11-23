@@ -800,6 +800,7 @@ MonoBehaviour:
   introDialogue: {fileID: 11400000, guid: 842a36669f12b4142916c0bf0c6ef2fe, type: 2}
   dropRadius: 1.5
   disappearDelay: 0.75
+  npcAnimation: {fileID: 0}
 --- !u!135 &105430178
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -34322,6 +34323,7 @@ MonoBehaviour:
   introDialogue: {fileID: 11400000, guid: dbc64f3332b34594a8d93ad413e03ca4, type: 2}
   dropRadius: 1.5
   disappearDelay: 0.75
+  npcAnimation: {fileID: 0}
 --- !u!135 &1781967750
 SphereCollider:
   m_ObjectHideFlags: 0
