@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Plants_Mat
+  m_Name: MAT_SOGW_wind
   m_Shader: {fileID: -6465566751694194690, guid: b1413f938b97ef744803aeada177a281,
     type: 3}
   m_Parent: {fileID: 0}
@@ -16,7 +16,7 @@ Material:
   m_InvalidKeywords: []
   m_LightmapFlags: 2
   m_EnableInstancingVariants: 1
-  m_DoubleSidedGI: 0
+  m_DoubleSidedGI: 1
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
@@ -25,7 +25,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: 87aa32d896a82544ca44aabd6ff29697, type: 3}
+        m_Texture: {fileID: 2800000, guid: 535c32a3a38f0d748818399ca9dd6d20, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
