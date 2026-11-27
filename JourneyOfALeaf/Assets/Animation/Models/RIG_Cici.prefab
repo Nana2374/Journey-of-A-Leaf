@@ -83,6 +83,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: RIG_Cici
       objectReference: {fileID: 0}
+    - target: {fileID: 2870440792123074593, guid: dcfe68cf208c546438fffcce540f5074,
+        type: 3}
+      propertyPath: m_BlendShapeWeights.Array.data[0]
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: dcfe68cf208c546438fffcce540f5074,
         type: 3}
       propertyPath: m_Controller
