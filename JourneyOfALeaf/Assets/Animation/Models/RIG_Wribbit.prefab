@@ -63,6 +63,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: RIG_Wribbit
       objectReference: {fileID: 0}
+    - target: {fileID: 2170150869472214882, guid: 669373adcc82dd9409a89bb28c059b13,
+        type: 3}
+      propertyPath: m_BlendShapeWeights.Array.data[0]
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

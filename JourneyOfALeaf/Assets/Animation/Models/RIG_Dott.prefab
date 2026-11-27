@@ -63,6 +63,16 @@ PrefabInstance:
       propertyPath: m_RootBone
       value: 
       objectReference: {fileID: 7552548168720914263}
+    - target: {fileID: -5395166921050935469, guid: a062f5649dd177b48a4d0e7deb863f4d,
+        type: 3}
+      propertyPath: m_BlendShapeWeights.Array.data[0]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -5395166921050935469, guid: a062f5649dd177b48a4d0e7deb863f4d,
+        type: 3}
+      propertyPath: m_BlendShapeWeights.Array.data[1]
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: a062f5649dd177b48a4d0e7deb863f4d,
         type: 3}
       propertyPath: m_Name
