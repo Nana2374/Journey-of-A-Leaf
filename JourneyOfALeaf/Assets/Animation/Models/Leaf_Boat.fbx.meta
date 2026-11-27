@@ -94,8 +94,8 @@ ModelImporter:
       name: Leaf_Boat_Left
       takeName: Take 001
       internalID: 3060872287085348379
-      firstFrame: 100
-      lastFrame: 140
+      firstFrame: 120
+      lastFrame: 170
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -123,8 +123,8 @@ ModelImporter:
       name: Leaf_Boat_Right
       takeName: Take 001
       internalID: 6641085478485924818
-      firstFrame: 160
-      lastFrame: 200
+      firstFrame: 190
+      lastFrame: 240
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -152,8 +152,8 @@ ModelImporter:
       name: Leaf_Boat_End
       takeName: Take 001
       internalID: -5059006814000262888
-      firstFrame: 220
-      lastFrame: 240
+      firstFrame: 240
+      lastFrame: 280
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
