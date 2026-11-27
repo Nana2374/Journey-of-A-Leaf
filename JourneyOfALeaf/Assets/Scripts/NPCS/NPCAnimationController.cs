@@ -1,45 +1,37 @@
 using UnityEngine;
 
-/// <summary>
-/// Owns the NPC's Animator. Nothing else should touch it.
-/// - Player enters greet radius -> NPC turns to face them and waves
-/// - Otherwise the Animator alternates between its two idle states
-/// - StartChat() -> chat animations; EndChat() -> wave goodbye, then back to idle
-///
-/// Animator parameters required (exact names):
-///   Wave (Trigger), IsChatting (Bool), ChatIndex (Int)
-/// </summary>
+/// Owns the NPC's Animator.
+/// Animator parameters: Wave (Trigger), Look (Trigger), PlayerClose (Bool), IsChatting (Bool), ChatIndex (Int)
 public class NPCAnimationController : MonoBehaviour
 {
-    [Header("References")]
-    [Tooltip("Leave empty to auto-find an Animator on this object or its children.")]
     [SerializeField] private Animator animator;
     [SerializeField] private string playerTag = "Player";
 
-    [Header("Greeting")]
+    [Header("Greeting / facing")]
     [SerializeField] private float greetRadius = 4f;
-    [Tooltip("Extra distance the player must move away before the NPC can greet again (prevents flicker at the edge).")]
     [SerializeField] private float exitBuffer = 0.75f;
-
-    [Header("Facing")]
     [SerializeField] private float turnSpeed = 5f;
     [SerializeField] private bool returnToStartRotation = true;
 
+    [Header("Idle behaviour")]
+    [SerializeField] private float closeRadius = 1f;                        // inside this: continuous waving
+    [SerializeField] private Vector2 lookInterval = new Vector2(10f, 20f);  // outside: rare looks
+    [SerializeField, Range(0f, 1f)] private float lookChance = 0.5f;
+
     [Header("Chat animations")]
-    [Tooltip("How many chat variants exist in the Animator (ChatIndex 0..n-1).")]
     [SerializeField] private int chatVariants = 3;
-    [Tooltip("Seconds between switching chat variants. 0 = pick once per chat.")]
     [SerializeField] private float chatVariantInterval = 6f;
 
     private static readonly int WaveHash = Animator.StringToHash("Wave");
+    private static readonly int LookHash = Animator.StringToHash("Look");
+    private static readonly int PlayerCloseHash = Animator.StringToHash("PlayerClose");
     private static readonly int IsChattingHash = Animator.StringToHash("IsChatting");
     private static readonly int ChatIndexHash = Animator.StringToHash("ChatIndex");
 
     private Transform player;
     private Quaternion startRotation;
-    private bool playerInRange;
-    private bool isChatting;
-    private float nextVariantTime;
+    private bool playerInRange, isChatting;
+    private float nextVariantTime, nextLookTime;
 
     public bool IsChatting => isChatting;
 
@@ -51,59 +43,50 @@ public class NPCAnimationController : MonoBehaviour
 
     private void Start()
     {
-        GameObject playerObj = GameObject.FindGameObjectWithTag(playerTag);
-        if (playerObj != null)
-            player = playerObj.transform;
-        else
-            Debug.LogWarning(name + ": no GameObject tagged '" + playerTag + "' found.");
+        var p = GameObject.FindGameObjectWithTag(playerTag);
+        if (p != null) player = p.transform;
+        else Debug.LogWarning(name + ": no GameObject tagged '" + playerTag + "' found.");
     }
 
     private void Update()
     {
         if (animator == null) return;
 
-        UpdateProximity();
-        UpdateFacing();
+        Vector3 toPlayer = player != null ? player.position - transform.position : Vector3.zero;
+        float distance = player != null ? toPlayer.magnitude : float.MaxValue;
+        bool close = distance <= closeRadius && !isChatting;
 
-        if (isChatting && chatVariantInterval > 0f && Time.time >= nextVariantTime)
-            PickChatVariant();
-    }
+        animator.SetBool(PlayerCloseHash, close);
 
-    // ---------- Proximity / greeting ----------
-
-    private void UpdateProximity()
-    {
-        if (player == null) return;
-
-        float distance = Vector3.Distance(transform.position, player.position);
-
+        // Greeting wave when entering the greet radius (skipped if already in the wave loop)
         if (!playerInRange && distance <= greetRadius)
         {
             playerInRange = true;
-            if (!isChatting) animator.SetTrigger(WaveHash); // greeting wave
+            if (!isChatting && !close) animator.SetTrigger(WaveHash);
         }
         else if (playerInRange && distance > greetRadius + exitBuffer)
-        {
             playerInRange = false;
-        }
-    }
 
-    private void UpdateFacing()
-    {
-        if (player != null && (playerInRange || isChatting))
+        // Facing
+        toPlayer.y = 0f;
+        bool face = (playerInRange || isChatting) && toPlayer.sqrMagnitude > 0.001f;
+        if (face || returnToStartRotation)
+            transform.rotation = Quaternion.Slerp(transform.rotation,
+                face ? Quaternion.LookRotation(toPlayer) : startRotation, turnSpeed * Time.deltaTime);
+
+        // Occasional look, only when far and idle
+        if (close) animator.ResetTrigger(LookHash);
+        else if (!isChatting && Time.time >= nextLookTime)
         {
-            Vector3 dir = player.position - transform.position;
-            dir.y = 0f; // stay upright
-            if (dir.sqrMagnitude > 0.001f)
-            {
-                Quaternion look = Quaternion.LookRotation(dir);
-                transform.rotation = Quaternion.Slerp(transform.rotation, look, turnSpeed * Time.deltaTime);
-            }
+            nextLookTime = Time.time + Random.Range(lookInterval.x, lookInterval.y);
+            if (Random.value < lookChance
+                && animator.GetCurrentAnimatorStateInfo(0).IsName("Cici_Idle")
+                && !animator.IsInTransition(0))
+                animator.SetTrigger(LookHash);
         }
-        else if (returnToStartRotation)
-        {
-            transform.rotation = Quaternion.Slerp(transform.rotation, startRotation, turnSpeed * Time.deltaTime);
-        }
+
+        if (isChatting && chatVariantInterval > 0f && Time.time >= nextVariantTime)
+            PickChatVariant();
     }
 
     // ---------- Called by NPCController ----------
@@ -111,9 +94,9 @@ public class NPCAnimationController : MonoBehaviour
     public void StartChat()
     {
         if (isChatting || animator == null) return;
-
         isChatting = true;
-        animator.ResetTrigger(WaveHash); // don't let a pending greeting wave interrupt the chat
+        animator.ResetTrigger(WaveHash);
+        animator.ResetTrigger(LookHash);
         animator.SetBool(IsChattingHash, true);
         PickChatVariant();
     }
@@ -121,22 +104,20 @@ public class NPCAnimationController : MonoBehaviour
     public void EndChat()
     {
         if (!isChatting || animator == null) return;
-
         isChatting = false;
         animator.SetBool(IsChattingHash, false);
-        animator.SetTrigger(WaveHash); // goodbye wave; Animator then returns to idle
+        animator.SetTrigger(WaveHash); // goodbye wave
     }
 
     private void PickChatVariant()
     {
-        if (chatVariants > 1)
-            animator.SetInteger(ChatIndexHash, Random.Range(0, chatVariants));
+        if (chatVariants > 1) animator.SetInteger(ChatIndexHash, Random.Range(0, chatVariants));
         nextVariantTime = Time.time + chatVariantInterval;
     }
 
     private void OnDrawGizmosSelected()
     {
-        Gizmos.color = Color.cyan;
-        Gizmos.DrawWireSphere(transform.position, greetRadius);
+        Gizmos.color = Color.cyan; Gizmos.DrawWireSphere(transform.position, greetRadius);
+        Gizmos.color = Color.yellow; Gizmos.DrawWireSphere(transform.position, closeRadius);
     }
 }

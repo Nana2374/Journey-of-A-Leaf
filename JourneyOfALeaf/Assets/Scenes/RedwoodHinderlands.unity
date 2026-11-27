@@ -24223,10 +24223,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 1371265176}
   playerTag: Player
-  greetRadius: 4
+  greetRadius: 6
   exitBuffer: 0.75
   turnSpeed: 5
   returnToStartRotation: 1
+  closeRadius: 2
+  lookInterval: {x: 10, y: 20}
+  lookChance: 0.7
   chatVariants: 3
   chatVariantInterval: 6
 --- !u!1 &1338502435
