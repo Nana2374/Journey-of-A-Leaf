@@ -29,7 +29,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Pip_Idle 0
+  m_Name: Dott_Idle 0
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -164,7 +164,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Pip_Chat
+  m_Name: Dott_Chat
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions: []
@@ -191,7 +191,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Pip_Idle
+  m_Name: Dott_Idle
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -297,7 +297,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Pip_Look
+  m_Name: Dott_Look
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -433,7 +433,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Pip_Wave
+  m_Name: Dott_Wave
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
